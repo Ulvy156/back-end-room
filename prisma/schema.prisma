@@ -1,0 +1,131 @@
+// npx prisma migrate reset
+//npx prisma migrate dev --name init
+//npx prisma db push
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  // moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  LANDLORD
+  ADMIN
+}
+
+enum PropertyType {
+  ROOM
+  APARTMENT
+  HOUSE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String   @unique
+  phone     String?  @unique
+  password  String
+  role      UserRole @default(USER)
+
+  properties  Property[]
+  favorites Favorite[]
+
+  createdAt DateTime @default(now())
+}
+
+
+model Location {
+  id        Int     @id @default(autoincrement())
+  city      String
+  district  String
+
+  properties  Property[]
+}
+
+model Property {
+  id           String        @id @default(uuid())
+  userId       String
+  locationId   Int
+
+  title        String
+  description  String?
+
+  price        Float
+  deposit      Float?
+
+  propertyType PropertyType @default(ROOM)
+  sizeSqm      Int?
+  furnished    Boolean      @default(false)
+
+  coverKey     String?
+  isPublished  Boolean      @default(true)
+
+  user         User         @relation(fields: [userId], references: [id])
+  location     Location     @relation(fields: [locationId], references: [id])
+
+  images       PropertyImage[]
+
+  favorites    Favorite[]
+
+  propertyAmenities    PropertyAmenity[]
+
+
+  createdAt    DateTime     @default(now())
+
+  @@index([userId, locationId, propertyType])
+}
+
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  imageKey   String   // image path in R2
+  isCover    Boolean  @default(false)
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model Amenity {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique   // Wifi, Parking, Aircon
+  icon      String?           // icon name (lucide, etc.)
+  category  String?           // BASIC, SECURITY, COMFORT
+
+  properties PropertyAmenity[]
+}
+
+model PropertyAmenity {
+  propertyId String
+  amenityId  Int
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([propertyId, amenityId]) // composite PK
+}
+
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+
+}
+
+
