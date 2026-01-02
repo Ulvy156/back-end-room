@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserRole } from 'generated/prisma/enums';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Payload stored INSIDE JWT
@@ -26,6 +27,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -42,25 +44,22 @@ export class AuthService {
     if (!isPasswordValid) return null;
 
     // remove password before returning
-    const { password: _, ...safeUser } = user;
-    return safeUser;
+    user.password = '';
+    return user;
   }
 
   /**
    * Issue access + refresh tokens
    */
-  async login(user: LoginUser) {
+  login(user: LoginUser) {
     const payload: JwtTokenPayload = {
       sub: user.id,
       role: user.role,
     };
 
-    const accessToken = this.jwtService.sign(payload);
+    const accessToken = this.generateAccessToken(payload);
 
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_SECRET!,
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-    });
+    const refreshToken = this.generateRefreshToken(payload);
 
     return {
       accessToken,
@@ -82,12 +81,9 @@ export class AuthService {
         role: payload.role,
       };
 
-      const newAccessToken = this.jwtService.sign(newPayload);
+      const newAccessToken = this.generateAccessToken(newPayload);
 
-      const newRefreshToken = this.jwtService.sign(newPayload, {
-        secret: process.env.JWT_REFRESH_SECRET!,
-        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-      });
+      const newRefreshToken = this.generateRefreshToken(newPayload);
 
       return {
         accessToken: newAccessToken,
@@ -96,5 +92,19 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  private generateAccessToken(payload: JwtTokenPayload) {
+    return this.jwtService.sign(payload);
+  }
+
+  private generateRefreshToken(payload: JwtTokenPayload) {
+    return this.jwtService.signAsync(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET')!,
+      expiresIn: this.configService.get<number>(
+        'JWT_REFRESH_EXPIRES_IN',
+        604800,
+      ),
+    });
   }
 }
