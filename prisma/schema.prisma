@@ -28,29 +28,45 @@ model User {
   id        String   @id @default(uuid())
   name      String?
   email     String   @unique
-  phone     String?  @unique
   password  String
   role      UserRole @default(USER)
 
   properties  Property[]
   favorites Favorite[]
+  phone Phone[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
 }
 
+model Phone {
+  id    Int   @id @default(autoincrement())
+  phoneNumber   String
+
+  userId       String       @map("user_id")
+  user         User         @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Location {
   id        Int     @id @default(autoincrement())
   city      String
   district  String
+  map_url   String?
 
   properties  Property[]
+
+  @@map("locations")
 }
 
 model Property {
   id           String        @id @default(uuid())
-  userId       String
-  locationId   Int
+  userId       String        @map("user_id")
+  locationId   Int           @map("location_id")
 
   title        String
   description  String?
@@ -69,21 +85,36 @@ model Property {
   location     Location     @relation(fields: [locationId], references: [id])
 
   images       PropertyImage[]
-
   favorites    Favorite[]
-
+  propertyViews    PropertyViews[]
   propertyAmenities    PropertyAmenity[]
 
-
   createdAt    DateTime     @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId, locationId, propertyType])
+
+  @@map("properties")
+
 }
 
+model PropertyViews {
+  id          String    @id @default(uuid())
+
+  property_id String    @map("property_id")
+  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+
+  @@index([property_id])
+
+  @@map("property_views")
+
+}
 
 model PropertyImage {
   id         String   @id @default(uuid())
-  propertyId String
+  propertyId String   @map("property_id")
   imageKey   String   // image path in R2
   isCover    Boolean  @default(false)
 
@@ -92,6 +123,9 @@ model PropertyImage {
   createdAt  DateTime @default(now())
 
   @@index([propertyId])
+
+  @@map("property_images")
+
 }
 
 model Amenity {
@@ -101,23 +135,27 @@ model Amenity {
   category  String?           // BASIC, SECURITY, COMFORT
 
   properties PropertyAmenity[]
+
+  @@map("amenities")
 }
 
 model PropertyAmenity {
   propertyId String
-  amenityId  Int
+  amenityId  Int      @map("amenity_id")
 
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
 
   @@id([propertyId, amenityId]) // composite PK
+
+  @@map("property_amenities")
 }
 
 
 model Favorite {
   id         String   @id @default(uuid())
   userId     String
-  propertyId String
+  propertyId String   @map("property_id")
 
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
@@ -126,6 +164,7 @@ model Favorite {
 
   @@unique([userId, propertyId])
 
+  @@map("favourites")
 }
 
 
