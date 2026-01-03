@@ -1,22 +1,32 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma } from '@prisma/client';
 
-export function prismaError(err: any) {
+export function prismaError(err: unknown): never {
+  // Re-throw HTTP exceptions
   if (err instanceof HttpException) {
-    throw new HttpException(err.message, err.getStatus());
+    throw err;
   }
 
-  if (!(err instanceof Prisma.PrismaClientKnownRequestError)) return null;
+  // Handle known Prisma errors
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    switch (err.code) {
+      case 'P2002':
+        throw new HttpException('Duplicate entry', HttpStatus.BAD_REQUEST);
 
-  switch (err.code) {
-    case 'P2002':
-      throw new HttpException('Duplicate entry', HttpStatus.BAD_REQUEST);
-    case 'P2025':
-      throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
-    case 'P1010':
-      throw new HttpException(
-        'Access denied to database',
-        HttpStatus.NOT_FOUND,
-      );
+      case 'P2025':
+        throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
+
+      case 'P1010':
+        throw new HttpException(
+          'Access denied to database',
+          HttpStatus.FORBIDDEN,
+        );
+    }
   }
+
+  // FALLBACK — NEVER swallow errors
+  throw new HttpException(
+    'Internal server error',
+    HttpStatus.INTERNAL_SERVER_ERROR,
+  );
 }

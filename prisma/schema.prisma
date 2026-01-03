@@ -1,10 +1,12 @@
 // npx prisma migrate reset
 //npx prisma migrate dev --name init
 //npx prisma db push
+//npx prisma db seed
 
 generator client {
-  provider     = "prisma-client-js"
-  output       = "../generated/prisma"
+  provider     = "prisma-client"
+  output   = "generated"
+  // output       = "generated/prisma"
   // moduleFormat = "cjs"
 }
 
@@ -22,13 +24,15 @@ enum PropertyType {
   ROOM
   APARTMENT
   HOUSE
+  CONDO
 }
 
 model User {
   id        String   @id @default(uuid())
-  name      String?
+  name      String
   email     String   @unique
   password  String
+  img_url   String?
   role      UserRole @default(USER)
 
   properties  Property[]

@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserRole } from 'generated/prisma/enums';
 import { ConfigService } from '@nestjs/config';
+import { UserRole } from 'prisma/generated/enums';
 
 /**
  * Payload stored INSIDE JWT
