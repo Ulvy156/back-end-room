@@ -3,8 +3,12 @@ import { prisma } from 'src/prisma/prisma.client';
 import { seedPropertyTypes } from './property-type.seed';
 import { seedUser } from './user.seed';
 import { seedAmenities } from './amenity.seed';
+import { seedProvinces } from './province.seed';
+import { seedDistricts } from './district.seed';
 export async function runSeeds() {
   try {
+    await seedProvinces(prisma);
+    await seedDistricts(prisma);
     await seedPropertyTypes(prisma);
     await seedUser(prisma);
     await seedAmenities(prisma);

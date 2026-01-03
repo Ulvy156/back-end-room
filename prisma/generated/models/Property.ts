@@ -27,7 +27,7 @@ export type AggregateProperty = {
 }
 
 export type PropertyAvgAggregateOutputType = {
-  locationId: number | null
+  district_id: number | null
   price: number | null
   deposit: number | null
   totalViews: number | null
@@ -36,10 +36,10 @@ export type PropertyAvgAggregateOutputType = {
 }
 
 export type PropertySumAggregateOutputType = {
-  locationId: number | null
+  district_id: number | null
   price: number | null
   deposit: number | null
-  totalViews: bigint | null
+  totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
 }
@@ -47,16 +47,17 @@ export type PropertySumAggregateOutputType = {
 export type PropertyMinAggregateOutputType = {
   id: string | null
   userId: string | null
-  locationId: number | null
+  location: string | null
+  location_url: string | null
+  district_id: number | null
   title: string | null
   description: string | null
   price: number | null
   deposit: number | null
-  totalViews: bigint | null
+  totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
   furnished: boolean | null
-  coverKey: string | null
   isPublished: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,16 +66,17 @@ export type PropertyMinAggregateOutputType = {
 export type PropertyMaxAggregateOutputType = {
   id: string | null
   userId: string | null
-  locationId: number | null
+  location: string | null
+  location_url: string | null
+  district_id: number | null
   title: string | null
   description: string | null
   price: number | null
   deposit: number | null
-  totalViews: bigint | null
+  totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
   furnished: boolean | null
-  coverKey: string | null
   isPublished: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -83,7 +85,9 @@ export type PropertyMaxAggregateOutputType = {
 export type PropertyCountAggregateOutputType = {
   id: number
   userId: number
-  locationId: number
+  location: number
+  location_url: number
+  district_id: number
   title: number
   description: number
   price: number
@@ -92,7 +96,6 @@ export type PropertyCountAggregateOutputType = {
   propertyTypeId: number
   sizeSqm: number
   furnished: number
-  coverKey: number
   isPublished: number
   createdAt: number
   updatedAt: number
@@ -101,7 +104,7 @@ export type PropertyCountAggregateOutputType = {
 
 
 export type PropertyAvgAggregateInputType = {
-  locationId?: true
+  district_id?: true
   price?: true
   deposit?: true
   totalViews?: true
@@ -110,7 +113,7 @@ export type PropertyAvgAggregateInputType = {
 }
 
 export type PropertySumAggregateInputType = {
-  locationId?: true
+  district_id?: true
   price?: true
   deposit?: true
   totalViews?: true
@@ -121,7 +124,9 @@ export type PropertySumAggregateInputType = {
 export type PropertyMinAggregateInputType = {
   id?: true
   userId?: true
-  locationId?: true
+  location?: true
+  location_url?: true
+  district_id?: true
   title?: true
   description?: true
   price?: true
@@ -130,7 +135,6 @@ export type PropertyMinAggregateInputType = {
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
-  coverKey?: true
   isPublished?: true
   createdAt?: true
   updatedAt?: true
@@ -139,7 +143,9 @@ export type PropertyMinAggregateInputType = {
 export type PropertyMaxAggregateInputType = {
   id?: true
   userId?: true
-  locationId?: true
+  location?: true
+  location_url?: true
+  district_id?: true
   title?: true
   description?: true
   price?: true
@@ -148,7 +154,6 @@ export type PropertyMaxAggregateInputType = {
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
-  coverKey?: true
   isPublished?: true
   createdAt?: true
   updatedAt?: true
@@ -157,7 +162,9 @@ export type PropertyMaxAggregateInputType = {
 export type PropertyCountAggregateInputType = {
   id?: true
   userId?: true
-  locationId?: true
+  location?: true
+  location_url?: true
+  district_id?: true
   title?: true
   description?: true
   price?: true
@@ -166,7 +173,6 @@ export type PropertyCountAggregateInputType = {
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
-  coverKey?: true
   isPublished?: true
   createdAt?: true
   updatedAt?: true
@@ -262,16 +268,17 @@ export type PropertyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type PropertyGroupByOutputType = {
   id: string
   userId: string
-  locationId: number
+  location: string
+  location_url: string | null
+  district_id: number
   title: string
   description: string | null
   price: number
   deposit: number | null
-  totalViews: bigint
+  totalViews: number | null
   propertyTypeId: number
-  sizeSqm: number | null
+  sizeSqm: number
   furnished: boolean
-  coverKey: string | null
   isPublished: boolean
   createdAt: Date
   updatedAt: Date
@@ -303,50 +310,48 @@ export type PropertyWhereInput = {
   NOT?: Prisma.PropertyWhereInput | Prisma.PropertyWhereInput[]
   id?: Prisma.StringFilter<"Property"> | string
   userId?: Prisma.StringFilter<"Property"> | string
-  locationId?: Prisma.IntFilter<"Property"> | number
+  location?: Prisma.StringFilter<"Property"> | string
+  location_url?: Prisma.StringNullableFilter<"Property"> | string | null
+  district_id?: Prisma.IntFilter<"Property"> | number
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
-  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
+  totalViews?: Prisma.IntNullableFilter<"Property"> | number | null
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
-  coverKey?: Prisma.StringNullableFilter<"Property"> | string | null
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   propertyType?: Prisma.XOR<Prisma.PropertyTypeScalarRelationFilter, Prisma.PropertyTypeWhereInput>
   images?: Prisma.PropertyImageListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
-  propertyViews?: Prisma.PropertyViewsListRelationFilter
   propertyAmenities?: Prisma.PropertyAmenityListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  locationId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  location_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
-  totalViews?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrderInput | Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
-  sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
-  coverKey?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
-  location?: Prisma.LocationOrderByWithRelationInput
   propertyType?: Prisma.PropertyTypeOrderByWithRelationInput
   images?: Prisma.PropertyImageOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
-  propertyViews?: Prisma.PropertyViewsOrderByRelationAggregateInput
   propertyAmenities?: Prisma.PropertyAmenityOrderByRelationAggregateInput
 }
 
@@ -356,41 +361,41 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PropertyWhereInput[]
   NOT?: Prisma.PropertyWhereInput | Prisma.PropertyWhereInput[]
   userId?: Prisma.StringFilter<"Property"> | string
-  locationId?: Prisma.IntFilter<"Property"> | number
+  location?: Prisma.StringFilter<"Property"> | string
+  location_url?: Prisma.StringNullableFilter<"Property"> | string | null
+  district_id?: Prisma.IntFilter<"Property"> | number
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
-  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
+  totalViews?: Prisma.IntNullableFilter<"Property"> | number | null
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
-  coverKey?: Prisma.StringNullableFilter<"Property"> | string | null
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   propertyType?: Prisma.XOR<Prisma.PropertyTypeScalarRelationFilter, Prisma.PropertyTypeWhereInput>
   images?: Prisma.PropertyImageListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
-  propertyViews?: Prisma.PropertyViewsListRelationFilter
   propertyAmenities?: Prisma.PropertyAmenityListRelationFilter
 }, "id">
 
 export type PropertyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  locationId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  location_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
-  totalViews?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrderInput | Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
-  sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
-  coverKey?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -407,16 +412,17 @@ export type PropertyScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PropertyScalarWhereWithAggregatesInput | Prisma.PropertyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Property"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  locationId?: Prisma.IntWithAggregatesFilter<"Property"> | number
+  location?: Prisma.StringWithAggregatesFilter<"Property"> | string
+  location_url?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  district_id?: Prisma.IntWithAggregatesFilter<"Property"> | number
   title?: Prisma.StringWithAggregatesFilter<"Property"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Property"> | number
   deposit?: Prisma.FloatNullableWithAggregatesFilter<"Property"> | number | null
-  totalViews?: Prisma.BigIntWithAggregatesFilter<"Property"> | bigint | number
+  totalViews?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   propertyTypeId?: Prisma.IntWithAggregatesFilter<"Property"> | number
-  sizeSqm?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  sizeSqm?: Prisma.IntWithAggregatesFilter<"Property"> | number
   furnished?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
-  coverKey?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   isPublished?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
@@ -424,105 +430,106 @@ export type PropertyScalarWhereWithAggregatesInput = {
 
 export type PropertyCreateInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
   images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
   images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -530,14 +537,16 @@ export type PropertyCreateManyInput = {
 
 export type PropertyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -546,16 +555,17 @@ export type PropertyUpdateManyMutationInput = {
 export type PropertyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -574,7 +584,9 @@ export type PropertyOrderByRelationAggregateInput = {
 export type PropertyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  locationId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  location_url?: Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -583,14 +595,13 @@ export type PropertyCountOrderByAggregateInput = {
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
-  coverKey?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PropertyAvgOrderByAggregateInput = {
-  locationId?: Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -601,7 +612,9 @@ export type PropertyAvgOrderByAggregateInput = {
 export type PropertyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  locationId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  location_url?: Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -610,7 +623,6 @@ export type PropertyMaxOrderByAggregateInput = {
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
-  coverKey?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -619,7 +631,9 @@ export type PropertyMaxOrderByAggregateInput = {
 export type PropertyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  locationId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  location_url?: Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -628,14 +642,13 @@ export type PropertyMinOrderByAggregateInput = {
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
-  coverKey?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PropertySumOrderByAggregateInput = {
-  locationId?: Prisma.SortOrder
+  district_id?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -690,48 +703,6 @@ export type PropertyUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
 }
 
-export type PropertyCreateNestedManyWithoutLocationInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput> | Prisma.PropertyCreateWithoutLocationInput[] | Prisma.PropertyUncheckedCreateWithoutLocationInput[]
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutLocationInput | Prisma.PropertyCreateOrConnectWithoutLocationInput[]
-  createMany?: Prisma.PropertyCreateManyLocationInputEnvelope
-  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-}
-
-export type PropertyUncheckedCreateNestedManyWithoutLocationInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput> | Prisma.PropertyCreateWithoutLocationInput[] | Prisma.PropertyUncheckedCreateWithoutLocationInput[]
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutLocationInput | Prisma.PropertyCreateOrConnectWithoutLocationInput[]
-  createMany?: Prisma.PropertyCreateManyLocationInputEnvelope
-  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-}
-
-export type PropertyUpdateManyWithoutLocationNestedInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput> | Prisma.PropertyCreateWithoutLocationInput[] | Prisma.PropertyUncheckedCreateWithoutLocationInput[]
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutLocationInput | Prisma.PropertyCreateOrConnectWithoutLocationInput[]
-  upsert?: Prisma.PropertyUpsertWithWhereUniqueWithoutLocationInput | Prisma.PropertyUpsertWithWhereUniqueWithoutLocationInput[]
-  createMany?: Prisma.PropertyCreateManyLocationInputEnvelope
-  set?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  disconnect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  delete?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  update?: Prisma.PropertyUpdateWithWhereUniqueWithoutLocationInput | Prisma.PropertyUpdateWithWhereUniqueWithoutLocationInput[]
-  updateMany?: Prisma.PropertyUpdateManyWithWhereWithoutLocationInput | Prisma.PropertyUpdateManyWithWhereWithoutLocationInput[]
-  deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
-}
-
-export type PropertyUncheckedUpdateManyWithoutLocationNestedInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput> | Prisma.PropertyCreateWithoutLocationInput[] | Prisma.PropertyUncheckedCreateWithoutLocationInput[]
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutLocationInput | Prisma.PropertyCreateOrConnectWithoutLocationInput[]
-  upsert?: Prisma.PropertyUpsertWithWhereUniqueWithoutLocationInput | Prisma.PropertyUpsertWithWhereUniqueWithoutLocationInput[]
-  createMany?: Prisma.PropertyCreateManyLocationInputEnvelope
-  set?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  disconnect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  delete?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
-  update?: Prisma.PropertyUpdateWithWhereUniqueWithoutLocationInput | Prisma.PropertyUpdateWithWhereUniqueWithoutLocationInput[]
-  updateMany?: Prisma.PropertyUpdateManyWithWhereWithoutLocationInput | Prisma.PropertyUpdateManyWithWhereWithoutLocationInput[]
-  deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
-}
-
 export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -741,22 +712,6 @@ export type FloatFieldUpdateOperationsInput = {
 }
 
 export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
   decrement?: number
@@ -806,20 +761,6 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeNestedInput = {
   deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
 }
 
-export type PropertyCreateNestedOneWithoutPropertyViewsInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyViewsInput, Prisma.PropertyUncheckedCreateWithoutPropertyViewsInput>
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutPropertyViewsInput
-  connect?: Prisma.PropertyWhereUniqueInput
-}
-
-export type PropertyUpdateOneRequiredWithoutPropertyViewsNestedInput = {
-  create?: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyViewsInput, Prisma.PropertyUncheckedCreateWithoutPropertyViewsInput>
-  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutPropertyViewsInput
-  upsert?: Prisma.PropertyUpsertWithoutPropertyViewsInput
-  connect?: Prisma.PropertyWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutPropertyViewsInput, Prisma.PropertyUpdateWithoutPropertyViewsInput>, Prisma.PropertyUncheckedUpdateWithoutPropertyViewsInput>
-}
-
 export type PropertyCreateNestedOneWithoutImagesInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutImagesInput, Prisma.PropertyUncheckedCreateWithoutImagesInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutImagesInput
@@ -864,43 +805,43 @@ export type PropertyUpdateOneRequiredWithoutFavoritesNestedInput = {
 
 export type PropertyCreateWithoutUserInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
   images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutUserInput = {
   id?: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
 }
 
@@ -936,128 +877,61 @@ export type PropertyScalarWhereInput = {
   NOT?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
   id?: Prisma.StringFilter<"Property"> | string
   userId?: Prisma.StringFilter<"Property"> | string
-  locationId?: Prisma.IntFilter<"Property"> | number
+  location?: Prisma.StringFilter<"Property"> | string
+  location_url?: Prisma.StringNullableFilter<"Property"> | string | null
+  district_id?: Prisma.IntFilter<"Property"> | number
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
-  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
+  totalViews?: Prisma.IntNullableFilter<"Property"> | number | null
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
-  coverKey?: Prisma.StringNullableFilter<"Property"> | string | null
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
 }
 
-export type PropertyCreateWithoutLocationInput = {
-  id?: string
-  title: string
-  description?: string | null
-  price: number
-  deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
-  furnished?: boolean
-  coverKey?: string | null
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
-  images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
-  favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
-  propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
-}
-
-export type PropertyUncheckedCreateWithoutLocationInput = {
-  id?: string
-  userId: string
-  title: string
-  description?: string | null
-  price: number
-  deposit?: number | null
-  totalViews?: bigint | number
-  propertyTypeId: number
-  sizeSqm?: number | null
-  furnished?: boolean
-  coverKey?: string | null
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
-  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
-  propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
-}
-
-export type PropertyCreateOrConnectWithoutLocationInput = {
-  where: Prisma.PropertyWhereUniqueInput
-  create: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput>
-}
-
-export type PropertyCreateManyLocationInputEnvelope = {
-  data: Prisma.PropertyCreateManyLocationInput | Prisma.PropertyCreateManyLocationInput[]
-  skipDuplicates?: boolean
-}
-
-export type PropertyUpsertWithWhereUniqueWithoutLocationInput = {
-  where: Prisma.PropertyWhereUniqueInput
-  update: Prisma.XOR<Prisma.PropertyUpdateWithoutLocationInput, Prisma.PropertyUncheckedUpdateWithoutLocationInput>
-  create: Prisma.XOR<Prisma.PropertyCreateWithoutLocationInput, Prisma.PropertyUncheckedCreateWithoutLocationInput>
-}
-
-export type PropertyUpdateWithWhereUniqueWithoutLocationInput = {
-  where: Prisma.PropertyWhereUniqueInput
-  data: Prisma.XOR<Prisma.PropertyUpdateWithoutLocationInput, Prisma.PropertyUncheckedUpdateWithoutLocationInput>
-}
-
-export type PropertyUpdateManyWithWhereWithoutLocationInput = {
-  where: Prisma.PropertyScalarWhereInput
-  data: Prisma.XOR<Prisma.PropertyUpdateManyMutationInput, Prisma.PropertyUncheckedUpdateManyWithoutLocationInput>
-}
-
 export type PropertyCreateWithoutPropertyTypeInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
 }
 
@@ -1087,145 +961,45 @@ export type PropertyUpdateManyWithWhereWithoutPropertyTypeInput = {
   data: Prisma.XOR<Prisma.PropertyUpdateManyMutationInput, Prisma.PropertyUncheckedUpdateManyWithoutPropertyTypeInput>
 }
 
-export type PropertyCreateWithoutPropertyViewsInput = {
-  id?: string
-  title: string
-  description?: string | null
-  price: number
-  deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
-  furnished?: boolean
-  coverKey?: string | null
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
-  propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
-  images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
-  favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
-}
-
-export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
-  id?: string
-  userId: string
-  locationId: number
-  title: string
-  description?: string | null
-  price: number
-  deposit?: number | null
-  totalViews?: bigint | number
-  propertyTypeId: number
-  sizeSqm?: number | null
-  furnished?: boolean
-  coverKey?: string | null
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
-  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
-}
-
-export type PropertyCreateOrConnectWithoutPropertyViewsInput = {
-  where: Prisma.PropertyWhereUniqueInput
-  create: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyViewsInput, Prisma.PropertyUncheckedCreateWithoutPropertyViewsInput>
-}
-
-export type PropertyUpsertWithoutPropertyViewsInput = {
-  update: Prisma.XOR<Prisma.PropertyUpdateWithoutPropertyViewsInput, Prisma.PropertyUncheckedUpdateWithoutPropertyViewsInput>
-  create: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyViewsInput, Prisma.PropertyUncheckedCreateWithoutPropertyViewsInput>
-  where?: Prisma.PropertyWhereInput
-}
-
-export type PropertyUpdateToOneWithWhereWithoutPropertyViewsInput = {
-  where?: Prisma.PropertyWhereInput
-  data: Prisma.XOR<Prisma.PropertyUpdateWithoutPropertyViewsInput, Prisma.PropertyUncheckedUpdateWithoutPropertyViewsInput>
-}
-
-export type PropertyUpdateWithoutPropertyViewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
-  propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
-  images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
-  favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
-}
-
-export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
-  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
-}
-
 export type PropertyCreateWithoutImagesInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutImagesInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
 }
 
@@ -1247,86 +1021,86 @@ export type PropertyUpdateToOneWithWhereWithoutImagesInput = {
 
 export type PropertyUpdateWithoutImagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutImagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutPropertyAmenitiesInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
   images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutPropertyAmenitiesInput = {
@@ -1347,85 +1121,85 @@ export type PropertyUpdateToOneWithWhereWithoutPropertyAmenitiesInput = {
 
 export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
   images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutFavoritesInput = {
   id?: string
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
-  location: Prisma.LocationCreateNestedOneWithoutPropertiesInput
   propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
   images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutFavoritesInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
-  propertyViews?: Prisma.PropertyViewsUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
 }
 
@@ -1447,58 +1221,59 @@ export type PropertyUpdateToOneWithWhereWithoutFavoritesInput = {
 
 export type PropertyUpdateWithoutFavoritesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
   images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyUserInput = {
   id?: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
+  totalViews?: number | null
   propertyTypeId: number
-  sizeSqm?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1506,134 +1281,59 @@ export type PropertyCreateManyUserInput = {
 
 export type PropertyUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
   images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type PropertyCreateManyLocationInput = {
-  id?: string
-  userId: string
-  title: string
-  description?: string | null
-  price: number
-  deposit?: number | null
-  totalViews?: bigint | number
-  propertyTypeId: number
-  sizeSqm?: number | null
-  furnished?: boolean
-  coverKey?: string | null
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type PropertyUpdateWithoutLocationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
-  images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
-  favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
-  propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
-}
-
-export type PropertyUncheckedUpdateWithoutLocationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
-  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
-}
-
-export type PropertyUncheckedUpdateManyWithoutLocationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1642,15 +1342,16 @@ export type PropertyUncheckedUpdateManyWithoutLocationInput = {
 export type PropertyCreateManyPropertyTypeInput = {
   id?: string
   userId: string
-  locationId: number
+  location: string
+  location_url?: string | null
+  district_id?: number
   title: string
   description?: string | null
   price: number
   deposit?: number | null
-  totalViews?: bigint | number
-  sizeSqm?: number | null
+  totalViews?: number | null
+  sizeSqm: number
   furnished?: boolean
-  coverKey?: string | null
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1658,58 +1359,59 @@ export type PropertyCreateManyPropertyTypeInput = {
 
 export type PropertyUpdateWithoutPropertyTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
-  location?: Prisma.LocationUpdateOneRequiredWithoutPropertiesNestedInput
   images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
-  propertyViews?: Prisma.PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  locationId?: Prisma.IntFieldUpdateOperationsInput | number
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  location_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1723,14 +1425,12 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
 export type PropertyCountOutputType = {
   images: number
   favorites: number
-  propertyViews: number
   propertyAmenities: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   images?: boolean | PropertyCountOutputTypeCountImagesArgs
   favorites?: boolean | PropertyCountOutputTypeCountFavoritesArgs
-  propertyViews?: boolean | PropertyCountOutputTypeCountPropertyViewsArgs
   propertyAmenities?: boolean | PropertyCountOutputTypeCountPropertyAmenitiesArgs
 }
 
@@ -1761,13 +1461,6 @@ export type PropertyCountOutputTypeCountFavoritesArgs<ExtArgs extends runtime.Ty
 /**
  * PropertyCountOutputType without action
  */
-export type PropertyCountOutputTypeCountPropertyViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PropertyViewsWhereInput
-}
-
-/**
- * PropertyCountOutputType without action
- */
 export type PropertyCountOutputTypeCountPropertyAmenitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PropertyAmenityWhereInput
 }
@@ -1776,7 +1469,9 @@ export type PropertyCountOutputTypeCountPropertyAmenitiesArgs<ExtArgs extends ru
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  locationId?: boolean
+  location?: boolean
+  location_url?: boolean
+  district_id?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -1785,16 +1480,13 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
-  coverKey?: boolean
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
   images?: boolean | Prisma.Property$imagesArgs<ExtArgs>
   favorites?: boolean | Prisma.Property$favoritesArgs<ExtArgs>
-  propertyViews?: boolean | Prisma.Property$propertyViewsArgs<ExtArgs>
   propertyAmenities?: boolean | Prisma.Property$propertyAmenitiesArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
@@ -1802,7 +1494,9 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  locationId?: boolean
+  location?: boolean
+  location_url?: boolean
+  district_id?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -1811,19 +1505,19 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
-  coverKey?: boolean
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
 export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  locationId?: boolean
+  location?: boolean
+  location_url?: boolean
+  district_id?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -1832,19 +1526,19 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
-  coverKey?: boolean
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
 export type PropertySelectScalar = {
   id?: boolean
   userId?: boolean
-  locationId?: boolean
+  location?: boolean
+  location_url?: boolean
+  district_id?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -1853,31 +1547,26 @@ export type PropertySelectScalar = {
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
-  coverKey?: boolean
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "locationId" | "title" | "description" | "price" | "deposit" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "coverKey" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "location" | "location_url" | "district_id" | "title" | "description" | "price" | "deposit" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
   images?: boolean | Prisma.Property$imagesArgs<ExtArgs>
   favorites?: boolean | Prisma.Property$favoritesArgs<ExtArgs>
-  propertyViews?: boolean | Prisma.Property$propertyViewsArgs<ExtArgs>
   propertyAmenities?: boolean | Prisma.Property$propertyAmenitiesArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   propertyType?: boolean | Prisma.PropertyTypeDefaultArgs<ExtArgs>
 }
 
@@ -1885,26 +1574,25 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Property"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
-    location: Prisma.$LocationPayload<ExtArgs>
     propertyType: Prisma.$PropertyTypePayload<ExtArgs>
     images: Prisma.$PropertyImagePayload<ExtArgs>[]
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
-    propertyViews: Prisma.$PropertyViewsPayload<ExtArgs>[]
     propertyAmenities: Prisma.$PropertyAmenityPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    locationId: number
+    location: string
+    location_url: string | null
+    district_id: number
     title: string
     description: string | null
     price: number
     deposit: number | null
-    totalViews: bigint
+    totalViews: number | null
     propertyTypeId: number
-    sizeSqm: number | null
+    sizeSqm: number
     furnished: boolean
-    coverKey: string | null
     isPublished: boolean
     createdAt: Date
     updatedAt: Date
@@ -2303,11 +1991,9 @@ readonly fields: PropertyFieldRefs;
 export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  location<T extends Prisma.LocationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LocationDefaultArgs<ExtArgs>>): Prisma.Prisma__LocationClient<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   propertyType<T extends Prisma.PropertyTypeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTypeDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyTypeClient<runtime.Types.Result.GetResult<Prisma.$PropertyTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   images<T extends Prisma.Property$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorites<T extends Prisma.Property$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  propertyViews<T extends Prisma.Property$propertyViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyViewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   propertyAmenities<T extends Prisma.Property$propertyAmenitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyAmenitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyAmenityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2340,16 +2026,17 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
 export interface PropertyFieldRefs {
   readonly id: Prisma.FieldRef<"Property", 'String'>
   readonly userId: Prisma.FieldRef<"Property", 'String'>
-  readonly locationId: Prisma.FieldRef<"Property", 'Int'>
+  readonly location: Prisma.FieldRef<"Property", 'String'>
+  readonly location_url: Prisma.FieldRef<"Property", 'String'>
+  readonly district_id: Prisma.FieldRef<"Property", 'Int'>
   readonly title: Prisma.FieldRef<"Property", 'String'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly price: Prisma.FieldRef<"Property", 'Float'>
   readonly deposit: Prisma.FieldRef<"Property", 'Float'>
-  readonly totalViews: Prisma.FieldRef<"Property", 'BigInt'>
+  readonly totalViews: Prisma.FieldRef<"Property", 'Int'>
   readonly propertyTypeId: Prisma.FieldRef<"Property", 'Int'>
   readonly sizeSqm: Prisma.FieldRef<"Property", 'Int'>
   readonly furnished: Prisma.FieldRef<"Property", 'Boolean'>
-  readonly coverKey: Prisma.FieldRef<"Property", 'String'>
   readonly isPublished: Prisma.FieldRef<"Property", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Property", 'DateTime'>
@@ -2794,30 +2481,6 @@ export type Property$favoritesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.FavoriteScalarFieldEnum | Prisma.FavoriteScalarFieldEnum[]
-}
-
-/**
- * Property.propertyViews
- */
-export type Property$propertyViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PropertyViews
-   */
-  select?: Prisma.PropertyViewsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PropertyViews
-   */
-  omit?: Prisma.PropertyViewsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PropertyViewsInclude<ExtArgs> | null
-  where?: Prisma.PropertyViewsWhereInput
-  orderBy?: Prisma.PropertyViewsOrderByWithRelationInput | Prisma.PropertyViewsOrderByWithRelationInput[]
-  cursor?: Prisma.PropertyViewsWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PropertyViewsScalarFieldEnum | Prisma.PropertyViewsScalarFieldEnum[]
 }
 
 /**

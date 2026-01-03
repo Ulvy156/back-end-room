@@ -35,6 +35,7 @@ model User {
   img_url   String?
   isLocked  Boolean  @default(false)
   role      UserRole @default(USER)
+  district_id      Int @default(1211)
 
   properties  Property[]
   favorites Favorite[]
@@ -57,21 +58,42 @@ model Phone {
   updatedAt DateTime @updatedAt
 }
 
-model Location {
-  id        Int     @id @default(autoincrement())
-  city      String
-  district  String
-  map_url   String?
+model Province {
+  id        Int     @id
+  nameKh    String
+  nameEn    String
+  districts District[]
 
-  properties  Property[]
+  @@map("provinces")
+}
+model District {
+  id         Int      @id
+  provinceId Int
+  nameKh     String
+  nameEn     String
 
-  @@map("locations")
+  province   Province @relation(fields: [provinceId], references: [id])
+
+  @@index([provinceId])
+
+  @@map("districts")
+
+}
+
+model LocationView {
+  id          Int      @id @default(autoincrement())
+  provinceId  Int?
+  districtId  Int?
+  views       Int      @default(0)
+  updatedAt   DateTime @updatedAt
 }
 
 model Property {
   id           String        @id @default(uuid())
   userId       String        @map("user_id")
-  locationId   Int           @map("location_id")
+  location     String        
+  location_url     String?     
+  district_id      Int @default(1211)
 
   title        String
   description  String?
@@ -79,28 +101,25 @@ model Property {
   price        Float
   deposit      Float?
 
-  totalViews   BigInt    @default(0) @map("total_views")
+  totalViews   Int?    @default(0) @map("total_views")
 
   propertyTypeId Int   @map("property_type_id")
-  sizeSqm      Int?
+  sizeSqm      Int
   furnished    Boolean      @default(false)
 
-  coverKey     String?
   isPublished  Boolean      @default(true)
 
   user         User         @relation(fields: [userId], references: [id])
-  location     Location     @relation(fields: [locationId], references: [id])
   propertyType   PropertyType @relation(fields: [propertyTypeId], references: [id])
 
   images       PropertyImage[]
   favorites    Favorite[]
-  propertyViews    PropertyViews[]
   propertyAmenities    PropertyAmenity[]
 
   createdAt    DateTime     @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId, locationId, propertyTypeId])
+  @@index([userId, propertyTypeId])
 
   @@map("properties")
 
@@ -112,7 +131,7 @@ model PropertyType {
   nameEn    String   @unique
   nameKh    String   @unique
   slug      String   @unique    // URL-safe name used for SEO + clean routes.
-  isRemoved  Boolean  @default(true)
+  isRemoved  Boolean  @default(false)
 
   properties Property[]
 
@@ -122,27 +141,26 @@ model PropertyType {
 }
 
 
-model PropertyViews {
-  id          String    @id @default(uuid())
+// model PropertyViews {
+//   id          String    @id @default(uuid())
 
-  totalViews   BigInt    @default(0) @map("total_views")
+//   totalViews   BigInt    @default(0) @map("total_views")
 
-  property_id String    @map("property_id")
-  property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
+//   property_id String    @map("property_id")
+//   property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime @default(now())
+//   createdAt    DateTime @default(now())
 
-  @@index([property_id])
+//   @@index([property_id])
 
-  @@map("property_views")
+//   @@map("property_views")
 
-}
+// }
 
 model PropertyImage {
   id         String   @id @default(uuid())
   propertyId String   @map("property_id")
   imageKey   String   // image path in R2
-  isCover    Boolean  @default(false)
 
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 

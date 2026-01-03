@@ -28,7 +28,6 @@ export type PropertyImageMinAggregateOutputType = {
   id: string | null
   propertyId: string | null
   imageKey: string | null
-  isCover: boolean | null
   createdAt: Date | null
 }
 
@@ -36,7 +35,6 @@ export type PropertyImageMaxAggregateOutputType = {
   id: string | null
   propertyId: string | null
   imageKey: string | null
-  isCover: boolean | null
   createdAt: Date | null
 }
 
@@ -44,7 +42,6 @@ export type PropertyImageCountAggregateOutputType = {
   id: number
   propertyId: number
   imageKey: number
-  isCover: number
   createdAt: number
   _all: number
 }
@@ -54,7 +51,6 @@ export type PropertyImageMinAggregateInputType = {
   id?: true
   propertyId?: true
   imageKey?: true
-  isCover?: true
   createdAt?: true
 }
 
@@ -62,7 +58,6 @@ export type PropertyImageMaxAggregateInputType = {
   id?: true
   propertyId?: true
   imageKey?: true
-  isCover?: true
   createdAt?: true
 }
 
@@ -70,7 +65,6 @@ export type PropertyImageCountAggregateInputType = {
   id?: true
   propertyId?: true
   imageKey?: true
-  isCover?: true
   createdAt?: true
   _all?: true
 }
@@ -151,7 +145,6 @@ export type PropertyImageGroupByOutputType = {
   id: string
   propertyId: string
   imageKey: string
-  isCover: boolean
   createdAt: Date
   _count: PropertyImageCountAggregateOutputType | null
   _min: PropertyImageMinAggregateOutputType | null
@@ -180,7 +173,6 @@ export type PropertyImageWhereInput = {
   id?: Prisma.StringFilter<"PropertyImage"> | string
   propertyId?: Prisma.StringFilter<"PropertyImage"> | string
   imageKey?: Prisma.StringFilter<"PropertyImage"> | string
-  isCover?: Prisma.BoolFilter<"PropertyImage"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PropertyImage"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
 }
@@ -189,7 +181,6 @@ export type PropertyImageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
   imageKey?: Prisma.SortOrder
-  isCover?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
 }
@@ -201,7 +192,6 @@ export type PropertyImageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PropertyImageWhereInput | Prisma.PropertyImageWhereInput[]
   propertyId?: Prisma.StringFilter<"PropertyImage"> | string
   imageKey?: Prisma.StringFilter<"PropertyImage"> | string
-  isCover?: Prisma.BoolFilter<"PropertyImage"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PropertyImage"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
 }, "id">
@@ -210,7 +200,6 @@ export type PropertyImageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
   imageKey?: Prisma.SortOrder
-  isCover?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PropertyImageCountOrderByAggregateInput
   _max?: Prisma.PropertyImageMaxOrderByAggregateInput
@@ -224,14 +213,12 @@ export type PropertyImageScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PropertyImage"> | string
   propertyId?: Prisma.StringWithAggregatesFilter<"PropertyImage"> | string
   imageKey?: Prisma.StringWithAggregatesFilter<"PropertyImage"> | string
-  isCover?: Prisma.BoolWithAggregatesFilter<"PropertyImage"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PropertyImage"> | Date | string
 }
 
 export type PropertyImageCreateInput = {
   id?: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutImagesInput
 }
@@ -240,14 +227,12 @@ export type PropertyImageUncheckedCreateInput = {
   id?: string
   propertyId: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
 }
 
 export type PropertyImageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutImagesNestedInput
 }
@@ -256,7 +241,6 @@ export type PropertyImageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -264,14 +248,12 @@ export type PropertyImageCreateManyInput = {
   id?: string
   propertyId: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
 }
 
 export type PropertyImageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -279,7 +261,6 @@ export type PropertyImageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -297,7 +278,6 @@ export type PropertyImageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
   imageKey?: Prisma.SortOrder
-  isCover?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -305,7 +285,6 @@ export type PropertyImageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
   imageKey?: Prisma.SortOrder
-  isCover?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -313,7 +292,6 @@ export type PropertyImageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
   imageKey?: Prisma.SortOrder
-  isCover?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -362,14 +340,12 @@ export type PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput = {
 export type PropertyImageCreateWithoutPropertyInput = {
   id?: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
 }
 
 export type PropertyImageUncheckedCreateWithoutPropertyInput = {
   id?: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
 }
 
@@ -406,35 +382,30 @@ export type PropertyImageScalarWhereInput = {
   id?: Prisma.StringFilter<"PropertyImage"> | string
   propertyId?: Prisma.StringFilter<"PropertyImage"> | string
   imageKey?: Prisma.StringFilter<"PropertyImage"> | string
-  isCover?: Prisma.BoolFilter<"PropertyImage"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PropertyImage"> | Date | string
 }
 
 export type PropertyImageCreateManyPropertyInput = {
   id?: string
   imageKey: string
-  isCover?: boolean
   createdAt?: Date | string
 }
 
 export type PropertyImageUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyImageUncheckedUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyImageUncheckedUpdateManyWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageKey?: Prisma.StringFieldUpdateOperationsInput | string
-  isCover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -444,7 +415,6 @@ export type PropertyImageSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   propertyId?: boolean
   imageKey?: boolean
-  isCover?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyImage"]>
@@ -453,7 +423,6 @@ export type PropertyImageSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   propertyId?: boolean
   imageKey?: boolean
-  isCover?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyImage"]>
@@ -462,7 +431,6 @@ export type PropertyImageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   propertyId?: boolean
   imageKey?: boolean
-  isCover?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyImage"]>
@@ -471,11 +439,10 @@ export type PropertyImageSelectScalar = {
   id?: boolean
   propertyId?: boolean
   imageKey?: boolean
-  isCover?: boolean
   createdAt?: boolean
 }
 
-export type PropertyImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "imageKey" | "isCover" | "createdAt", ExtArgs["result"]["propertyImage"]>
+export type PropertyImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "imageKey" | "createdAt", ExtArgs["result"]["propertyImage"]>
 export type PropertyImageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }
@@ -495,7 +462,6 @@ export type $PropertyImagePayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     propertyId: string
     imageKey: string
-    isCover: boolean
     createdAt: Date
   }, ExtArgs["result"]["propertyImage"]>
   composites: {}
@@ -924,7 +890,6 @@ export interface PropertyImageFieldRefs {
   readonly id: Prisma.FieldRef<"PropertyImage", 'String'>
   readonly propertyId: Prisma.FieldRef<"PropertyImage", 'String'>
   readonly imageKey: Prisma.FieldRef<"PropertyImage", 'String'>
-  readonly isCover: Prisma.FieldRef<"PropertyImage", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PropertyImage", 'DateTime'>
 }
     

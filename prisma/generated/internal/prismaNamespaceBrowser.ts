@@ -53,10 +53,11 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Phone: 'Phone',
-  Location: 'Location',
+  Province: 'Province',
+  District: 'District',
+  LocationView: 'LocationView',
   Property: 'Property',
   PropertyType: 'PropertyType',
-  PropertyViews: 'PropertyViews',
   PropertyImage: 'PropertyImage',
   Amenity: 'Amenity',
   PropertyAmenity: 'PropertyAmenity',
@@ -87,6 +88,7 @@ export const UserScalarFieldEnum = {
   img_url: 'img_url',
   isLocked: 'isLocked',
   role: 'role',
+  district_id: 'district_id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -105,20 +107,42 @@ export const PhoneScalarFieldEnum = {
 export type PhoneScalarFieldEnum = (typeof PhoneScalarFieldEnum)[keyof typeof PhoneScalarFieldEnum]
 
 
-export const LocationScalarFieldEnum = {
+export const ProvinceScalarFieldEnum = {
   id: 'id',
-  city: 'city',
-  district: 'district',
-  map_url: 'map_url'
+  nameKh: 'nameKh',
+  nameEn: 'nameEn'
 } as const
 
-export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
+export type ProvinceScalarFieldEnum = (typeof ProvinceScalarFieldEnum)[keyof typeof ProvinceScalarFieldEnum]
+
+
+export const DistrictScalarFieldEnum = {
+  id: 'id',
+  provinceId: 'provinceId',
+  nameKh: 'nameKh',
+  nameEn: 'nameEn'
+} as const
+
+export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typeof DistrictScalarFieldEnum]
+
+
+export const LocationViewScalarFieldEnum = {
+  id: 'id',
+  provinceId: 'provinceId',
+  districtId: 'districtId',
+  views: 'views',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LocationViewScalarFieldEnum = (typeof LocationViewScalarFieldEnum)[keyof typeof LocationViewScalarFieldEnum]
 
 
 export const PropertyScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  locationId: 'locationId',
+  location: 'location',
+  location_url: 'location_url',
+  district_id: 'district_id',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -127,7 +151,6 @@ export const PropertyScalarFieldEnum = {
   propertyTypeId: 'propertyTypeId',
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
-  coverKey: 'coverKey',
   isPublished: 'isPublished',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -149,21 +172,10 @@ export const PropertyTypeScalarFieldEnum = {
 export type PropertyTypeScalarFieldEnum = (typeof PropertyTypeScalarFieldEnum)[keyof typeof PropertyTypeScalarFieldEnum]
 
 
-export const PropertyViewsScalarFieldEnum = {
-  id: 'id',
-  totalViews: 'totalViews',
-  property_id: 'property_id',
-  createdAt: 'createdAt'
-} as const
-
-export type PropertyViewsScalarFieldEnum = (typeof PropertyViewsScalarFieldEnum)[keyof typeof PropertyViewsScalarFieldEnum]
-
-
 export const PropertyImageScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
   imageKey: 'imageKey',
-  isCover: 'isCover',
   createdAt: 'createdAt'
 } as const
 

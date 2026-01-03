@@ -7,7 +7,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Client } from '@aws-sdk/client-s3';
 import { createR2Client } from './r2.client';
-import { ALLOWED_IMAGE_TYPES, foldersR2, MAX_IMAGE_SIZE } from './r2.interface';
+import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './r2.interface';
 import sharp from 'sharp';
 
 @Injectable()
@@ -25,8 +25,8 @@ export class R2Service {
   private async optimizeImage(buffer: Buffer) {
     return await sharp(buffer)
       .resize(1200, 800, {
-        fit: 'cover', // forces crop
-        position: 'center', // or 'top'
+        fit: 'inside',
+        withoutEnlargement: true,
       })
       .webp({ quality: 75 })
       .toBuffer();
@@ -42,7 +42,7 @@ export class R2Service {
     }
   }
 
-  private generateFileName(folder: foldersR2) {
+  private generateFileName(folder: string) {
     return `${folder}/${crypto.randomUUID()}.webp`;
   }
 
@@ -88,7 +88,7 @@ export class R2Service {
 
   async uploadMultipleFiles(
     files: Express.Multer.File[],
-    folder: foldersR2 = 'rooms',
+    folder: string = 'rooms',
   ) {
     // validate each files before upload
     files.forEach((file) => {
@@ -107,10 +107,7 @@ export class R2Service {
     return Promise.all(uploads);
   }
 
-  async uploadSingleFile(
-    file: Express.Multer.File,
-    folder: foldersR2 = 'rooms',
-  ) {
+  async uploadSingleFile(file: Express.Multer.File, folder: string = 'rooms') {
     this.validateFile(file);
     const key = this.generateFileName(folder);
     const optimizedBuffer = await this.optimizeImage(file.buffer);

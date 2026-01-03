@@ -28,10 +28,20 @@ export type User = Prisma.UserModel
  */
 export type Phone = Prisma.PhoneModel
 /**
- * Model Location
+ * Model Province
  * 
  */
-export type Location = Prisma.LocationModel
+export type Province = Prisma.ProvinceModel
+/**
+ * Model District
+ * 
+ */
+export type District = Prisma.DistrictModel
+/**
+ * Model LocationView
+ * 
+ */
+export type LocationView = Prisma.LocationViewModel
 /**
  * Model Property
  * 
@@ -42,11 +52,6 @@ export type Property = Prisma.PropertyModel
  * 
  */
 export type PropertyType = Prisma.PropertyTypeModel
-/**
- * Model PropertyViews
- * 
- */
-export type PropertyViews = Prisma.PropertyViewsModel
 /**
  * Model PropertyImage
  * 

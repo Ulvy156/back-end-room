@@ -10,10 +10,11 @@
  */
 export type * from './models/User'
 export type * from './models/Phone'
-export type * from './models/Location'
+export type * from './models/Province'
+export type * from './models/District'
+export type * from './models/LocationView'
 export type * from './models/Property'
 export type * from './models/PropertyType'
-export type * from './models/PropertyViews'
 export type * from './models/PropertyImage'
 export type * from './models/Amenity'
 export type * from './models/PropertyAmenity'
