@@ -39,6 +39,15 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @Patch('/upadate-profile/:id')
+  @UseInterceptors(FileInterceptor('profile'))
+  updateProfileByUserId(
+    @Param('id') id: string,
+    @UploadedFile() profile: Express.Multer.File,
+  ) {
+    return this.userService.updateProfileByUserId(id, profile);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

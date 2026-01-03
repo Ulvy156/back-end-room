@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { S3Client } from '@aws-sdk/client-s3';
 import { createR2Client } from './r2.client';
 import { ALLOWED_IMAGE_TYPES, foldersR2, MAX_IMAGE_SIZE } from './r2.interface';
-import { extname } from 'path';
+import sharp from 'sharp';
 
 @Injectable()
 export class R2Service {
@@ -22,6 +22,16 @@ export class R2Service {
     this.publicUrl = config.get<string>('R2_PUB_URL')!;
   }
 
+  private async optimizeImage(buffer: Buffer) {
+    return await sharp(buffer)
+      .resize(1200, 800, {
+        fit: 'cover', // forces crop
+        position: 'center', // or 'top'
+      })
+      .webp({ quality: 75 })
+      .toBuffer();
+  }
+
   private validateFile(file: Express.Multer.File) {
     if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype as any)) {
       throw new BadRequestException('Invalid image type');
@@ -32,56 +42,17 @@ export class R2Service {
     }
   }
 
-  private generateFileName(folder: foldersR2, file: Express.Multer.File) {
-    const ext = extname(file.originalname);
-    return `${folder}/${crypto.randomUUID()}${ext}`;
+  private generateFileName(folder: foldersR2) {
+    return `${folder}/${crypto.randomUUID()}.webp`;
   }
 
-  async uploadMultipleFiles(
-    files: Express.Multer.File[],
-    folder: foldersR2 = 'rooms',
-  ) {
-    // validate each files before upload
-    files.map((file) => {
-      // validate image
-      this.validateFile(file);
-    });
-    // upload file after validate
-    const uploads = files.map(async (file) => {
-      // generate file name
-      const key = this.generateFileName(folder, file);
-
-      return await this.client
-        .send(
-          new PutObjectCommand({
-            Bucket: this.bucket,
-            Key: key,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-          }),
-        )
-        .then(() => ({
-          key,
-          url: `${this.publicUrl}/${key}`,
-        }));
-    });
-
-    return Promise.all(uploads);
-  }
-
-  async uploadSingleFile(
-    file: Express.Multer.File,
-    folder: foldersR2 = 'rooms',
-  ) {
-    this.validateFile(file);
-    const key = this.generateFileName(folder, file);
-
+  private async putObjectCommand(key: string, buffer: Buffer) {
     await this.client.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: key,
-        Body: file.buffer,
-        ContentType: file.mimetype,
+        Body: buffer,
+        ContentType: 'image/webp',
       }),
     );
 
@@ -91,10 +62,17 @@ export class R2Service {
     };
   }
 
-  async deleteMultipleFiles(keys: string[]) {
-    if (!keys.length) return;
+  private async deleteSingleObjCommand(key: string) {
+    return await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      }),
+    );
+  }
 
-    await this.client.send(
+  private async deleteMultiplesObjCommand(keys: string[]) {
+    return await this.client.send(
       new DeleteObjectsCommand({
         Bucket: this.bucket,
         Delete: {
@@ -106,6 +84,44 @@ export class R2Service {
         },
       }),
     );
+  }
+
+  async uploadMultipleFiles(
+    files: Express.Multer.File[],
+    folder: foldersR2 = 'rooms',
+  ) {
+    // validate each files before upload
+    files.forEach((file) => {
+      // validate image
+      this.validateFile(file);
+    });
+    // upload file after validate
+    const uploads = files.map(async (file) => {
+      // generate file name
+      const key = this.generateFileName(folder);
+
+      const optimizedBuffer = await this.optimizeImage(file.buffer);
+      return await this.putObjectCommand(key, optimizedBuffer);
+    });
+
+    return Promise.all(uploads);
+  }
+
+  async uploadSingleFile(
+    file: Express.Multer.File,
+    folder: foldersR2 = 'rooms',
+  ) {
+    this.validateFile(file);
+    const key = this.generateFileName(folder);
+    const optimizedBuffer = await this.optimizeImage(file.buffer);
+
+    return await this.putObjectCommand(key, optimizedBuffer);
+  }
+
+  async deleteMultipleFiles(keys: string[]) {
+    if (!keys.length) return;
+
+    await this.deleteMultiplesObjCommand(keys);
 
     return { deleted: keys.length };
   }
@@ -114,12 +130,7 @@ export class R2Service {
     // Safety guard
     if (!key) return;
 
-    await this.client.send(
-      new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-      }),
-    );
+    await this.deleteSingleObjCommand(key);
 
     return { deleted: true };
   }

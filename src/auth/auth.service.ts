@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -38,7 +42,13 @@ export class AuthService {
       where: { email },
     });
 
-    if (!user) return null;
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.isLocked) {
+      throw new UnauthorizedException(
+        'User has been locked, please contact to admin',
+      );
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return null;

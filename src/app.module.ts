@@ -8,9 +8,18 @@ import { AppConfigModule } from './config/config.module';
 import { UserModule } from './user/user.module';
 import { AmenityModule } from './amenity/amenity.module';
 import { PropertyTypeModule } from './property-type/property-type.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 30,
+        },
+      ],
+    }),
     AppConfigModule,
     PrismaModule,
     PropertyImageModule,

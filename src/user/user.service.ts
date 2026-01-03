@@ -60,6 +60,43 @@ export class UserService {
     }
   }
 
+  async updateProfileByUserId(userId: string, profile: Express.Multer.File) {
+    let newImageKey: string | null = null;
+    try {
+      // Fetch user
+      const user = await this.findOne(userId);
+
+      if (profile) {
+        const { key } = await this.r2Service.uploadSingleFile(
+          profile,
+          'profile',
+        );
+        newImageKey = key;
+      }
+
+      // Update DB
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          img_url: newImageKey,
+        },
+      });
+
+      // Delete file first (if exists)
+      if (user.img_url) {
+        await this.r2Service.deleteSingleFile(user.img_url);
+      }
+      return updatedUser;
+    } catch (error) {
+      console.log(error);
+      // roll back
+      if (newImageKey) {
+        await this.r2Service.deleteSingleFile(newImageKey);
+      }
+      prismaError(error);
+    }
+  }
+
   async findAll() {
     return await this.prisma.user.findMany();
   }
