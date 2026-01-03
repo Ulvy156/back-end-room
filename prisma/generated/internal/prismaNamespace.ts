@@ -388,6 +388,7 @@ export const ModelName = {
   Phone: 'Phone',
   Location: 'Location',
   Property: 'Property',
+  PropertyType: 'PropertyType',
   PropertyViews: 'PropertyViews',
   PropertyImage: 'PropertyImage',
   Amenity: 'Amenity',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "phone" | "location" | "property" | "propertyViews" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
+    modelProps: "user" | "phone" | "location" | "property" | "propertyType" | "propertyViews" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -705,6 +706,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PropertyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PropertyCountAggregateOutputType> | number
+        }
+      }
+    }
+    PropertyType: {
+      payload: Prisma.$PropertyTypePayload<ExtArgs>
+      fields: Prisma.PropertyTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PropertyTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PropertyTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        findFirst: {
+          args: Prisma.PropertyTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PropertyTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        findMany: {
+          args: Prisma.PropertyTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>[]
+        }
+        create: {
+          args: Prisma.PropertyTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        createMany: {
+          args: Prisma.PropertyTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PropertyTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>[]
+        }
+        delete: {
+          args: Prisma.PropertyTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        update: {
+          args: Prisma.PropertyTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.PropertyTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PropertyTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PropertyTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.PropertyTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyTypePayload>
+        }
+        aggregate: {
+          args: Prisma.PropertyTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePropertyType>
+        }
+        groupBy: {
+          args: Prisma.PropertyTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PropertyTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyTypeCountAggregateOutputType> | number
         }
       }
     }
@@ -1123,6 +1198,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   img_url: 'img_url',
+  isLocked: 'isLocked',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1160,7 +1236,7 @@ export const PropertyScalarFieldEnum = {
   description: 'description',
   price: 'price',
   deposit: 'deposit',
-  propertyType: 'propertyType',
+  propertyTypeId: 'propertyTypeId',
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
   coverKey: 'coverKey',
@@ -1170,6 +1246,19 @@ export const PropertyScalarFieldEnum = {
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const PropertyTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nameEn: 'nameEn',
+  nameKh: 'nameKh',
+  slug: 'slug',
+  isRemoved: 'isRemoved',
+  createdAt: 'createdAt'
+} as const
+
+export type PropertyTypeScalarFieldEnum = (typeof PropertyTypeScalarFieldEnum)[keyof typeof PropertyTypeScalarFieldEnum]
 
 
 export const PropertyViewsScalarFieldEnum = {
@@ -1194,9 +1283,11 @@ export type PropertyImageScalarFieldEnum = (typeof PropertyImageScalarFieldEnum)
 
 export const AmenityScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  code: 'code',
+  nameEn: 'nameEn',
+  nameKh: 'nameKh',
   icon: 'icon',
-  category: 'category'
+  createdAt: 'createdAt'
 } as const
 
 export type AmenityScalarFieldEnum = (typeof AmenityScalarFieldEnum)[keyof typeof AmenityScalarFieldEnum]
@@ -1265,6 +1356,13 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'UserRole'
  */
 export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
@@ -1317,27 +1415,6 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
- * Reference to a field of type 'PropertyType'
- */
-export type EnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType'>
-    
-
-
-/**
- * Reference to a field of type 'PropertyType[]'
- */
-export type ListEnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 /**
@@ -1439,6 +1516,7 @@ export type GlobalOmitConfig = {
   phone?: Prisma.PhoneOmit
   location?: Prisma.LocationOmit
   property?: Prisma.PropertyOmit
+  propertyType?: Prisma.PropertyTypeOmit
   propertyViews?: Prisma.PropertyViewsOmit
   propertyImage?: Prisma.PropertyImageOmit
   amenity?: Prisma.AmenityOmit

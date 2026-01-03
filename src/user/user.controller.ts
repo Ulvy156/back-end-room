@@ -41,7 +41,17 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @Patch('/lock-user/:id')
+  lockUser(@Param('id') id: string) {
+    return this.userService.lockUser(id);
+  }
+
+  @Patch('/unlock-user/:id')
+  unlockUser(@Param('id') id: string) {
+    return this.userService.unlockUser(id);
   }
 
   @Delete(':id')

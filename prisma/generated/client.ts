@@ -58,6 +58,11 @@ export type Location = Prisma.LocationModel
  */
 export type Property = Prisma.PropertyModel
 /**
+ * Model PropertyType
+ * 
+ */
+export type PropertyType = Prisma.PropertyTypeModel
+/**
  * Model PropertyViews
  * 
  */

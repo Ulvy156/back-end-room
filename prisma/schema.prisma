@@ -20,12 +20,12 @@ enum UserRole {
   ADMIN
 }
 
-enum PropertyType {
-  ROOM
-  APARTMENT
-  HOUSE
-  CONDO
-}
+// enum PropertyType {
+//   ROOM
+//   APARTMENT
+//   HOUSE
+//   CONDO
+// }
 
 model User {
   id        String   @id @default(uuid())
@@ -33,6 +33,7 @@ model User {
   email     String   @unique
   password  String
   img_url   String?
+  isLocked  Boolean  @default(false)
   role      UserRole @default(USER)
 
   properties  Property[]
@@ -78,7 +79,7 @@ model Property {
   price        Float
   deposit      Float?
 
-  propertyType PropertyType @default(ROOM)
+  propertyTypeId Int   @map("property_type_id")
   sizeSqm      Int?
   furnished    Boolean      @default(false)
 
@@ -87,6 +88,7 @@ model Property {
 
   user         User         @relation(fields: [userId], references: [id])
   location     Location     @relation(fields: [locationId], references: [id])
+  propertyType   PropertyType @relation(fields: [propertyTypeId], references: [id])
 
   images       PropertyImage[]
   favorites    Favorite[]
@@ -96,11 +98,27 @@ model Property {
   createdAt    DateTime     @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId, locationId, propertyType])
+  @@index([userId, locationId, propertyTypeId])
 
   @@map("properties")
 
 }
+
+model PropertyType {
+  id        Int      @id     @default(autoincrement())
+  code      String   @unique
+  nameEn    String   @unique
+  nameKh    String   @unique
+  slug      String   @unique    // URL-safe name used for SEO + clean routes.
+  isRemoved  Boolean  @default(true)
+
+  properties Property[]
+
+  createdAt DateTime @default(now())
+
+  @@map("property_types")
+}
+
 
 model PropertyViews {
   id          String    @id @default(uuid())
@@ -134,11 +152,14 @@ model PropertyImage {
 
 model Amenity {
   id        Int     @id @default(autoincrement())
-  name      String  @unique   // Wifi, Parking, Aircon
-  icon      String?           // icon name (lucide, etc.)
-  category  String?           // BASIC, SECURITY, COMFORT
+  code      String   @unique
+  nameEn    String   @unique
+  nameKh    String   @unique
+  icon      String           // icon name (lucide, etc.)
 
   properties PropertyAmenity[]
+
+  createdAt  DateTime @default(now())
 
   @@map("amenities")
 }

@@ -70,8 +70,44 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.prisma.user.update({
+        data: updateUserDto,
+        where: { id },
+      });
+      return user;
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async lockUser(id: string) {
+    try {
+      const user = await this.prisma.user.update({
+        data: {
+          isLocked: true,
+        },
+        where: { id },
+      });
+      return user;
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async unlockUser(id: string) {
+    try {
+      const user = await this.prisma.user.update({
+        data: {
+          isLocked: false,
+        },
+        where: { id },
+      });
+      return user;
+    } catch (error) {
+      prismaError(error);
+    }
   }
 
   remove(id: number) {

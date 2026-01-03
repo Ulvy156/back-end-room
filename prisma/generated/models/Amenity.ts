@@ -36,23 +36,29 @@ export type AmenitySumAggregateOutputType = {
 
 export type AmenityMinAggregateOutputType = {
   id: number | null
-  name: string | null
+  code: string | null
+  nameEn: string | null
+  nameKh: string | null
   icon: string | null
-  category: string | null
+  createdAt: Date | null
 }
 
 export type AmenityMaxAggregateOutputType = {
   id: number | null
-  name: string | null
+  code: string | null
+  nameEn: string | null
+  nameKh: string | null
   icon: string | null
-  category: string | null
+  createdAt: Date | null
 }
 
 export type AmenityCountAggregateOutputType = {
   id: number
-  name: number
+  code: number
+  nameEn: number
+  nameKh: number
   icon: number
-  category: number
+  createdAt: number
   _all: number
 }
 
@@ -67,23 +73,29 @@ export type AmenitySumAggregateInputType = {
 
 export type AmenityMinAggregateInputType = {
   id?: true
-  name?: true
+  code?: true
+  nameEn?: true
+  nameKh?: true
   icon?: true
-  category?: true
+  createdAt?: true
 }
 
 export type AmenityMaxAggregateInputType = {
   id?: true
-  name?: true
+  code?: true
+  nameEn?: true
+  nameKh?: true
   icon?: true
-  category?: true
+  createdAt?: true
 }
 
 export type AmenityCountAggregateInputType = {
   id?: true
-  name?: true
+  code?: true
+  nameEn?: true
+  nameKh?: true
   icon?: true
-  category?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -175,9 +187,11 @@ export type AmenityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type AmenityGroupByOutputType = {
   id: number
-  name: string
-  icon: string | null
-  category: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt: Date
   _count: AmenityCountAggregateOutputType | null
   _avg: AmenityAvgAggregateOutputType | null
   _sum: AmenitySumAggregateOutputType | null
@@ -205,36 +219,44 @@ export type AmenityWhereInput = {
   OR?: Prisma.AmenityWhereInput[]
   NOT?: Prisma.AmenityWhereInput | Prisma.AmenityWhereInput[]
   id?: Prisma.IntFilter<"Amenity"> | number
-  name?: Prisma.StringFilter<"Amenity"> | string
-  icon?: Prisma.StringNullableFilter<"Amenity"> | string | null
-  category?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  code?: Prisma.StringFilter<"Amenity"> | string
+  nameEn?: Prisma.StringFilter<"Amenity"> | string
+  nameKh?: Prisma.StringFilter<"Amenity"> | string
+  icon?: Prisma.StringFilter<"Amenity"> | string
+  createdAt?: Prisma.DateTimeFilter<"Amenity"> | Date | string
   properties?: Prisma.PropertyAmenityListRelationFilter
 }
 
 export type AmenityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  icon?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   properties?: Prisma.PropertyAmenityOrderByRelationAggregateInput
 }
 
 export type AmenityWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  name?: string
+  code?: string
+  nameEn?: string
+  nameKh?: string
   AND?: Prisma.AmenityWhereInput | Prisma.AmenityWhereInput[]
   OR?: Prisma.AmenityWhereInput[]
   NOT?: Prisma.AmenityWhereInput | Prisma.AmenityWhereInput[]
-  icon?: Prisma.StringNullableFilter<"Amenity"> | string | null
-  category?: Prisma.StringNullableFilter<"Amenity"> | string | null
+  icon?: Prisma.StringFilter<"Amenity"> | string
+  createdAt?: Prisma.DateTimeFilter<"Amenity"> | Date | string
   properties?: Prisma.PropertyAmenityListRelationFilter
-}, "id" | "name">
+}, "id" | "code" | "nameEn" | "nameKh">
 
 export type AmenityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  icon?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  code?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.AmenityCountOrderByAggregateInput
   _avg?: Prisma.AmenityAvgOrderByAggregateInput
   _max?: Prisma.AmenityMaxOrderByAggregateInput
@@ -247,66 +269,84 @@ export type AmenityScalarWhereWithAggregatesInput = {
   OR?: Prisma.AmenityScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AmenityScalarWhereWithAggregatesInput | Prisma.AmenityScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Amenity"> | number
-  name?: Prisma.StringWithAggregatesFilter<"Amenity"> | string
-  icon?: Prisma.StringNullableWithAggregatesFilter<"Amenity"> | string | null
-  category?: Prisma.StringNullableWithAggregatesFilter<"Amenity"> | string | null
+  code?: Prisma.StringWithAggregatesFilter<"Amenity"> | string
+  nameEn?: Prisma.StringWithAggregatesFilter<"Amenity"> | string
+  nameKh?: Prisma.StringWithAggregatesFilter<"Amenity"> | string
+  icon?: Prisma.StringWithAggregatesFilter<"Amenity"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Amenity"> | Date | string
 }
 
 export type AmenityCreateInput = {
-  name: string
-  icon?: string | null
-  category?: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt?: Date | string
   properties?: Prisma.PropertyAmenityCreateNestedManyWithoutAmenityInput
 }
 
 export type AmenityUncheckedCreateInput = {
   id?: number
-  name: string
-  icon?: string | null
-  category?: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt?: Date | string
   properties?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutAmenityInput
 }
 
 export type AmenityUpdateInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyAmenityUpdateManyWithoutAmenityNestedInput
 }
 
 export type AmenityUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutAmenityNestedInput
 }
 
 export type AmenityCreateManyInput = {
   id?: number
-  name: string
-  icon?: string | null
-  category?: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt?: Date | string
 }
 
 export type AmenityUpdateManyMutationInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AmenityUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AmenityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameKh?: Prisma.SortOrder
   icon?: Prisma.SortOrder
-  category?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type AmenityAvgOrderByAggregateInput = {
@@ -315,16 +355,20 @@ export type AmenityAvgOrderByAggregateInput = {
 
 export type AmenityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameKh?: Prisma.SortOrder
   icon?: Prisma.SortOrder
-  category?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type AmenityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameKh?: Prisma.SortOrder
   icon?: Prisma.SortOrder
-  category?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type AmenitySumOrderByAggregateInput = {
@@ -351,16 +395,20 @@ export type AmenityUpdateOneRequiredWithoutPropertiesNestedInput = {
 }
 
 export type AmenityCreateWithoutPropertiesInput = {
-  name: string
-  icon?: string | null
-  category?: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt?: Date | string
 }
 
 export type AmenityUncheckedCreateWithoutPropertiesInput = {
   id?: number
-  name: string
-  icon?: string | null
-  category?: string | null
+  code: string
+  nameEn: string
+  nameKh: string
+  icon: string
+  createdAt?: Date | string
 }
 
 export type AmenityCreateOrConnectWithoutPropertiesInput = {
@@ -380,16 +428,20 @@ export type AmenityUpdateToOneWithWhereWithoutPropertiesInput = {
 }
 
 export type AmenityUpdateWithoutPropertiesInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AmenityUncheckedUpdateWithoutPropertiesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -425,35 +477,43 @@ export type AmenityCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Ty
 
 export type AmenitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  code?: boolean
+  nameEn?: boolean
+  nameKh?: boolean
   icon?: boolean
-  category?: boolean
+  createdAt?: boolean
   properties?: boolean | Prisma.Amenity$propertiesArgs<ExtArgs>
   _count?: boolean | Prisma.AmenityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["amenity"]>
 
 export type AmenitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  code?: boolean
+  nameEn?: boolean
+  nameKh?: boolean
   icon?: boolean
-  category?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["amenity"]>
 
 export type AmenitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  code?: boolean
+  nameEn?: boolean
+  nameKh?: boolean
   icon?: boolean
-  category?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["amenity"]>
 
 export type AmenitySelectScalar = {
   id?: boolean
-  name?: boolean
+  code?: boolean
+  nameEn?: boolean
+  nameKh?: boolean
   icon?: boolean
-  category?: boolean
+  createdAt?: boolean
 }
 
-export type AmenityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "icon" | "category", ExtArgs["result"]["amenity"]>
+export type AmenityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "nameEn" | "nameKh" | "icon" | "createdAt", ExtArgs["result"]["amenity"]>
 export type AmenityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   properties?: boolean | Prisma.Amenity$propertiesArgs<ExtArgs>
   _count?: boolean | Prisma.AmenityCountOutputTypeDefaultArgs<ExtArgs>
@@ -468,9 +528,11 @@ export type $AmenityPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    name: string
-    icon: string | null
-    category: string | null
+    code: string
+    nameEn: string
+    nameKh: string
+    icon: string
+    createdAt: Date
   }, ExtArgs["result"]["amenity"]>
   composites: {}
 }
@@ -896,9 +958,11 @@ export interface Prisma__AmenityClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface AmenityFieldRefs {
   readonly id: Prisma.FieldRef<"Amenity", 'Int'>
-  readonly name: Prisma.FieldRef<"Amenity", 'String'>
+  readonly code: Prisma.FieldRef<"Amenity", 'String'>
+  readonly nameEn: Prisma.FieldRef<"Amenity", 'String'>
+  readonly nameKh: Prisma.FieldRef<"Amenity", 'String'>
   readonly icon: Prisma.FieldRef<"Amenity", 'String'>
-  readonly category: Prisma.FieldRef<"Amenity", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Amenity", 'DateTime'>
 }
     
 

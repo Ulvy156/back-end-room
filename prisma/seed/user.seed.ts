@@ -1,9 +1,8 @@
-import 'dotenv/config';
 import bcrypt from 'bcrypt';
-import { prisma } from 'src/prisma/prisma.client';
-import { UserRole } from './generated/enums';
+import { UserRole } from '../generated/enums';
+import { PrismaClient } from 'prisma/generated/client';
 
-async function main() {
+export async function seedUser(prisma: PrismaClient) {
   const password = await bcrypt.hash('Admin@156', 10);
 
   await prisma.user.upsert({
@@ -19,12 +18,3 @@ async function main() {
 
   console.log('✅ Admin user seeded');
 }
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });

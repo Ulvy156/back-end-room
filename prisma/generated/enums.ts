@@ -16,13 +16,3 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
-export const PropertyType = {
-  ROOM: 'ROOM',
-  APARTMENT: 'APARTMENT',
-  HOUSE: 'HOUSE',
-  CONDO: 'CONDO'
-} as const
-
-export type PropertyType = (typeof PropertyType)[keyof typeof PropertyType]

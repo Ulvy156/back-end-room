@@ -55,6 +55,7 @@ export const ModelName = {
   Phone: 'Phone',
   Location: 'Location',
   Property: 'Property',
+  PropertyType: 'PropertyType',
   PropertyViews: 'PropertyViews',
   PropertyImage: 'PropertyImage',
   Amenity: 'Amenity',
@@ -84,6 +85,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   img_url: 'img_url',
+  isLocked: 'isLocked',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -121,7 +123,7 @@ export const PropertyScalarFieldEnum = {
   description: 'description',
   price: 'price',
   deposit: 'deposit',
-  propertyType: 'propertyType',
+  propertyTypeId: 'propertyTypeId',
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
   coverKey: 'coverKey',
@@ -131,6 +133,19 @@ export const PropertyScalarFieldEnum = {
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const PropertyTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nameEn: 'nameEn',
+  nameKh: 'nameKh',
+  slug: 'slug',
+  isRemoved: 'isRemoved',
+  createdAt: 'createdAt'
+} as const
+
+export type PropertyTypeScalarFieldEnum = (typeof PropertyTypeScalarFieldEnum)[keyof typeof PropertyTypeScalarFieldEnum]
 
 
 export const PropertyViewsScalarFieldEnum = {
@@ -155,9 +170,11 @@ export type PropertyImageScalarFieldEnum = (typeof PropertyImageScalarFieldEnum)
 
 export const AmenityScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  code: 'code',
+  nameEn: 'nameEn',
+  nameKh: 'nameKh',
   icon: 'icon',
-  category: 'category'
+  createdAt: 'createdAt'
 } as const
 
 export type AmenityScalarFieldEnum = (typeof AmenityScalarFieldEnum)[keyof typeof AmenityScalarFieldEnum]

@@ -1,9 +1,6 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('USER', 'LANDLORD', 'ADMIN');
 
--- CreateEnum
-CREATE TYPE "PropertyType" AS ENUM ('ROOM', 'APARTMENT', 'HOUSE', 'CONDO');
-
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -11,6 +8,7 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "img_url" TEXT,
+    "isLocked" BOOLEAN NOT NULL DEFAULT false,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -48,7 +46,7 @@ CREATE TABLE "properties" (
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "deposit" DOUBLE PRECISION,
-    "propertyType" "PropertyType" NOT NULL DEFAULT 'ROOM',
+    "property_type_id" INTEGER NOT NULL,
     "sizeSqm" INTEGER,
     "furnished" BOOLEAN NOT NULL DEFAULT false,
     "coverKey" TEXT,
@@ -57,6 +55,19 @@ CREATE TABLE "properties" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "properties_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "property_types" (
+    "id" SERIAL NOT NULL,
+    "code" TEXT NOT NULL,
+    "nameEn" TEXT NOT NULL,
+    "nameKh" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "isRemoved" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "property_types_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -82,9 +93,11 @@ CREATE TABLE "property_images" (
 -- CreateTable
 CREATE TABLE "amenities" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "icon" TEXT,
-    "category" TEXT,
+    "code" TEXT NOT NULL,
+    "nameEn" TEXT NOT NULL,
+    "nameKh" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "amenities_pkey" PRIMARY KEY ("id")
 );
@@ -111,7 +124,19 @@ CREATE TABLE "favourites" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE INDEX "properties_user_id_location_id_propertyType_idx" ON "properties"("user_id", "location_id", "propertyType");
+CREATE INDEX "properties_user_id_location_id_property_type_id_idx" ON "properties"("user_id", "location_id", "property_type_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "property_types_code_key" ON "property_types"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "property_types_nameEn_key" ON "property_types"("nameEn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "property_types_nameKh_key" ON "property_types"("nameKh");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "property_types_slug_key" ON "property_types"("slug");
 
 -- CreateIndex
 CREATE INDEX "property_views_property_id_idx" ON "property_views"("property_id");
@@ -120,7 +145,13 @@ CREATE INDEX "property_views_property_id_idx" ON "property_views"("property_id")
 CREATE INDEX "property_images_property_id_idx" ON "property_images"("property_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "amenities_name_key" ON "amenities"("name");
+CREATE UNIQUE INDEX "amenities_code_key" ON "amenities"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "amenities_nameEn_key" ON "amenities"("nameEn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "amenities_nameKh_key" ON "amenities"("nameKh");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "favourites_userId_property_id_key" ON "favourites"("userId", "property_id");
@@ -133,6 +164,9 @@ ALTER TABLE "properties" ADD CONSTRAINT "properties_user_id_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "properties" ADD CONSTRAINT "properties_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "locations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "properties" ADD CONSTRAINT "properties_property_type_id_fkey" FOREIGN KEY ("property_type_id") REFERENCES "property_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "property_views" ADD CONSTRAINT "property_views_property_id_fkey" FOREIGN KEY ("property_id") REFERENCES "properties"("id") ON DELETE CASCADE ON UPDATE CASCADE;
