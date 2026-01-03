@@ -1236,6 +1236,7 @@ export const PropertyScalarFieldEnum = {
   description: 'description',
   price: 'price',
   deposit: 'deposit',
+  totalViews: 'totalViews',
   propertyTypeId: 'propertyTypeId',
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
@@ -1263,6 +1264,7 @@ export type PropertyTypeScalarFieldEnum = (typeof PropertyTypeScalarFieldEnum)[k
 
 export const PropertyViewsScalarFieldEnum = {
   id: 'id',
+  totalViews: 'totalViews',
   property_id: 'property_id',
   createdAt: 'createdAt'
 } as const
@@ -1415,6 +1417,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 /**

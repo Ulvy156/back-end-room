@@ -79,6 +79,8 @@ model Property {
   price        Float
   deposit      Float?
 
+  totalViews   BigInt    @default(0) @map("total_views")
+
   propertyTypeId Int   @map("property_type_id")
   sizeSqm      Int?
   furnished    Boolean      @default(false)
@@ -122,6 +124,8 @@ model PropertyType {
 
 model PropertyViews {
   id          String    @id @default(uuid())
+
+  totalViews   BigInt    @default(0) @map("total_views")
 
   property_id String    @map("property_id")
   property    Property  @relation(fields: [property_id], references: [id], onDelete: Cascade)

@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { AmenityModule } from './amenity/amenity.module';
 import { PropertyTypeModule } from './property-type/property-type.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { PropertyModule } from './property/property.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UserModule,
     AmenityModule,
     PropertyTypeModule,
+    PropertyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,44 +20,68 @@ export type PropertyViewsModel = runtime.Types.Result.DefaultSelection<Prisma.$P
 
 export type AggregatePropertyViews = {
   _count: PropertyViewsCountAggregateOutputType | null
+  _avg: PropertyViewsAvgAggregateOutputType | null
+  _sum: PropertyViewsSumAggregateOutputType | null
   _min: PropertyViewsMinAggregateOutputType | null
   _max: PropertyViewsMaxAggregateOutputType | null
 }
 
+export type PropertyViewsAvgAggregateOutputType = {
+  totalViews: number | null
+}
+
+export type PropertyViewsSumAggregateOutputType = {
+  totalViews: bigint | null
+}
+
 export type PropertyViewsMinAggregateOutputType = {
   id: string | null
+  totalViews: bigint | null
   property_id: string | null
   createdAt: Date | null
 }
 
 export type PropertyViewsMaxAggregateOutputType = {
   id: string | null
+  totalViews: bigint | null
   property_id: string | null
   createdAt: Date | null
 }
 
 export type PropertyViewsCountAggregateOutputType = {
   id: number
+  totalViews: number
   property_id: number
   createdAt: number
   _all: number
 }
 
 
+export type PropertyViewsAvgAggregateInputType = {
+  totalViews?: true
+}
+
+export type PropertyViewsSumAggregateInputType = {
+  totalViews?: true
+}
+
 export type PropertyViewsMinAggregateInputType = {
   id?: true
+  totalViews?: true
   property_id?: true
   createdAt?: true
 }
 
 export type PropertyViewsMaxAggregateInputType = {
   id?: true
+  totalViews?: true
   property_id?: true
   createdAt?: true
 }
 
 export type PropertyViewsCountAggregateInputType = {
   id?: true
+  totalViews?: true
   property_id?: true
   createdAt?: true
   _all?: true
@@ -101,6 +125,18 @@ export type PropertyViewsAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: PropertyViewsAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: PropertyViewsSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: PropertyViewsMinAggregateInputType
@@ -131,15 +167,20 @@ export type PropertyViewsGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: PropertyViewsCountAggregateInputType | true
+  _avg?: PropertyViewsAvgAggregateInputType
+  _sum?: PropertyViewsSumAggregateInputType
   _min?: PropertyViewsMinAggregateInputType
   _max?: PropertyViewsMaxAggregateInputType
 }
 
 export type PropertyViewsGroupByOutputType = {
   id: string
+  totalViews: bigint
   property_id: string
   createdAt: Date
   _count: PropertyViewsCountAggregateOutputType | null
+  _avg: PropertyViewsAvgAggregateOutputType | null
+  _sum: PropertyViewsSumAggregateOutputType | null
   _min: PropertyViewsMinAggregateOutputType | null
   _max: PropertyViewsMaxAggregateOutputType | null
 }
@@ -164,6 +205,7 @@ export type PropertyViewsWhereInput = {
   OR?: Prisma.PropertyViewsWhereInput[]
   NOT?: Prisma.PropertyViewsWhereInput | Prisma.PropertyViewsWhereInput[]
   id?: Prisma.StringFilter<"PropertyViews"> | string
+  totalViews?: Prisma.BigIntFilter<"PropertyViews"> | bigint | number
   property_id?: Prisma.StringFilter<"PropertyViews"> | string
   createdAt?: Prisma.DateTimeFilter<"PropertyViews"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
@@ -171,6 +213,7 @@ export type PropertyViewsWhereInput = {
 
 export type PropertyViewsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   property_id?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
@@ -181,6 +224,7 @@ export type PropertyViewsWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PropertyViewsWhereInput | Prisma.PropertyViewsWhereInput[]
   OR?: Prisma.PropertyViewsWhereInput[]
   NOT?: Prisma.PropertyViewsWhereInput | Prisma.PropertyViewsWhereInput[]
+  totalViews?: Prisma.BigIntFilter<"PropertyViews"> | bigint | number
   property_id?: Prisma.StringFilter<"PropertyViews"> | string
   createdAt?: Prisma.DateTimeFilter<"PropertyViews"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
@@ -188,11 +232,14 @@ export type PropertyViewsWhereUniqueInput = Prisma.AtLeast<{
 
 export type PropertyViewsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   property_id?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PropertyViewsCountOrderByAggregateInput
+  _avg?: Prisma.PropertyViewsAvgOrderByAggregateInput
   _max?: Prisma.PropertyViewsMaxOrderByAggregateInput
   _min?: Prisma.PropertyViewsMinOrderByAggregateInput
+  _sum?: Prisma.PropertyViewsSumOrderByAggregateInput
 }
 
 export type PropertyViewsScalarWhereWithAggregatesInput = {
@@ -200,47 +247,55 @@ export type PropertyViewsScalarWhereWithAggregatesInput = {
   OR?: Prisma.PropertyViewsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PropertyViewsScalarWhereWithAggregatesInput | Prisma.PropertyViewsScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PropertyViews"> | string
+  totalViews?: Prisma.BigIntWithAggregatesFilter<"PropertyViews"> | bigint | number
   property_id?: Prisma.StringWithAggregatesFilter<"PropertyViews"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PropertyViews"> | Date | string
 }
 
 export type PropertyViewsCreateInput = {
   id?: string
+  totalViews?: bigint | number
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutPropertyViewsInput
 }
 
 export type PropertyViewsUncheckedCreateInput = {
   id?: string
+  totalViews?: bigint | number
   property_id: string
   createdAt?: Date | string
 }
 
 export type PropertyViewsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutPropertyViewsNestedInput
 }
 
 export type PropertyViewsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   property_id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyViewsCreateManyInput = {
   id?: string
+  totalViews?: bigint | number
   property_id: string
   createdAt?: Date | string
 }
 
 export type PropertyViewsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyViewsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   property_id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -257,20 +312,31 @@ export type PropertyViewsOrderByRelationAggregateInput = {
 
 export type PropertyViewsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   property_id?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
+export type PropertyViewsAvgOrderByAggregateInput = {
+  totalViews?: Prisma.SortOrder
+}
+
 export type PropertyViewsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   property_id?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type PropertyViewsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   property_id?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type PropertyViewsSumOrderByAggregateInput = {
+  totalViews?: Prisma.SortOrder
 }
 
 export type PropertyViewsCreateNestedManyWithoutPropertyInput = {
@@ -317,11 +383,13 @@ export type PropertyViewsUncheckedUpdateManyWithoutPropertyNestedInput = {
 
 export type PropertyViewsCreateWithoutPropertyInput = {
   id?: string
+  totalViews?: bigint | number
   createdAt?: Date | string
 }
 
 export type PropertyViewsUncheckedCreateWithoutPropertyInput = {
   id?: string
+  totalViews?: bigint | number
   createdAt?: Date | string
 }
 
@@ -356,27 +424,32 @@ export type PropertyViewsScalarWhereInput = {
   OR?: Prisma.PropertyViewsScalarWhereInput[]
   NOT?: Prisma.PropertyViewsScalarWhereInput | Prisma.PropertyViewsScalarWhereInput[]
   id?: Prisma.StringFilter<"PropertyViews"> | string
+  totalViews?: Prisma.BigIntFilter<"PropertyViews"> | bigint | number
   property_id?: Prisma.StringFilter<"PropertyViews"> | string
   createdAt?: Prisma.DateTimeFilter<"PropertyViews"> | Date | string
 }
 
 export type PropertyViewsCreateManyPropertyInput = {
   id?: string
+  totalViews?: bigint | number
   createdAt?: Date | string
 }
 
 export type PropertyViewsUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyViewsUncheckedUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyViewsUncheckedUpdateManyWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -384,6 +457,7 @@ export type PropertyViewsUncheckedUpdateManyWithoutPropertyInput = {
 
 export type PropertyViewsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  totalViews?: boolean
   property_id?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -391,6 +465,7 @@ export type PropertyViewsSelect<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type PropertyViewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  totalViews?: boolean
   property_id?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -398,6 +473,7 @@ export type PropertyViewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 
 export type PropertyViewsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  totalViews?: boolean
   property_id?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -405,11 +481,12 @@ export type PropertyViewsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 
 export type PropertyViewsSelectScalar = {
   id?: boolean
+  totalViews?: boolean
   property_id?: boolean
   createdAt?: boolean
 }
 
-export type PropertyViewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "property_id" | "createdAt", ExtArgs["result"]["propertyViews"]>
+export type PropertyViewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "totalViews" | "property_id" | "createdAt", ExtArgs["result"]["propertyViews"]>
 export type PropertyViewsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }
@@ -427,6 +504,7 @@ export type $PropertyViewsPayload<ExtArgs extends runtime.Types.Extensions.Inter
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    totalViews: bigint
     property_id: string
     createdAt: Date
   }, ExtArgs["result"]["propertyViews"]>
@@ -854,6 +932,7 @@ export interface Prisma__PropertyViewsClient<T, Null = never, ExtArgs extends ru
  */
 export interface PropertyViewsFieldRefs {
   readonly id: Prisma.FieldRef<"PropertyViews", 'String'>
+  readonly totalViews: Prisma.FieldRef<"PropertyViews", 'BigInt'>
   readonly property_id: Prisma.FieldRef<"PropertyViews", 'String'>
   readonly createdAt: Prisma.FieldRef<"PropertyViews", 'DateTime'>
 }

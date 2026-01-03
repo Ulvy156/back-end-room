@@ -30,6 +30,7 @@ export type PropertyAvgAggregateOutputType = {
   locationId: number | null
   price: number | null
   deposit: number | null
+  totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
 }
@@ -38,6 +39,7 @@ export type PropertySumAggregateOutputType = {
   locationId: number | null
   price: number | null
   deposit: number | null
+  totalViews: bigint | null
   propertyTypeId: number | null
   sizeSqm: number | null
 }
@@ -50,6 +52,7 @@ export type PropertyMinAggregateOutputType = {
   description: string | null
   price: number | null
   deposit: number | null
+  totalViews: bigint | null
   propertyTypeId: number | null
   sizeSqm: number | null
   furnished: boolean | null
@@ -67,6 +70,7 @@ export type PropertyMaxAggregateOutputType = {
   description: string | null
   price: number | null
   deposit: number | null
+  totalViews: bigint | null
   propertyTypeId: number | null
   sizeSqm: number | null
   furnished: boolean | null
@@ -84,6 +88,7 @@ export type PropertyCountAggregateOutputType = {
   description: number
   price: number
   deposit: number
+  totalViews: number
   propertyTypeId: number
   sizeSqm: number
   furnished: number
@@ -99,6 +104,7 @@ export type PropertyAvgAggregateInputType = {
   locationId?: true
   price?: true
   deposit?: true
+  totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
 }
@@ -107,6 +113,7 @@ export type PropertySumAggregateInputType = {
   locationId?: true
   price?: true
   deposit?: true
+  totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
 }
@@ -119,6 +126,7 @@ export type PropertyMinAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
@@ -136,6 +144,7 @@ export type PropertyMaxAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
@@ -153,6 +162,7 @@ export type PropertyCountAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
   furnished?: true
@@ -257,6 +267,7 @@ export type PropertyGroupByOutputType = {
   description: string | null
   price: number
   deposit: number | null
+  totalViews: bigint
   propertyTypeId: number
   sizeSqm: number | null
   furnished: boolean
@@ -297,6 +308,7 @@ export type PropertyWhereInput = {
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
   sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
   furnished?: Prisma.BoolFilter<"Property"> | boolean
@@ -321,6 +333,7 @@ export type PropertyOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   furnished?: Prisma.SortOrder
@@ -348,6 +361,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
   sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
   furnished?: Prisma.BoolFilter<"Property"> | boolean
@@ -372,6 +386,7 @@ export type PropertyOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   furnished?: Prisma.SortOrder
@@ -397,6 +412,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Property"> | number
   deposit?: Prisma.FloatNullableWithAggregatesFilter<"Property"> | number | null
+  totalViews?: Prisma.BigIntWithAggregatesFilter<"Property"> | bigint | number
   propertyTypeId?: Prisma.IntWithAggregatesFilter<"Property"> | number
   sizeSqm?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   furnished?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
@@ -412,6 +428,7 @@ export type PropertyCreateInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -435,6 +452,7 @@ export type PropertyUncheckedCreateInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -454,6 +472,7 @@ export type PropertyUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -477,6 +496,7 @@ export type PropertyUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -498,6 +518,7 @@ export type PropertyCreateManyInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -513,6 +534,7 @@ export type PropertyUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -529,6 +551,7 @@ export type PropertyUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -556,6 +579,7 @@ export type PropertyCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
@@ -569,6 +593,7 @@ export type PropertyAvgOrderByAggregateInput = {
   locationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
 }
@@ -581,6 +606,7 @@ export type PropertyMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
@@ -598,6 +624,7 @@ export type PropertyMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
@@ -611,6 +638,7 @@ export type PropertySumOrderByAggregateInput = {
   locationId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
 }
@@ -718,6 +746,14 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type BigIntFieldUpdateOperationsInput = {
+  set?: bigint | number
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -832,6 +868,7 @@ export type PropertyCreateWithoutUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -853,6 +890,7 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -903,6 +941,7 @@ export type PropertyScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  totalViews?: Prisma.BigIntFilter<"Property"> | bigint | number
   propertyTypeId?: Prisma.IntFilter<"Property"> | number
   sizeSqm?: Prisma.IntNullableFilter<"Property"> | number | null
   furnished?: Prisma.BoolFilter<"Property"> | boolean
@@ -918,6 +957,7 @@ export type PropertyCreateWithoutLocationInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -939,6 +979,7 @@ export type PropertyUncheckedCreateWithoutLocationInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -984,6 +1025,7 @@ export type PropertyCreateWithoutPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1006,6 +1048,7 @@ export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1050,6 +1093,7 @@ export type PropertyCreateWithoutPropertyViewsInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1072,6 +1116,7 @@ export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1106,6 +1151,7 @@ export type PropertyUpdateWithoutPropertyViewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1128,6 +1174,7 @@ export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1146,6 +1193,7 @@ export type PropertyCreateWithoutImagesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1168,6 +1216,7 @@ export type PropertyUncheckedCreateWithoutImagesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1202,6 +1251,7 @@ export type PropertyUpdateWithoutImagesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1224,6 +1274,7 @@ export type PropertyUncheckedUpdateWithoutImagesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1242,6 +1293,7 @@ export type PropertyCreateWithoutPropertyAmenitiesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1264,6 +1316,7 @@ export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1298,6 +1351,7 @@ export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1320,6 +1374,7 @@ export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1338,6 +1393,7 @@ export type PropertyCreateWithoutFavoritesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1360,6 +1416,7 @@ export type PropertyUncheckedCreateWithoutFavoritesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1394,6 +1451,7 @@ export type PropertyUpdateWithoutFavoritesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1416,6 +1474,7 @@ export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1435,6 +1494,7 @@ export type PropertyCreateManyUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1450,6 +1510,7 @@ export type PropertyUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1471,6 +1532,7 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1491,6 +1553,7 @@ export type PropertyUncheckedUpdateManyWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1507,6 +1570,7 @@ export type PropertyCreateManyLocationInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   propertyTypeId: number
   sizeSqm?: number | null
   furnished?: boolean
@@ -1522,6 +1586,7 @@ export type PropertyUpdateWithoutLocationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1543,6 +1608,7 @@ export type PropertyUncheckedUpdateWithoutLocationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1563,6 +1629,7 @@ export type PropertyUncheckedUpdateManyWithoutLocationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1580,6 +1647,7 @@ export type PropertyCreateManyPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  totalViews?: bigint | number
   sizeSqm?: number | null
   furnished?: boolean
   coverKey?: string | null
@@ -1594,6 +1662,7 @@ export type PropertyUpdateWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1616,6 +1685,7 @@ export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1636,6 +1706,7 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  totalViews?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   sizeSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   coverKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1710,6 +1781,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   description?: boolean
   price?: boolean
   deposit?: boolean
+  totalViews?: boolean
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
@@ -1735,6 +1807,7 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   price?: boolean
   deposit?: boolean
+  totalViews?: boolean
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
@@ -1755,6 +1828,7 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   price?: boolean
   deposit?: boolean
+  totalViews?: boolean
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
@@ -1775,6 +1849,7 @@ export type PropertySelectScalar = {
   description?: boolean
   price?: boolean
   deposit?: boolean
+  totalViews?: boolean
   propertyTypeId?: boolean
   sizeSqm?: boolean
   furnished?: boolean
@@ -1784,7 +1859,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "locationId" | "title" | "description" | "price" | "deposit" | "propertyTypeId" | "sizeSqm" | "furnished" | "coverKey" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "locationId" | "title" | "description" | "price" | "deposit" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "coverKey" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
@@ -1825,6 +1900,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     description: string | null
     price: number
     deposit: number | null
+    totalViews: bigint
     propertyTypeId: number
     sizeSqm: number | null
     furnished: boolean
@@ -2269,6 +2345,7 @@ export interface PropertyFieldRefs {
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly price: Prisma.FieldRef<"Property", 'Float'>
   readonly deposit: Prisma.FieldRef<"Property", 'Float'>
+  readonly totalViews: Prisma.FieldRef<"Property", 'BigInt'>
   readonly propertyTypeId: Prisma.FieldRef<"Property", 'Int'>
   readonly sizeSqm: Prisma.FieldRef<"Property", 'Int'>
   readonly furnished: Prisma.FieldRef<"Property", 'Boolean'>
