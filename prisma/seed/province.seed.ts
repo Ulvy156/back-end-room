@@ -34,5 +34,5 @@ export async function seedProvinces(prisma: PrismaClient) {
     skipDuplicates: true,
   });
 
-  console.log('✅ Provinces seeded');
+  console.log('✅ Provinces seeded: ', provinces.length);
 }

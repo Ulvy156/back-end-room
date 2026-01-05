@@ -54,5 +54,5 @@ export async function seedAmenities(prisma: PrismaClient) {
     });
   }
 
-  console.log('✅ Amenities seeded');
+  console.log('✅ Amenities seeded: ', amenities.length);
 }
