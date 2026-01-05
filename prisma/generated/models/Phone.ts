@@ -230,15 +230,15 @@ export type PhoneOrderByWithRelationInput = {
 
 export type PhoneWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  phoneNumber?: string
   AND?: Prisma.PhoneWhereInput | Prisma.PhoneWhereInput[]
   OR?: Prisma.PhoneWhereInput[]
   NOT?: Prisma.PhoneWhereInput | Prisma.PhoneWhereInput[]
-  phoneNumber?: Prisma.StringFilter<"Phone"> | string
   userId?: Prisma.StringFilter<"Phone"> | string
   createdAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "phoneNumber">
 
 export type PhoneOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -268,7 +268,7 @@ export type PhoneCreateInput = {
   phoneNumber: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutPhoneInput
+  user: Prisma.UserCreateNestedOneWithoutPhonesInput
 }
 
 export type PhoneUncheckedCreateInput = {
@@ -283,7 +283,7 @@ export type PhoneUpdateInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutPhoneNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutPhonesNestedInput
 }
 
 export type PhoneUncheckedUpdateInput = {
@@ -398,6 +398,14 @@ export type PhoneUncheckedUpdateManyWithoutUserNestedInput = {
   update?: Prisma.PhoneUpdateWithWhereUniqueWithoutUserInput | Prisma.PhoneUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.PhoneUpdateManyWithWhereWithoutUserInput | Prisma.PhoneUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.PhoneScalarWhereInput | Prisma.PhoneScalarWhereInput[]
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type PhoneCreateWithoutUserInput = {

@@ -50,8 +50,6 @@ export class PropertyService {
           uploadedImgKeys.map((img) => img.key),
         );
       }
-      console.log(error);
-      
       prismaError(error);
     }
   }

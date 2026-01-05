@@ -28,21 +28,18 @@ export type AggregateLocationView = {
 
 export type LocationViewAvgAggregateOutputType = {
   id: number | null
-  provinceId: number | null
   districtId: number | null
   views: number | null
 }
 
 export type LocationViewSumAggregateOutputType = {
   id: number | null
-  provinceId: number | null
   districtId: number | null
   views: number | null
 }
 
 export type LocationViewMinAggregateOutputType = {
   id: number | null
-  provinceId: number | null
   districtId: number | null
   views: number | null
   updatedAt: Date | null
@@ -50,7 +47,6 @@ export type LocationViewMinAggregateOutputType = {
 
 export type LocationViewMaxAggregateOutputType = {
   id: number | null
-  provinceId: number | null
   districtId: number | null
   views: number | null
   updatedAt: Date | null
@@ -58,7 +54,6 @@ export type LocationViewMaxAggregateOutputType = {
 
 export type LocationViewCountAggregateOutputType = {
   id: number
-  provinceId: number
   districtId: number
   views: number
   updatedAt: number
@@ -68,21 +63,18 @@ export type LocationViewCountAggregateOutputType = {
 
 export type LocationViewAvgAggregateInputType = {
   id?: true
-  provinceId?: true
   districtId?: true
   views?: true
 }
 
 export type LocationViewSumAggregateInputType = {
   id?: true
-  provinceId?: true
   districtId?: true
   views?: true
 }
 
 export type LocationViewMinAggregateInputType = {
   id?: true
-  provinceId?: true
   districtId?: true
   views?: true
   updatedAt?: true
@@ -90,7 +82,6 @@ export type LocationViewMinAggregateInputType = {
 
 export type LocationViewMaxAggregateInputType = {
   id?: true
-  provinceId?: true
   districtId?: true
   views?: true
   updatedAt?: true
@@ -98,7 +89,6 @@ export type LocationViewMaxAggregateInputType = {
 
 export type LocationViewCountAggregateInputType = {
   id?: true
-  provinceId?: true
   districtId?: true
   views?: true
   updatedAt?: true
@@ -193,8 +183,7 @@ export type LocationViewGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type LocationViewGroupByOutputType = {
   id: number
-  provinceId: number | null
-  districtId: number | null
+  districtId: number
   views: number
   updatedAt: Date
   _count: LocationViewCountAggregateOutputType | null
@@ -224,35 +213,34 @@ export type LocationViewWhereInput = {
   OR?: Prisma.LocationViewWhereInput[]
   NOT?: Prisma.LocationViewWhereInput | Prisma.LocationViewWhereInput[]
   id?: Prisma.IntFilter<"LocationView"> | number
-  provinceId?: Prisma.IntNullableFilter<"LocationView"> | number | null
-  districtId?: Prisma.IntNullableFilter<"LocationView"> | number | null
+  districtId?: Prisma.IntFilter<"LocationView"> | number
   views?: Prisma.IntFilter<"LocationView"> | number
   updatedAt?: Prisma.DateTimeFilter<"LocationView"> | Date | string
+  district?: Prisma.XOR<Prisma.DistrictScalarRelationFilter, Prisma.DistrictWhereInput>
 }
 
 export type LocationViewOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrderInput | Prisma.SortOrder
-  districtId?: Prisma.SortOrderInput | Prisma.SortOrder
+  districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  district?: Prisma.DistrictOrderByWithRelationInput
 }
 
 export type LocationViewWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  districtId?: number
   AND?: Prisma.LocationViewWhereInput | Prisma.LocationViewWhereInput[]
   OR?: Prisma.LocationViewWhereInput[]
   NOT?: Prisma.LocationViewWhereInput | Prisma.LocationViewWhereInput[]
-  provinceId?: Prisma.IntNullableFilter<"LocationView"> | number | null
-  districtId?: Prisma.IntNullableFilter<"LocationView"> | number | null
   views?: Prisma.IntFilter<"LocationView"> | number
   updatedAt?: Prisma.DateTimeFilter<"LocationView"> | Date | string
-}, "id">
+  district?: Prisma.XOR<Prisma.DistrictScalarRelationFilter, Prisma.DistrictWhereInput>
+}, "id" | "districtId">
 
 export type LocationViewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrderInput | Prisma.SortOrder
-  districtId?: Prisma.SortOrderInput | Prisma.SortOrder
+  districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LocationViewCountOrderByAggregateInput
@@ -267,68 +255,68 @@ export type LocationViewScalarWhereWithAggregatesInput = {
   OR?: Prisma.LocationViewScalarWhereWithAggregatesInput[]
   NOT?: Prisma.LocationViewScalarWhereWithAggregatesInput | Prisma.LocationViewScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"LocationView"> | number
-  provinceId?: Prisma.IntNullableWithAggregatesFilter<"LocationView"> | number | null
-  districtId?: Prisma.IntNullableWithAggregatesFilter<"LocationView"> | number | null
+  districtId?: Prisma.IntWithAggregatesFilter<"LocationView"> | number
   views?: Prisma.IntWithAggregatesFilter<"LocationView"> | number
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LocationView"> | Date | string
 }
 
 export type LocationViewCreateInput = {
-  provinceId?: number | null
-  districtId?: number | null
   views?: number
   updatedAt?: Date | string
+  district: Prisma.DistrictCreateNestedOneWithoutLocationViewsInput
 }
 
 export type LocationViewUncheckedCreateInput = {
   id?: number
-  provinceId?: number | null
-  districtId?: number | null
+  districtId: number
   views?: number
   updatedAt?: Date | string
 }
 
 export type LocationViewUpdateInput = {
-  provinceId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  districtId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   views?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  district?: Prisma.DistrictUpdateOneRequiredWithoutLocationViewsNestedInput
 }
 
 export type LocationViewUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  provinceId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  districtId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  districtId?: Prisma.IntFieldUpdateOperationsInput | number
   views?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LocationViewCreateManyInput = {
   id?: number
-  provinceId?: number | null
-  districtId?: number | null
+  districtId: number
   views?: number
   updatedAt?: Date | string
 }
 
 export type LocationViewUpdateManyMutationInput = {
-  provinceId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  districtId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   views?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LocationViewUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  provinceId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  districtId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  districtId?: Prisma.IntFieldUpdateOperationsInput | number
   views?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type LocationViewListRelationFilter = {
+  every?: Prisma.LocationViewWhereInput
+  some?: Prisma.LocationViewWhereInput
+  none?: Prisma.LocationViewWhereInput
+}
+
+export type LocationViewOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type LocationViewCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -336,14 +324,12 @@ export type LocationViewCountOrderByAggregateInput = {
 
 export type LocationViewAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
 export type LocationViewMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -351,7 +337,6 @@ export type LocationViewMaxOrderByAggregateInput = {
 
 export type LocationViewMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -359,62 +344,174 @@ export type LocationViewMinOrderByAggregateInput = {
 
 export type LocationViewSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  provinceId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type LocationViewCreateNestedManyWithoutDistrictInput = {
+  create?: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput> | Prisma.LocationViewCreateWithoutDistrictInput[] | Prisma.LocationViewUncheckedCreateWithoutDistrictInput[]
+  connectOrCreate?: Prisma.LocationViewCreateOrConnectWithoutDistrictInput | Prisma.LocationViewCreateOrConnectWithoutDistrictInput[]
+  createMany?: Prisma.LocationViewCreateManyDistrictInputEnvelope
+  connect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+}
+
+export type LocationViewUncheckedCreateNestedManyWithoutDistrictInput = {
+  create?: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput> | Prisma.LocationViewCreateWithoutDistrictInput[] | Prisma.LocationViewUncheckedCreateWithoutDistrictInput[]
+  connectOrCreate?: Prisma.LocationViewCreateOrConnectWithoutDistrictInput | Prisma.LocationViewCreateOrConnectWithoutDistrictInput[]
+  createMany?: Prisma.LocationViewCreateManyDistrictInputEnvelope
+  connect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+}
+
+export type LocationViewUpdateManyWithoutDistrictNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput> | Prisma.LocationViewCreateWithoutDistrictInput[] | Prisma.LocationViewUncheckedCreateWithoutDistrictInput[]
+  connectOrCreate?: Prisma.LocationViewCreateOrConnectWithoutDistrictInput | Prisma.LocationViewCreateOrConnectWithoutDistrictInput[]
+  upsert?: Prisma.LocationViewUpsertWithWhereUniqueWithoutDistrictInput | Prisma.LocationViewUpsertWithWhereUniqueWithoutDistrictInput[]
+  createMany?: Prisma.LocationViewCreateManyDistrictInputEnvelope
+  set?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  disconnect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  delete?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  connect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  update?: Prisma.LocationViewUpdateWithWhereUniqueWithoutDistrictInput | Prisma.LocationViewUpdateWithWhereUniqueWithoutDistrictInput[]
+  updateMany?: Prisma.LocationViewUpdateManyWithWhereWithoutDistrictInput | Prisma.LocationViewUpdateManyWithWhereWithoutDistrictInput[]
+  deleteMany?: Prisma.LocationViewScalarWhereInput | Prisma.LocationViewScalarWhereInput[]
+}
+
+export type LocationViewUncheckedUpdateManyWithoutDistrictNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput> | Prisma.LocationViewCreateWithoutDistrictInput[] | Prisma.LocationViewUncheckedCreateWithoutDistrictInput[]
+  connectOrCreate?: Prisma.LocationViewCreateOrConnectWithoutDistrictInput | Prisma.LocationViewCreateOrConnectWithoutDistrictInput[]
+  upsert?: Prisma.LocationViewUpsertWithWhereUniqueWithoutDistrictInput | Prisma.LocationViewUpsertWithWhereUniqueWithoutDistrictInput[]
+  createMany?: Prisma.LocationViewCreateManyDistrictInputEnvelope
+  set?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  disconnect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  delete?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  connect?: Prisma.LocationViewWhereUniqueInput | Prisma.LocationViewWhereUniqueInput[]
+  update?: Prisma.LocationViewUpdateWithWhereUniqueWithoutDistrictInput | Prisma.LocationViewUpdateWithWhereUniqueWithoutDistrictInput[]
+  updateMany?: Prisma.LocationViewUpdateManyWithWhereWithoutDistrictInput | Prisma.LocationViewUpdateManyWithWhereWithoutDistrictInput[]
+  deleteMany?: Prisma.LocationViewScalarWhereInput | Prisma.LocationViewScalarWhereInput[]
+}
+
+export type LocationViewCreateWithoutDistrictInput = {
+  views?: number
+  updatedAt?: Date | string
+}
+
+export type LocationViewUncheckedCreateWithoutDistrictInput = {
+  id?: number
+  views?: number
+  updatedAt?: Date | string
+}
+
+export type LocationViewCreateOrConnectWithoutDistrictInput = {
+  where: Prisma.LocationViewWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput>
+}
+
+export type LocationViewCreateManyDistrictInputEnvelope = {
+  data: Prisma.LocationViewCreateManyDistrictInput | Prisma.LocationViewCreateManyDistrictInput[]
+  skipDuplicates?: boolean
+}
+
+export type LocationViewUpsertWithWhereUniqueWithoutDistrictInput = {
+  where: Prisma.LocationViewWhereUniqueInput
+  update: Prisma.XOR<Prisma.LocationViewUpdateWithoutDistrictInput, Prisma.LocationViewUncheckedUpdateWithoutDistrictInput>
+  create: Prisma.XOR<Prisma.LocationViewCreateWithoutDistrictInput, Prisma.LocationViewUncheckedCreateWithoutDistrictInput>
+}
+
+export type LocationViewUpdateWithWhereUniqueWithoutDistrictInput = {
+  where: Prisma.LocationViewWhereUniqueInput
+  data: Prisma.XOR<Prisma.LocationViewUpdateWithoutDistrictInput, Prisma.LocationViewUncheckedUpdateWithoutDistrictInput>
+}
+
+export type LocationViewUpdateManyWithWhereWithoutDistrictInput = {
+  where: Prisma.LocationViewScalarWhereInput
+  data: Prisma.XOR<Prisma.LocationViewUpdateManyMutationInput, Prisma.LocationViewUncheckedUpdateManyWithoutDistrictInput>
+}
+
+export type LocationViewScalarWhereInput = {
+  AND?: Prisma.LocationViewScalarWhereInput | Prisma.LocationViewScalarWhereInput[]
+  OR?: Prisma.LocationViewScalarWhereInput[]
+  NOT?: Prisma.LocationViewScalarWhereInput | Prisma.LocationViewScalarWhereInput[]
+  id?: Prisma.IntFilter<"LocationView"> | number
+  districtId?: Prisma.IntFilter<"LocationView"> | number
+  views?: Prisma.IntFilter<"LocationView"> | number
+  updatedAt?: Prisma.DateTimeFilter<"LocationView"> | Date | string
+}
+
+export type LocationViewCreateManyDistrictInput = {
+  id?: number
+  views?: number
+  updatedAt?: Date | string
+}
+
+export type LocationViewUpdateWithoutDistrictInput = {
+  views?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LocationViewUncheckedUpdateWithoutDistrictInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  views?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LocationViewUncheckedUpdateManyWithoutDistrictInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  views?: Prisma.IntFieldUpdateOperationsInput | number
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type LocationViewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  provinceId?: boolean
   districtId?: boolean
   views?: boolean
   updatedAt?: boolean
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["locationView"]>
 
 export type LocationViewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  provinceId?: boolean
   districtId?: boolean
   views?: boolean
   updatedAt?: boolean
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["locationView"]>
 
 export type LocationViewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  provinceId?: boolean
   districtId?: boolean
   views?: boolean
   updatedAt?: boolean
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["locationView"]>
 
 export type LocationViewSelectScalar = {
   id?: boolean
-  provinceId?: boolean
   districtId?: boolean
   views?: boolean
   updatedAt?: boolean
 }
 
-export type LocationViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provinceId" | "districtId" | "views" | "updatedAt", ExtArgs["result"]["locationView"]>
+export type LocationViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "districtId" | "views" | "updatedAt", ExtArgs["result"]["locationView"]>
+export type LocationViewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
+}
+export type LocationViewIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
+}
+export type LocationViewIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
+}
 
 export type $LocationViewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LocationView"
-  objects: {}
+  objects: {
+    district: Prisma.$DistrictPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    provinceId: number | null
-    districtId: number | null
+    districtId: number
     views: number
     updatedAt: Date
   }, ExtArgs["result"]["locationView"]>
@@ -811,6 +908,7 @@ readonly fields: LocationViewFieldRefs;
  */
 export interface Prisma__LocationViewClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  district<T extends Prisma.DistrictDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DistrictDefaultArgs<ExtArgs>>): Prisma.Prisma__DistrictClient<runtime.Types.Result.GetResult<Prisma.$DistrictPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -841,7 +939,6 @@ export interface Prisma__LocationViewClient<T, Null = never, ExtArgs extends run
  */
 export interface LocationViewFieldRefs {
   readonly id: Prisma.FieldRef<"LocationView", 'Int'>
-  readonly provinceId: Prisma.FieldRef<"LocationView", 'Int'>
   readonly districtId: Prisma.FieldRef<"LocationView", 'Int'>
   readonly views: Prisma.FieldRef<"LocationView", 'Int'>
   readonly updatedAt: Prisma.FieldRef<"LocationView", 'DateTime'>
@@ -862,6 +959,10 @@ export type LocationViewFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
+  /**
    * Filter, which LocationView to fetch.
    */
   where: Prisma.LocationViewWhereUniqueInput
@@ -880,6 +981,10 @@ export type LocationViewFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
+  /**
    * Filter, which LocationView to fetch.
    */
   where: Prisma.LocationViewWhereUniqueInput
@@ -897,6 +1002,10 @@ export type LocationViewFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the LocationView
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
   /**
    * Filter, which LocationView to fetch.
    */
@@ -946,6 +1055,10 @@ export type LocationViewFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
+  /**
    * Filter, which LocationView to fetch.
    */
   where?: Prisma.LocationViewWhereInput
@@ -994,6 +1107,10 @@ export type LocationViewFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
+  /**
    * Filter, which LocationViews to fetch.
    */
   where?: Prisma.LocationViewWhereInput
@@ -1037,6 +1154,10 @@ export type LocationViewCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
+  /**
    * The data needed to create a LocationView.
    */
   data: Prisma.XOR<Prisma.LocationViewCreateInput, Prisma.LocationViewUncheckedCreateInput>
@@ -1070,6 +1191,10 @@ export type LocationViewCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.LocationViewCreateManyInput | Prisma.LocationViewCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1084,6 +1209,10 @@ export type LocationViewUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the LocationView
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
   /**
    * The data needed to update a LocationView.
    */
@@ -1136,6 +1265,10 @@ export type LocationViewUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many LocationViews to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1150,6 +1283,10 @@ export type LocationViewUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the LocationView
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
   /**
    * The filter to search for the LocationView to update in case it exists.
    */
@@ -1176,6 +1313,10 @@ export type LocationViewDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the LocationView
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
   /**
    * Filter which LocationView to delete.
    */
@@ -1208,4 +1349,8 @@ export type LocationViewDefaultArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the LocationView
    */
   omit?: Prisma.LocationViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationViewInclude<ExtArgs> | null
 }

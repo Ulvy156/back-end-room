@@ -10,6 +10,7 @@ import {
 import { AmenityService } from './amenity.service';
 import { CreateAmenityDto } from './dto/create-amenity.dto';
 import { UpdateAmenityDto } from './dto/update-amenity.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('amenity')
 export class AmenityController {
@@ -20,11 +21,13 @@ export class AmenityController {
     return this.amenityService.create(createAmenityDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.amenityService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.amenityService.findOne(+id);

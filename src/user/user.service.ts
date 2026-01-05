@@ -43,15 +43,15 @@ export class UserService {
       const user = await this.findOne(userId);
 
       // Delete file first (if exists)
-      if (user.img_url) {
-        await this.r2Service.deleteSingleFile(user.img_url);
+      if (user.imgUrl) {
+        await this.r2Service.deleteSingleFile(user.imgUrl);
       }
 
       // Update DB
       const updatedUser = await this.prisma.user.update({
         where: { id: userId },
         data: {
-          img_url: null,
+          imgUrl: null,
         },
       });
       return updatedUser;
@@ -78,13 +78,13 @@ export class UserService {
       const updatedUser = await this.prisma.user.update({
         where: { id: userId },
         data: {
-          img_url: newImageKey,
+          imgUrl: newImageKey,
         },
       });
 
       // Delete file first (if exists)
-      if (user.img_url) {
-        await this.r2Service.deleteSingleFile(user.img_url);
+      if (user.imgUrl) {
+        await this.r2Service.deleteSingleFile(user.imgUrl);
       }
       return updatedUser;
     } catch (error) {

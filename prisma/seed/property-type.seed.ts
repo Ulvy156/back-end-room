@@ -3,6 +3,7 @@ import { PrismaClient } from 'prisma/generated/client';
 export async function seedPropertyTypes(prisma: PrismaClient) {
   const data = [
     { code: 'room', nameEn: 'Room', nameKh: 'បន្ទប់', slug: 'room' },
+    { code: 'studio', nameEn: 'Studio', nameKh: 'ស្ទូឌីយោ', slug: 'studio' },
     {
       code: 'apartment',
       nameEn: 'Apartment',
@@ -20,4 +21,6 @@ export async function seedPropertyTypes(prisma: PrismaClient) {
       create: item,
     });
   }
+
+  console.log(`✅ property types seed: `, data.length);
 }

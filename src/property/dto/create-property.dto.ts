@@ -17,15 +17,19 @@ export class CreatePropertyDto {
   userId: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  districtId: number;
+
+  @IsNotEmpty()
   @IsString()
-  location: string;
+  address: string;
 
   @IsNotEmpty()
   @IsUrl()
   @Matches(/^https?:\/\/(www\.)?google\.[a-z.]+\/maps\/.+$/, {
     message: 'location_url must be a valid Google Maps URL',
   })
-  location_url: string;
+  locationUrl: string;
 
   @IsNotEmpty()
   @IsString()
@@ -55,6 +59,10 @@ export class CreatePropertyDto {
   @IsOptional()
   @IsBoolean()
   furnished: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublished: boolean;
 
   @IsOptional()
   @IsString()

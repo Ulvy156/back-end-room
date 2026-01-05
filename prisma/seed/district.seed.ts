@@ -19,5 +19,5 @@ export async function seedDistricts(prisma: PrismaClient) {
     skipDuplicates: true,
   });
 
-  console.log(`✅ Districts seeded: ${districts.length}`);
+  console.log(`✅ Districts seeded: `, districts.length);
 }

@@ -1272,10 +1272,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  img_url: 'img_url',
+  imgUrl: 'imgUrl',
   isLocked: 'isLocked',
   role: 'role',
-  district_id: 'district_id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1315,7 +1314,6 @@ export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typ
 
 export const LocationViewScalarFieldEnum = {
   id: 'id',
-  provinceId: 'provinceId',
   districtId: 'districtId',
   views: 'views',
   updatedAt: 'updatedAt'
@@ -1327,9 +1325,9 @@ export type LocationViewScalarFieldEnum = (typeof LocationViewScalarFieldEnum)[k
 export const PropertyScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  location: 'location',
-  location_url: 'location_url',
-  district_id: 'district_id',
+  districtId: 'districtId',
+  address: 'address',
+  locationUrl: 'locationUrl',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -1465,20 +1463,6 @@ export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -1489,6 +1473,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
