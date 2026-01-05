@@ -110,7 +110,7 @@ export class AuthService {
 
   private generateRefreshToken(payload: JwtTokenPayload) {
     return this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET')!,
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: this.configService.get<number>(
         'JWT_REFRESH_EXPIRES_IN',
         604800,
