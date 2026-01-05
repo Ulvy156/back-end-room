@@ -1,6 +1,6 @@
-import { PrismaClient } from 'prisma/generated/client';
 import fs from 'fs';
 import path from 'path';
+import { Prisma, PrismaClient } from 'prisma/generated/client';
 
 export async function seedDistricts(prisma: PrismaClient) {
   const filePath = path.join(
@@ -10,7 +10,9 @@ export async function seedDistricts(prisma: PrismaClient) {
     'cambodia-districts-2025.json',
   );
 
-  const districts = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  const districts = JSON.parse(
+    fs.readFileSync(filePath, 'utf-8'),
+  ) as Prisma.DistrictCreateManyInput[];
 
   await prisma.district.createMany({
     data: districts,
