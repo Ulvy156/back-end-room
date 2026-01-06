@@ -16,6 +16,12 @@ export function prismaError(err: unknown): never {
       case 'P2025':
         throw new HttpException('Record not found', HttpStatus.NOT_FOUND);
 
+      case 'P2003':
+        throw new HttpException(
+          'Related record not found',
+          HttpStatus.BAD_REQUEST,
+        );
+
       case 'P1010':
         throw new HttpException(
           'Access denied to database',

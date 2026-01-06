@@ -10,7 +10,7 @@ import { AmenityModule } from './amenity/amenity.module';
 import { PropertyTypeModule } from './property-type/property-type.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PropertyModule } from './property/property.module';
-
+import { AppCacheModule } from './cache/cache.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -21,6 +21,7 @@ import { PropertyModule } from './property/property.module';
         },
       ],
     }),
+    AppCacheModule,
     AppConfigModule,
     PrismaModule,
     PropertyImageModule,

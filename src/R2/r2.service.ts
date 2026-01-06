@@ -33,6 +33,8 @@ export class R2Service {
   }
 
   private validateFile(file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('File are requied');
+
     if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype as any)) {
       throw new BadRequestException('Invalid image type');
     }

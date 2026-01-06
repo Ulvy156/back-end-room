@@ -73,6 +73,16 @@ export type Property = Prisma.PropertyModel
  */
 export type PropertyType = Prisma.PropertyTypeModel
 /**
+ * Model PropertyView
+ * 
+ */
+export type PropertyView = Prisma.PropertyViewModel
+/**
+ * Model PropertyReport
+ * 
+ */
+export type PropertyReport = Prisma.PropertyReportModel
+/**
  * Model PropertyImage
  * 
  */

@@ -34,6 +34,11 @@ export class PropertyController {
     return this.propertyService.findAll();
   }
 
+  @Get('/home-page')
+  getDataHomePage() {
+    return this.propertyService.getDataHomePage();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertyService.findOne(id);
@@ -45,6 +50,16 @@ export class PropertyController {
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
     return this.propertyService.update(id, updatePropertyDto);
+  }
+
+  @Patch('/increment-view/:id')
+  incrementView(@Param('id') id: string) {
+    return this.propertyService.incrementView(id);
+  }
+
+  @Patch('/set-feature/:id')
+  setPropertyToFeature(@Param('id') id: string) {
+    return this.propertyService.setPropertyToFeature(id);
   }
 
   @Delete(':id')

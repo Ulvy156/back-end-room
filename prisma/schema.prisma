@@ -39,9 +39,10 @@ model User {
   properties Property[]
   favorites  Favorite[]
   phones     Phone[]
+  propertyReport     PropertyReport[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime @updatedAt       @map("updated_at")
 
   @@index([email])
   @@map("users")
@@ -57,8 +58,8 @@ model Phone {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime @updatedAt       @map("updated_at")
 
   @@index([userId])
   @@map("phones")
@@ -97,7 +98,7 @@ model LocationView {
   id         Int      @id @default(autoincrement())
   districtId Int      @unique @map("district_id")
   views      Int      @default(0)
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @updatedAt   @map("updated_at")
 
   district District @relation(fields: [districtId], references: [id])
 
@@ -122,11 +123,14 @@ model Property {
   price    Float
   deposit  Float?
 
+  isFeatured Boolean  @default(false)
+  featuredAt DateTime?
+
   totalViews Int @default(0) @map("total_views")
 
   propertyTypeId Int @map("property_type_id")
   sizeSqm        Int
-  furnished      Boolean @default(false)
+  furnished      Boolean @default(true)
   isPublished    Boolean @default(true)
 
   user         User         @relation(fields: [userId], references: [id])
@@ -136,9 +140,11 @@ model Property {
   images            PropertyImage[]
   favorites         Favorite[]
   propertyAmenities PropertyAmenity[]
+  propertyReport PropertyReport[]
+  propertyViews PropertyView[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime @updatedAt       @map("updated_at")
 
   @@index([districtId])
   @@index([propertyTypeId])
@@ -162,11 +168,43 @@ model PropertyType {
 
   properties Property[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now())  @map("created_at")
 
   @@index([slug])
   @@index([isRemoved])
   @@map("property_types")
+}
+
+// ==============================
+// PROPERTY VIEWS
+// ==============================
+model PropertyView {
+  id         Int      @id @default(autoincrement())
+  propertyId String
+  views      Int
+  date       DateTime
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([propertyId, date])
+  @@index([date])
+}
+
+// ==============================
+// PROPERTY REPORT
+// ==============================
+model PropertyReport {
+  id         Int      @id @default(autoincrement())
+  propertyId String   @map("property_id")
+  userId     String   @map("user_id")
+  description   String 
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())  @map("created_at")
+
+  @@index([propertyId, userId])
 }
 
 // ==============================

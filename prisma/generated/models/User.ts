@@ -217,6 +217,7 @@ export type UserWhereInput = {
   properties?: Prisma.PropertyListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
   phones?: Prisma.PhoneListRelationFilter
+  propertyReport?: Prisma.PropertyReportListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -232,6 +233,7 @@ export type UserOrderByWithRelationInput = {
   properties?: Prisma.PropertyOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
   phones?: Prisma.PhoneOrderByRelationAggregateInput
+  propertyReport?: Prisma.PropertyReportOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -250,6 +252,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   properties?: Prisma.PropertyListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
   phones?: Prisma.PhoneListRelationFilter
+  propertyReport?: Prisma.PropertyReportListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -295,6 +298,7 @@ export type UserCreateInput = {
   properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -310,6 +314,7 @@ export type UserUncheckedCreateInput = {
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -325,6 +330,7 @@ export type UserUpdateInput = {
   properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -340,6 +346,7 @@ export type UserUncheckedUpdateInput = {
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -467,6 +474,20 @@ export type UserUpdateOneRequiredWithoutPropertiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPropertiesInput, Prisma.UserUpdateWithoutPropertiesInput>, Prisma.UserUncheckedUpdateWithoutPropertiesInput>
 }
 
+export type UserCreateNestedOneWithoutPropertyReportInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPropertyReportInput, Prisma.UserUncheckedCreateWithoutPropertyReportInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPropertyReportInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPropertyReportNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPropertyReportInput, Prisma.UserUncheckedCreateWithoutPropertyReportInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPropertyReportInput
+  upsert?: Prisma.UserUpsertWithoutPropertyReportInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPropertyReportInput, Prisma.UserUpdateWithoutPropertyReportInput>, Prisma.UserUncheckedUpdateWithoutPropertyReportInput>
+}
+
 export type UserCreateNestedOneWithoutFavoritesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFavoritesInput, Prisma.UserUncheckedCreateWithoutFavoritesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFavoritesInput
@@ -493,6 +514,7 @@ export type UserCreateWithoutPhonesInput = {
   updatedAt?: Date | string
   properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPhonesInput = {
@@ -507,6 +529,7 @@ export type UserUncheckedCreateWithoutPhonesInput = {
   updatedAt?: Date | string
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPhonesInput = {
@@ -537,6 +560,7 @@ export type UserUpdateWithoutPhonesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPhonesInput = {
@@ -551,6 +575,7 @@ export type UserUncheckedUpdateWithoutPhonesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPropertiesInput = {
@@ -565,6 +590,7 @@ export type UserCreateWithoutPropertiesInput = {
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -579,6 +605,7 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -609,6 +636,7 @@ export type UserUpdateWithoutPropertiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -621,6 +649,83 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  phones?: Prisma.PhoneUncheckedUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPropertyReportInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  imgUrl?: string | null
+  isLocked?: boolean
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  phones?: Prisma.PhoneCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPropertyReportInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  imgUrl?: string | null
+  isLocked?: boolean
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPropertyReportInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPropertyReportInput, Prisma.UserUncheckedCreateWithoutPropertyReportInput>
+}
+
+export type UserUpsertWithoutPropertyReportInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPropertyReportInput, Prisma.UserUncheckedUpdateWithoutPropertyReportInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPropertyReportInput, Prisma.UserUncheckedCreateWithoutPropertyReportInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPropertyReportInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPropertyReportInput, Prisma.UserUncheckedUpdateWithoutPropertyReportInput>
+}
+
+export type UserUpdateWithoutPropertyReportInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  phones?: Prisma.PhoneUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPropertyReportInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -637,6 +742,7 @@ export type UserCreateWithoutFavoritesInput = {
   updatedAt?: Date | string
   properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFavoritesInput = {
@@ -651,6 +757,7 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   updatedAt?: Date | string
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutUserInput
+  propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFavoritesInput = {
@@ -681,6 +788,7 @@ export type UserUpdateWithoutFavoritesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFavoritesInput = {
@@ -695,6 +803,7 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutUserNestedInput
+  propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -706,12 +815,14 @@ export type UserCountOutputType = {
   properties: number
   favorites: number
   phones: number
+  propertyReport: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   properties?: boolean | UserCountOutputTypeCountPropertiesArgs
   favorites?: boolean | UserCountOutputTypeCountFavoritesArgs
   phones?: boolean | UserCountOutputTypeCountPhonesArgs
+  propertyReport?: boolean | UserCountOutputTypeCountPropertyReportArgs
 }
 
 /**
@@ -745,6 +856,13 @@ export type UserCountOutputTypeCountPhonesArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.PhoneWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPropertyReportArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PropertyReportWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -759,6 +877,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   properties?: boolean | Prisma.User$propertiesArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
   phones?: boolean | Prisma.User$phonesArgs<ExtArgs>
+  propertyReport?: boolean | Prisma.User$propertyReportArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -803,6 +922,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   properties?: boolean | Prisma.User$propertiesArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
   phones?: boolean | Prisma.User$phonesArgs<ExtArgs>
+  propertyReport?: boolean | Prisma.User$propertyReportArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -814,6 +934,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     properties: Prisma.$PropertyPayload<ExtArgs>[]
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
     phones: Prisma.$PhonePayload<ExtArgs>[]
+    propertyReport: Prisma.$PropertyReportPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1222,6 +1343,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   properties<T extends Prisma.User$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorites<T extends Prisma.User$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   phones<T extends Prisma.User$phonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$phonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  propertyReport<T extends Prisma.User$propertyReportArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$propertyReportArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1717,6 +1839,30 @@ export type User$phonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.PhoneScalarFieldEnum | Prisma.PhoneScalarFieldEnum[]
+}
+
+/**
+ * User.propertyReport
+ */
+export type User$propertyReportArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyReport
+   */
+  select?: Prisma.PropertyReportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyReport
+   */
+  omit?: Prisma.PropertyReportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyReportInclude<ExtArgs> | null
+  where?: Prisma.PropertyReportWhereInput
+  orderBy?: Prisma.PropertyReportOrderByWithRelationInput | Prisma.PropertyReportOrderByWithRelationInput[]
+  cursor?: Prisma.PropertyReportWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PropertyReportScalarFieldEnum | Prisma.PropertyReportScalarFieldEnum[]
 }
 
 /**
