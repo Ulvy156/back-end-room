@@ -123,6 +123,10 @@ model Property {
   price    Float
   deposit  Float?
 
+  bedroom  Int  @default(1)
+  bathroom  Int  @default(1)
+  isAvailable  Boolean  @default(true) @map("is_available")
+
   isFeatured Boolean  @default(false)
   featuredAt DateTime?
 
@@ -146,7 +150,7 @@ model Property {
   createdAt DateTime @default(now())  @map("created_at")
   updatedAt DateTime @updatedAt       @map("updated_at")
 
-  @@index([districtId])
+  @@index([districtId, isAvailable])
   @@index([propertyTypeId])
   @@index([price])
   @@index([isPublished])

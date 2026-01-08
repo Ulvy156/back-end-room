@@ -90,6 +90,7 @@ export class PropertyService {
     await Promise.all([
       this.cache.del(CACHE_KEYS.FEATURED_LISTINGS),
       this.cache.del(CACHE_KEYS.LATEST_LISTINGS),
+      this.cache.del(CACHE_KEYS.POPULAR_LOCATIONS),
     ]);
   }
 
@@ -134,9 +135,9 @@ export class PropertyService {
           where: { isFeatured: true },
         });
 
-        if (featuredCount >= 3) {
+        if (featuredCount > 3) {
           throw new BadRequestException(
-            'You can only feature up to 3 properties',
+            'You can only feature up to 4 properties',
           );
         }
       }
@@ -192,6 +193,9 @@ export class PropertyService {
         price: true,
         sizeSqm: true,
         totalViews: true,
+        bathroom: true,
+        bedroom: true,
+        isAvailable: true,
         images: {
           take: 1,
           select: {
@@ -244,6 +248,9 @@ export class PropertyService {
         price: true,
         sizeSqm: true,
         totalViews: true,
+        bathroom: true,
+        bedroom: true,
+        isAvailable: true,
         images: {
           take: 1,
           select: {

@@ -30,6 +30,8 @@ export type PropertyAvgAggregateOutputType = {
   districtId: number | null
   price: number | null
   deposit: number | null
+  bedroom: number | null
+  bathroom: number | null
   totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
@@ -39,6 +41,8 @@ export type PropertySumAggregateOutputType = {
   districtId: number | null
   price: number | null
   deposit: number | null
+  bedroom: number | null
+  bathroom: number | null
   totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
@@ -54,6 +58,9 @@ export type PropertyMinAggregateOutputType = {
   description: string | null
   price: number | null
   deposit: number | null
+  bedroom: number | null
+  bathroom: number | null
+  isAvailable: boolean | null
   isFeatured: boolean | null
   featuredAt: Date | null
   totalViews: number | null
@@ -75,6 +82,9 @@ export type PropertyMaxAggregateOutputType = {
   description: string | null
   price: number | null
   deposit: number | null
+  bedroom: number | null
+  bathroom: number | null
+  isAvailable: boolean | null
   isFeatured: boolean | null
   featuredAt: Date | null
   totalViews: number | null
@@ -96,6 +106,9 @@ export type PropertyCountAggregateOutputType = {
   description: number
   price: number
   deposit: number
+  bedroom: number
+  bathroom: number
+  isAvailable: number
   isFeatured: number
   featuredAt: number
   totalViews: number
@@ -113,6 +126,8 @@ export type PropertyAvgAggregateInputType = {
   districtId?: true
   price?: true
   deposit?: true
+  bedroom?: true
+  bathroom?: true
   totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
@@ -122,6 +137,8 @@ export type PropertySumAggregateInputType = {
   districtId?: true
   price?: true
   deposit?: true
+  bedroom?: true
+  bathroom?: true
   totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
@@ -137,6 +154,9 @@ export type PropertyMinAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  bedroom?: true
+  bathroom?: true
+  isAvailable?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -158,6 +178,9 @@ export type PropertyMaxAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  bedroom?: true
+  bathroom?: true
+  isAvailable?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -179,6 +202,9 @@ export type PropertyCountAggregateInputType = {
   description?: true
   price?: true
   deposit?: true
+  bedroom?: true
+  bathroom?: true
+  isAvailable?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -287,6 +313,9 @@ export type PropertyGroupByOutputType = {
   description: string | null
   price: number
   deposit: number | null
+  bedroom: number
+  bathroom: number
+  isAvailable: boolean
   isFeatured: boolean
   featuredAt: Date | null
   totalViews: number
@@ -331,6 +360,9 @@ export type PropertyWhereInput = {
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  bedroom?: Prisma.IntFilter<"Property"> | number
+  bathroom?: Prisma.IntFilter<"Property"> | number
+  isAvailable?: Prisma.BoolFilter<"Property"> | boolean
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -360,6 +392,9 @@ export type PropertyOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -392,6 +427,9 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  bedroom?: Prisma.IntFilter<"Property"> | number
+  bathroom?: Prisma.IntFilter<"Property"> | number
+  isAvailable?: Prisma.BoolFilter<"Property"> | boolean
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -421,6 +459,9 @@ export type PropertyOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -450,6 +491,9 @@ export type PropertyScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Property"> | number
   deposit?: Prisma.FloatNullableWithAggregatesFilter<"Property"> | number | null
+  bedroom?: Prisma.IntWithAggregatesFilter<"Property"> | number
+  bathroom?: Prisma.IntWithAggregatesFilter<"Property"> | number
+  isAvailable?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntWithAggregatesFilter<"Property"> | number
@@ -469,6 +513,9 @@ export type PropertyCreateInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -497,6 +544,9 @@ export type PropertyUncheckedCreateInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -521,6 +571,9 @@ export type PropertyUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -549,6 +602,9 @@ export type PropertyUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -575,6 +631,9 @@ export type PropertyCreateManyInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -594,6 +653,9 @@ export type PropertyUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -614,6 +676,9 @@ export type PropertyUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -645,6 +710,9 @@ export type PropertyCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -660,6 +728,8 @@ export type PropertyAvgOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
@@ -675,6 +745,9 @@ export type PropertyMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -696,6 +769,9 @@ export type PropertyMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -711,6 +787,8 @@ export type PropertySumOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  bedroom?: Prisma.SortOrder
+  bathroom?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
@@ -945,6 +1023,9 @@ export type PropertyCreateWithoutUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -971,6 +1052,9 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1026,6 +1110,9 @@ export type PropertyScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
   deposit?: Prisma.FloatNullableFilter<"Property"> | number | null
+  bedroom?: Prisma.IntFilter<"Property"> | number
+  bathroom?: Prisma.IntFilter<"Property"> | number
+  isAvailable?: Prisma.BoolFilter<"Property"> | boolean
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -1045,6 +1132,9 @@ export type PropertyCreateWithoutDistrictInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1071,6 +1161,9 @@ export type PropertyUncheckedCreateWithoutDistrictInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1121,6 +1214,9 @@ export type PropertyCreateWithoutPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1148,6 +1244,9 @@ export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1197,6 +1296,9 @@ export type PropertyCreateWithoutPropertyViewsInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1224,6 +1326,9 @@ export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1263,6 +1368,9 @@ export type PropertyUpdateWithoutPropertyViewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1290,6 +1398,9 @@ export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1313,6 +1424,9 @@ export type PropertyCreateWithoutPropertyReportInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1340,6 +1454,9 @@ export type PropertyUncheckedCreateWithoutPropertyReportInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1379,6 +1496,9 @@ export type PropertyUpdateWithoutPropertyReportInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1406,6 +1526,9 @@ export type PropertyUncheckedUpdateWithoutPropertyReportInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1429,6 +1552,9 @@ export type PropertyCreateWithoutImagesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1456,6 +1582,9 @@ export type PropertyUncheckedCreateWithoutImagesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1495,6 +1624,9 @@ export type PropertyUpdateWithoutImagesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1522,6 +1654,9 @@ export type PropertyUncheckedUpdateWithoutImagesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1545,6 +1680,9 @@ export type PropertyCreateWithoutPropertyAmenitiesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1572,6 +1710,9 @@ export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1611,6 +1752,9 @@ export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1638,6 +1782,9 @@ export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1661,6 +1808,9 @@ export type PropertyCreateWithoutFavoritesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1688,6 +1838,9 @@ export type PropertyUncheckedCreateWithoutFavoritesInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1727,6 +1880,9 @@ export type PropertyUpdateWithoutFavoritesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1754,6 +1910,9 @@ export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1778,6 +1937,9 @@ export type PropertyCreateManyUserInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1797,6 +1959,9 @@ export type PropertyUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1823,6 +1988,9 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1848,6 +2016,9 @@ export type PropertyUncheckedUpdateManyWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1868,6 +2039,9 @@ export type PropertyCreateManyDistrictInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1887,6 +2061,9 @@ export type PropertyUpdateWithoutDistrictInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1913,6 +2090,9 @@ export type PropertyUncheckedUpdateWithoutDistrictInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1938,6 +2118,9 @@ export type PropertyUncheckedUpdateManyWithoutDistrictInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1959,6 +2142,9 @@ export type PropertyCreateManyPropertyTypeInput = {
   description?: string | null
   price: number
   deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1977,6 +2163,9 @@ export type PropertyUpdateWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2004,6 +2193,9 @@ export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2029,6 +2221,9 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2116,6 +2311,9 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   description?: boolean
   price?: boolean
   deposit?: boolean
+  bedroom?: boolean
+  bathroom?: boolean
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2146,6 +2344,9 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   price?: boolean
   deposit?: boolean
+  bedroom?: boolean
+  bathroom?: boolean
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2170,6 +2371,9 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   price?: boolean
   deposit?: boolean
+  bedroom?: boolean
+  bathroom?: boolean
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2194,6 +2398,9 @@ export type PropertySelectScalar = {
   description?: boolean
   price?: boolean
   deposit?: boolean
+  bedroom?: boolean
+  bathroom?: boolean
+  isAvailable?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2205,7 +2412,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "title" | "description" | "price" | "deposit" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "title" | "description" | "price" | "deposit" | "bedroom" | "bathroom" | "isAvailable" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
@@ -2250,6 +2457,9 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     description: string | null
     price: number
     deposit: number | null
+    bedroom: number
+    bathroom: number
+    isAvailable: boolean
     isFeatured: boolean
     featuredAt: Date | null
     totalViews: number
@@ -2699,6 +2909,9 @@ export interface PropertyFieldRefs {
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly price: Prisma.FieldRef<"Property", 'Float'>
   readonly deposit: Prisma.FieldRef<"Property", 'Float'>
+  readonly bedroom: Prisma.FieldRef<"Property", 'Int'>
+  readonly bathroom: Prisma.FieldRef<"Property", 'Int'>
+  readonly isAvailable: Prisma.FieldRef<"Property", 'Boolean'>
   readonly isFeatured: Prisma.FieldRef<"Property", 'Boolean'>
   readonly featuredAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly totalViews: Prisma.FieldRef<"Property", 'Int'>
