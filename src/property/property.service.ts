@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,7 +8,7 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CacheService } from 'src/cache/cache.service';
 import { CACHE_KEYS } from 'src/cache/cache.key';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class PropertyService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
-    @Inject(CACHE_MANAGER) private readonly cache: Cache,
+    private readonly cache: CacheService,
   ) {}
 
   async create(
@@ -135,7 +134,7 @@ export class PropertyService {
           where: { isFeatured: true },
         });
 
-        if (featuredCount > 3) {
+        if (featuredCount >= 3) {
           throw new BadRequestException(
             'You can only feature up to 4 properties',
           );
@@ -173,7 +172,7 @@ export class PropertyService {
     };
   }
 
-  // get latest 3 featured property
+  // get latest 4 featured property
   async getFeaturedProperties() {
     const cache = await this.cache.get(CACHE_KEYS.FEATURED_LISTINGS);
     if (cache) return cache;
@@ -306,7 +305,7 @@ export class PropertyService {
       WHERE p."isPublished" = true
       GROUP BY p."district_id", d.name_en, d.name_kh
       ORDER BY "totalListings" DESC
-      LIMIT 5;
+      LIMIT 10;
     `;
 
     await this.cache.set(CACHE_KEYS.POPULAR_LOCATIONS, popularLocations);

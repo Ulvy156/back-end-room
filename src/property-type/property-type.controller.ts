@@ -10,7 +10,9 @@ import {
 import { PropertyTypeService } from './property-type.service';
 import { CreatePropertyTypeDto } from './dto/create-property-type.dto';
 import { UpdatePropertyTypeDto } from './dto/update-property-type.dto';
+import { Public } from 'src/auth/public.decorator';
 
+@Public()
 @Controller('property-type')
 export class PropertyTypeController {
   constructor(private readonly propertyTypeService: PropertyTypeService) {}

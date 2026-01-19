@@ -2,6 +2,7 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsDate,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -63,6 +64,14 @@ export class CreatePropertyDto {
   @IsOptional()
   @IsBoolean()
   isPublished: boolean;
+
+  @IsOptional()
+  @IsDate()
+  availableFrom: Date;
+
+  @IsOptional()
+  @IsNumber()
+  minimumStayLength: number;
 
   @IsOptional()
   @IsString()

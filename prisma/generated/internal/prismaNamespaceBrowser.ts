@@ -59,6 +59,8 @@ export const ModelName = {
   Property: 'Property',
   PropertyType: 'PropertyType',
   PropertyView: 'PropertyView',
+  PropertyRules: 'PropertyRules',
+  PropertyRuleValue: 'PropertyRuleValue',
   PropertyReport: 'PropertyReport',
   PropertyImage: 'PropertyImage',
   Amenity: 'Amenity',
@@ -150,6 +152,7 @@ export const PropertyScalarFieldEnum = {
   bedroom: 'bedroom',
   bathroom: 'bathroom',
   isAvailable: 'isAvailable',
+  availableFrom: 'availableFrom',
   isFeatured: 'isFeatured',
   featuredAt: 'featuredAt',
   totalViews: 'totalViews',
@@ -157,6 +160,7 @@ export const PropertyScalarFieldEnum = {
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
   isPublished: 'isPublished',
+  minimumStayLength: 'minimumStayLength',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -187,6 +191,27 @@ export const PropertyViewScalarFieldEnum = {
 export type PropertyViewScalarFieldEnum = (typeof PropertyViewScalarFieldEnum)[keyof typeof PropertyViewScalarFieldEnum]
 
 
+export const PropertyRulesScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  label: 'label',
+  icon: 'icon'
+} as const
+
+export type PropertyRulesScalarFieldEnum = (typeof PropertyRulesScalarFieldEnum)[keyof typeof PropertyRulesScalarFieldEnum]
+
+
+export const PropertyRuleValueScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  propertyRuleId: 'propertyRuleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyRuleValueScalarFieldEnum = (typeof PropertyRuleValueScalarFieldEnum)[keyof typeof PropertyRuleValueScalarFieldEnum]
+
+
 export const PropertyReportScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
@@ -202,6 +227,7 @@ export const PropertyImageScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
   imageKey: 'imageKey',
+  isCover: 'isCover',
   createdAt: 'createdAt'
 } as const
 

@@ -78,6 +78,16 @@ export type PropertyType = Prisma.PropertyTypeModel
  */
 export type PropertyView = Prisma.PropertyViewModel
 /**
+ * Model PropertyRules
+ * 
+ */
+export type PropertyRules = Prisma.PropertyRulesModel
+/**
+ * Model PropertyRuleValue
+ * 
+ */
+export type PropertyRuleValue = Prisma.PropertyRuleValueModel
+/**
  * Model PropertyReport
  * 
  */

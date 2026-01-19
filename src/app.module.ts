@@ -11,6 +11,7 @@ import { PropertyTypeModule } from './property-type/property-type.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PropertyModule } from './property/property.module';
 import { AppCacheModule } from './cache/cache.module';
+import { LocationModule } from './location/location.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -30,6 +31,7 @@ import { AppCacheModule } from './cache/cache.module';
     AmenityModule,
     PropertyTypeModule,
     PropertyModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

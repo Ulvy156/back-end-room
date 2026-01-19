@@ -35,6 +35,7 @@ export type PropertyAvgAggregateOutputType = {
   totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
+  minimumStayLength: number | null
 }
 
 export type PropertySumAggregateOutputType = {
@@ -46,6 +47,7 @@ export type PropertySumAggregateOutputType = {
   totalViews: number | null
   propertyTypeId: number | null
   sizeSqm: number | null
+  minimumStayLength: number | null
 }
 
 export type PropertyMinAggregateOutputType = {
@@ -61,6 +63,7 @@ export type PropertyMinAggregateOutputType = {
   bedroom: number | null
   bathroom: number | null
   isAvailable: boolean | null
+  availableFrom: Date | null
   isFeatured: boolean | null
   featuredAt: Date | null
   totalViews: number | null
@@ -68,6 +71,7 @@ export type PropertyMinAggregateOutputType = {
   sizeSqm: number | null
   furnished: boolean | null
   isPublished: boolean | null
+  minimumStayLength: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -85,6 +89,7 @@ export type PropertyMaxAggregateOutputType = {
   bedroom: number | null
   bathroom: number | null
   isAvailable: boolean | null
+  availableFrom: Date | null
   isFeatured: boolean | null
   featuredAt: Date | null
   totalViews: number | null
@@ -92,6 +97,7 @@ export type PropertyMaxAggregateOutputType = {
   sizeSqm: number | null
   furnished: boolean | null
   isPublished: boolean | null
+  minimumStayLength: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -109,6 +115,7 @@ export type PropertyCountAggregateOutputType = {
   bedroom: number
   bathroom: number
   isAvailable: number
+  availableFrom: number
   isFeatured: number
   featuredAt: number
   totalViews: number
@@ -116,6 +123,7 @@ export type PropertyCountAggregateOutputType = {
   sizeSqm: number
   furnished: number
   isPublished: number
+  minimumStayLength: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -131,6 +139,7 @@ export type PropertyAvgAggregateInputType = {
   totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
+  minimumStayLength?: true
 }
 
 export type PropertySumAggregateInputType = {
@@ -142,6 +151,7 @@ export type PropertySumAggregateInputType = {
   totalViews?: true
   propertyTypeId?: true
   sizeSqm?: true
+  minimumStayLength?: true
 }
 
 export type PropertyMinAggregateInputType = {
@@ -157,6 +167,7 @@ export type PropertyMinAggregateInputType = {
   bedroom?: true
   bathroom?: true
   isAvailable?: true
+  availableFrom?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -164,6 +175,7 @@ export type PropertyMinAggregateInputType = {
   sizeSqm?: true
   furnished?: true
   isPublished?: true
+  minimumStayLength?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -181,6 +193,7 @@ export type PropertyMaxAggregateInputType = {
   bedroom?: true
   bathroom?: true
   isAvailable?: true
+  availableFrom?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -188,6 +201,7 @@ export type PropertyMaxAggregateInputType = {
   sizeSqm?: true
   furnished?: true
   isPublished?: true
+  minimumStayLength?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -205,6 +219,7 @@ export type PropertyCountAggregateInputType = {
   bedroom?: true
   bathroom?: true
   isAvailable?: true
+  availableFrom?: true
   isFeatured?: true
   featuredAt?: true
   totalViews?: true
@@ -212,6 +227,7 @@ export type PropertyCountAggregateInputType = {
   sizeSqm?: true
   furnished?: true
   isPublished?: true
+  minimumStayLength?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -316,6 +332,7 @@ export type PropertyGroupByOutputType = {
   bedroom: number
   bathroom: number
   isAvailable: boolean
+  availableFrom: Date
   isFeatured: boolean
   featuredAt: Date | null
   totalViews: number
@@ -323,6 +340,7 @@ export type PropertyGroupByOutputType = {
   sizeSqm: number
   furnished: boolean
   isPublished: boolean
+  minimumStayLength: number
   createdAt: Date
   updatedAt: Date
   _count: PropertyCountAggregateOutputType | null
@@ -363,6 +381,7 @@ export type PropertyWhereInput = {
   bedroom?: Prisma.IntFilter<"Property"> | number
   bathroom?: Prisma.IntFilter<"Property"> | number
   isAvailable?: Prisma.BoolFilter<"Property"> | boolean
+  availableFrom?: Prisma.DateTimeFilter<"Property"> | Date | string
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -370,6 +389,7 @@ export type PropertyWhereInput = {
   sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
+  minimumStayLength?: Prisma.IntFilter<"Property"> | number
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -380,6 +400,7 @@ export type PropertyWhereInput = {
   propertyAmenities?: Prisma.PropertyAmenityListRelationFilter
   propertyReport?: Prisma.PropertyReportListRelationFilter
   propertyViews?: Prisma.PropertyViewListRelationFilter
+  propertyRuleValue?: Prisma.PropertyRuleValueListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
@@ -395,6 +416,7 @@ export type PropertyOrderByWithRelationInput = {
   bedroom?: Prisma.SortOrder
   bathroom?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -402,6 +424,7 @@ export type PropertyOrderByWithRelationInput = {
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -412,6 +435,7 @@ export type PropertyOrderByWithRelationInput = {
   propertyAmenities?: Prisma.PropertyAmenityOrderByRelationAggregateInput
   propertyReport?: Prisma.PropertyReportOrderByRelationAggregateInput
   propertyViews?: Prisma.PropertyViewOrderByRelationAggregateInput
+  propertyRuleValue?: Prisma.PropertyRuleValueOrderByRelationAggregateInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -430,6 +454,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   bedroom?: Prisma.IntFilter<"Property"> | number
   bathroom?: Prisma.IntFilter<"Property"> | number
   isAvailable?: Prisma.BoolFilter<"Property"> | boolean
+  availableFrom?: Prisma.DateTimeFilter<"Property"> | Date | string
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -437,6 +462,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
+  minimumStayLength?: Prisma.IntFilter<"Property"> | number
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -447,6 +473,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   propertyAmenities?: Prisma.PropertyAmenityListRelationFilter
   propertyReport?: Prisma.PropertyReportListRelationFilter
   propertyViews?: Prisma.PropertyViewListRelationFilter
+  propertyRuleValue?: Prisma.PropertyRuleValueListRelationFilter
 }, "id">
 
 export type PropertyOrderByWithAggregationInput = {
@@ -462,6 +489,7 @@ export type PropertyOrderByWithAggregationInput = {
   bedroom?: Prisma.SortOrder
   bathroom?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -469,6 +497,7 @@ export type PropertyOrderByWithAggregationInput = {
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PropertyCountOrderByAggregateInput
@@ -494,6 +523,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   bedroom?: Prisma.IntWithAggregatesFilter<"Property"> | number
   bathroom?: Prisma.IntWithAggregatesFilter<"Property"> | number
   isAvailable?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
+  availableFrom?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntWithAggregatesFilter<"Property"> | number
@@ -501,6 +531,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   sizeSqm?: Prisma.IntWithAggregatesFilter<"Property"> | number
   furnished?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   isPublished?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
+  minimumStayLength?: Prisma.IntWithAggregatesFilter<"Property"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
 }
@@ -516,12 +547,14 @@ export type PropertyCreateInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -532,6 +565,7 @@ export type PropertyCreateInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
@@ -547,6 +581,7 @@ export type PropertyUncheckedCreateInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -554,6 +589,7 @@ export type PropertyUncheckedCreateInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
@@ -561,6 +597,7 @@ export type PropertyUncheckedCreateInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
@@ -574,12 +611,14 @@ export type PropertyUpdateInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -590,6 +629,7 @@ export type PropertyUpdateInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
@@ -605,6 +645,7 @@ export type PropertyUncheckedUpdateInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -612,6 +653,7 @@ export type PropertyUncheckedUpdateInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -619,6 +661,7 @@ export type PropertyUncheckedUpdateInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
@@ -634,6 +677,7 @@ export type PropertyCreateManyInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -641,6 +685,7 @@ export type PropertyCreateManyInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -656,12 +701,14 @@ export type PropertyUpdateManyMutationInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -679,6 +726,7 @@ export type PropertyUncheckedUpdateManyInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -686,6 +734,7 @@ export type PropertyUncheckedUpdateManyInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -713,6 +762,7 @@ export type PropertyCountOrderByAggregateInput = {
   bedroom?: Prisma.SortOrder
   bathroom?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -720,6 +770,7 @@ export type PropertyCountOrderByAggregateInput = {
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -733,6 +784,7 @@ export type PropertyAvgOrderByAggregateInput = {
   totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
 }
 
 export type PropertyMaxOrderByAggregateInput = {
@@ -748,6 +800,7 @@ export type PropertyMaxOrderByAggregateInput = {
   bedroom?: Prisma.SortOrder
   bathroom?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -755,6 +808,7 @@ export type PropertyMaxOrderByAggregateInput = {
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -772,6 +826,7 @@ export type PropertyMinOrderByAggregateInput = {
   bedroom?: Prisma.SortOrder
   bathroom?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   featuredAt?: Prisma.SortOrder
   totalViews?: Prisma.SortOrder
@@ -779,6 +834,7 @@ export type PropertyMinOrderByAggregateInput = {
   sizeSqm?: Prisma.SortOrder
   furnished?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -792,6 +848,7 @@ export type PropertySumOrderByAggregateInput = {
   totalViews?: Prisma.SortOrder
   propertyTypeId?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
+  minimumStayLength?: Prisma.SortOrder
 }
 
 export type PropertyScalarRelationFilter = {
@@ -959,6 +1016,20 @@ export type PropertyUpdateOneRequiredWithoutPropertyViewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutPropertyViewsInput, Prisma.PropertyUpdateWithoutPropertyViewsInput>, Prisma.PropertyUncheckedUpdateWithoutPropertyViewsInput>
 }
 
+export type PropertyCreateNestedOneWithoutPropertyRuleValueInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedCreateWithoutPropertyRuleValueInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutPropertyRuleValueInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutPropertyRuleValueNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedCreateWithoutPropertyRuleValueInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutPropertyRuleValueInput
+  upsert?: Prisma.PropertyUpsertWithoutPropertyRuleValueInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutPropertyRuleValueInput, Prisma.PropertyUpdateWithoutPropertyRuleValueInput>, Prisma.PropertyUncheckedUpdateWithoutPropertyRuleValueInput>
+}
+
 export type PropertyCreateNestedOneWithoutPropertyReportInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyReportInput, Prisma.PropertyUncheckedCreateWithoutPropertyReportInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutPropertyReportInput
@@ -1026,12 +1097,14 @@ export type PropertyCreateWithoutUserInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   district: Prisma.DistrictCreateNestedOneWithoutPropertiesInput
@@ -1041,6 +1114,7 @@ export type PropertyCreateWithoutUserInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutUserInput = {
@@ -1055,6 +1129,7 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1062,6 +1137,7 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
@@ -1069,6 +1145,7 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutUserInput = {
@@ -1113,6 +1190,7 @@ export type PropertyScalarWhereInput = {
   bedroom?: Prisma.IntFilter<"Property"> | number
   bathroom?: Prisma.IntFilter<"Property"> | number
   isAvailable?: Prisma.BoolFilter<"Property"> | boolean
+  availableFrom?: Prisma.DateTimeFilter<"Property"> | Date | string
   isFeatured?: Prisma.BoolFilter<"Property"> | boolean
   featuredAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   totalViews?: Prisma.IntFilter<"Property"> | number
@@ -1120,6 +1198,7 @@ export type PropertyScalarWhereInput = {
   sizeSqm?: Prisma.IntFilter<"Property"> | number
   furnished?: Prisma.BoolFilter<"Property"> | boolean
   isPublished?: Prisma.BoolFilter<"Property"> | boolean
+  minimumStayLength?: Prisma.IntFilter<"Property"> | number
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
 }
@@ -1135,12 +1214,14 @@ export type PropertyCreateWithoutDistrictInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1150,6 +1231,7 @@ export type PropertyCreateWithoutDistrictInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutDistrictInput = {
@@ -1164,6 +1246,7 @@ export type PropertyUncheckedCreateWithoutDistrictInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1171,6 +1254,7 @@ export type PropertyUncheckedCreateWithoutDistrictInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
@@ -1178,6 +1262,7 @@ export type PropertyUncheckedCreateWithoutDistrictInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutDistrictInput = {
@@ -1217,12 +1302,14 @@ export type PropertyCreateWithoutPropertyTypeInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1232,6 +1319,7 @@ export type PropertyCreateWithoutPropertyTypeInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
@@ -1247,12 +1335,14 @@ export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
@@ -1260,6 +1350,7 @@ export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutPropertyTypeInput = {
@@ -1299,12 +1390,14 @@ export type PropertyCreateWithoutPropertyViewsInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1314,6 +1407,7 @@ export type PropertyCreateWithoutPropertyViewsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
@@ -1329,6 +1423,7 @@ export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1336,12 +1431,14 @@ export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutPropertyViewsInput = {
@@ -1371,12 +1468,14 @@ export type PropertyUpdateWithoutPropertyViewsInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1386,6 +1485,7 @@ export type PropertyUpdateWithoutPropertyViewsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
@@ -1401,6 +1501,7 @@ export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1408,12 +1509,154 @@ export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutPropertyRuleValueInput = {
+  id?: string
+  address: string
+  locationUrl?: string | null
+  title: string
+  description?: string | null
+  price: number
+  deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
+  availableFrom?: Date | string
+  isFeatured?: boolean
+  featuredAt?: Date | string | null
+  totalViews?: number
+  sizeSqm: number
+  furnished?: boolean
+  isPublished?: boolean
+  minimumStayLength?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutPropertiesInput
+  district: Prisma.DistrictCreateNestedOneWithoutPropertiesInput
+  propertyType: Prisma.PropertyTypeCreateNestedOneWithoutPropertiesInput
+  images?: Prisma.PropertyImageCreateNestedManyWithoutPropertyInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
+  propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
+  propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
+  propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutPropertyRuleValueInput = {
+  id?: string
+  userId: string
+  districtId: number
+  address: string
+  locationUrl?: string | null
+  title: string
+  description?: string | null
+  price: number
+  deposit?: number | null
+  bedroom?: number
+  bathroom?: number
+  isAvailable?: boolean
+  availableFrom?: Date | string
+  isFeatured?: boolean
+  featuredAt?: Date | string | null
+  totalViews?: number
+  propertyTypeId: number
+  sizeSqm: number
+  furnished?: boolean
+  isPublished?: boolean
+  minimumStayLength?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
+  propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
+  propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
+  propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutPropertyRuleValueInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedCreateWithoutPropertyRuleValueInput>
+}
+
+export type PropertyUpsertWithoutPropertyRuleValueInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedUpdateWithoutPropertyRuleValueInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedCreateWithoutPropertyRuleValueInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutPropertyRuleValueInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutPropertyRuleValueInput, Prisma.PropertyUncheckedUpdateWithoutPropertyRuleValueInput>
+}
+
+export type PropertyUpdateWithoutPropertyRuleValueInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalViews?: Prisma.IntFieldUpdateOperationsInput | number
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
+  district?: Prisma.DistrictUpdateOneRequiredWithoutPropertiesNestedInput
+  propertyType?: Prisma.PropertyTypeUpdateOneRequiredWithoutPropertiesNestedInput
+  images?: Prisma.PropertyImageUpdateManyWithoutPropertyNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
+  propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
+  propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
+  propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutPropertyRuleValueInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  districtId?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedroom?: Prisma.IntFieldUpdateOperationsInput | number
+  bathroom?: Prisma.IntFieldUpdateOperationsInput | number
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalViews?: Prisma.IntFieldUpdateOperationsInput | number
+  propertyTypeId?: Prisma.IntFieldUpdateOperationsInput | number
+  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutPropertyReportInput = {
@@ -1427,12 +1670,14 @@ export type PropertyCreateWithoutPropertyReportInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1442,6 +1687,7 @@ export type PropertyCreateWithoutPropertyReportInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyReportInput = {
@@ -1457,6 +1703,7 @@ export type PropertyUncheckedCreateWithoutPropertyReportInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1464,12 +1711,14 @@ export type PropertyUncheckedCreateWithoutPropertyReportInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutPropertyReportInput = {
@@ -1499,12 +1748,14 @@ export type PropertyUpdateWithoutPropertyReportInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1514,6 +1765,7 @@ export type PropertyUpdateWithoutPropertyReportInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyReportInput = {
@@ -1529,6 +1781,7 @@ export type PropertyUncheckedUpdateWithoutPropertyReportInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1536,12 +1789,14 @@ export type PropertyUncheckedUpdateWithoutPropertyReportInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutImagesInput = {
@@ -1555,12 +1810,14 @@ export type PropertyCreateWithoutImagesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1570,6 +1827,7 @@ export type PropertyCreateWithoutImagesInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutImagesInput = {
@@ -1585,6 +1843,7 @@ export type PropertyUncheckedCreateWithoutImagesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1592,12 +1851,14 @@ export type PropertyUncheckedCreateWithoutImagesInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutImagesInput = {
@@ -1627,12 +1888,14 @@ export type PropertyUpdateWithoutImagesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1642,6 +1905,7 @@ export type PropertyUpdateWithoutImagesInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutImagesInput = {
@@ -1657,6 +1921,7 @@ export type PropertyUncheckedUpdateWithoutImagesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1664,12 +1929,14 @@ export type PropertyUncheckedUpdateWithoutImagesInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutPropertyAmenitiesInput = {
@@ -1683,12 +1950,14 @@ export type PropertyCreateWithoutPropertyAmenitiesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1698,6 +1967,7 @@ export type PropertyCreateWithoutPropertyAmenitiesInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
@@ -1713,6 +1983,7 @@ export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1720,12 +1991,14 @@ export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutPropertyAmenitiesInput = {
@@ -1755,12 +2028,14 @@ export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1770,6 +2045,7 @@ export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
@@ -1785,6 +2061,7 @@ export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1792,12 +2069,14 @@ export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutFavoritesInput = {
@@ -1811,12 +2090,14 @@ export type PropertyCreateWithoutFavoritesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPropertiesInput
@@ -1826,6 +2107,7 @@ export type PropertyCreateWithoutFavoritesInput = {
   propertyAmenities?: Prisma.PropertyAmenityCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutFavoritesInput = {
@@ -1841,6 +2123,7 @@ export type PropertyUncheckedCreateWithoutFavoritesInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1848,12 +2131,14 @@ export type PropertyUncheckedCreateWithoutFavoritesInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.PropertyImageUncheckedCreateNestedManyWithoutPropertyInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedCreateNestedManyWithoutPropertyInput
   propertyReport?: Prisma.PropertyReportUncheckedCreateNestedManyWithoutPropertyInput
   propertyViews?: Prisma.PropertyViewUncheckedCreateNestedManyWithoutPropertyInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutFavoritesInput = {
@@ -1883,12 +2168,14 @@ export type PropertyUpdateWithoutFavoritesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1898,6 +2185,7 @@ export type PropertyUpdateWithoutFavoritesInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutFavoritesInput = {
@@ -1913,6 +2201,7 @@ export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1920,12 +2209,14 @@ export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyUserInput = {
@@ -1940,6 +2231,7 @@ export type PropertyCreateManyUserInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -1947,6 +2239,7 @@ export type PropertyCreateManyUserInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1962,12 +2255,14 @@ export type PropertyUpdateWithoutUserInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   district?: Prisma.DistrictUpdateOneRequiredWithoutPropertiesNestedInput
@@ -1977,6 +2272,7 @@ export type PropertyUpdateWithoutUserInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutUserInput = {
@@ -1991,6 +2287,7 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1998,6 +2295,7 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2005,6 +2303,7 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutUserInput = {
@@ -2019,6 +2318,7 @@ export type PropertyUncheckedUpdateManyWithoutUserInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2026,6 +2326,7 @@ export type PropertyUncheckedUpdateManyWithoutUserInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2042,6 +2343,7 @@ export type PropertyCreateManyDistrictInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
@@ -2049,6 +2351,7 @@ export type PropertyCreateManyDistrictInput = {
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2064,12 +2367,14 @@ export type PropertyUpdateWithoutDistrictInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -2079,6 +2384,7 @@ export type PropertyUpdateWithoutDistrictInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutDistrictInput = {
@@ -2093,6 +2399,7 @@ export type PropertyUncheckedUpdateWithoutDistrictInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2100,6 +2407,7 @@ export type PropertyUncheckedUpdateWithoutDistrictInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2107,6 +2415,7 @@ export type PropertyUncheckedUpdateWithoutDistrictInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutDistrictInput = {
@@ -2121,6 +2430,7 @@ export type PropertyUncheckedUpdateManyWithoutDistrictInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2128,6 +2438,7 @@ export type PropertyUncheckedUpdateManyWithoutDistrictInput = {
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2145,12 +2456,14 @@ export type PropertyCreateManyPropertyTypeInput = {
   bedroom?: number
   bathroom?: number
   isAvailable?: boolean
+  availableFrom?: Date | string
   isFeatured?: boolean
   featuredAt?: Date | string | null
   totalViews?: number
   sizeSqm: number
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2166,12 +2479,14 @@ export type PropertyUpdateWithoutPropertyTypeInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPropertiesNestedInput
@@ -2181,6 +2496,7 @@ export type PropertyUpdateWithoutPropertyTypeInput = {
   propertyAmenities?: Prisma.PropertyAmenityUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
@@ -2196,12 +2512,14 @@ export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.PropertyImageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2209,6 +2527,7 @@ export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   propertyAmenities?: Prisma.PropertyAmenityUncheckedUpdateManyWithoutPropertyNestedInput
   propertyReport?: Prisma.PropertyReportUncheckedUpdateManyWithoutPropertyNestedInput
   propertyViews?: Prisma.PropertyViewUncheckedUpdateManyWithoutPropertyNestedInput
+  propertyRuleValue?: Prisma.PropertyRuleValueUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
@@ -2224,12 +2543,14 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
   bedroom?: Prisma.IntFieldUpdateOperationsInput | number
   bathroom?: Prisma.IntFieldUpdateOperationsInput | number
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalViews?: Prisma.IntFieldUpdateOperationsInput | number
   sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
   furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumStayLength?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2245,6 +2566,7 @@ export type PropertyCountOutputType = {
   propertyAmenities: number
   propertyReport: number
   propertyViews: number
+  propertyRuleValue: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2253,6 +2575,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   propertyAmenities?: boolean | PropertyCountOutputTypeCountPropertyAmenitiesArgs
   propertyReport?: boolean | PropertyCountOutputTypeCountPropertyReportArgs
   propertyViews?: boolean | PropertyCountOutputTypeCountPropertyViewsArgs
+  propertyRuleValue?: boolean | PropertyCountOutputTypeCountPropertyRuleValueArgs
 }
 
 /**
@@ -2300,6 +2623,13 @@ export type PropertyCountOutputTypeCountPropertyViewsArgs<ExtArgs extends runtim
   where?: Prisma.PropertyViewWhereInput
 }
 
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountPropertyRuleValueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PropertyRuleValueWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2314,6 +2644,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   bedroom?: boolean
   bathroom?: boolean
   isAvailable?: boolean
+  availableFrom?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2321,6 +2652,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   sizeSqm?: boolean
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2331,6 +2663,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   propertyAmenities?: boolean | Prisma.Property$propertyAmenitiesArgs<ExtArgs>
   propertyReport?: boolean | Prisma.Property$propertyReportArgs<ExtArgs>
   propertyViews?: boolean | Prisma.Property$propertyViewsArgs<ExtArgs>
+  propertyRuleValue?: boolean | Prisma.Property$propertyRuleValueArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
@@ -2347,6 +2680,7 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   bedroom?: boolean
   bathroom?: boolean
   isAvailable?: boolean
+  availableFrom?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2354,6 +2688,7 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   sizeSqm?: boolean
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2374,6 +2709,7 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   bedroom?: boolean
   bathroom?: boolean
   isAvailable?: boolean
+  availableFrom?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2381,6 +2717,7 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   sizeSqm?: boolean
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2401,6 +2738,7 @@ export type PropertySelectScalar = {
   bedroom?: boolean
   bathroom?: boolean
   isAvailable?: boolean
+  availableFrom?: boolean
   isFeatured?: boolean
   featuredAt?: boolean
   totalViews?: boolean
@@ -2408,11 +2746,12 @@ export type PropertySelectScalar = {
   sizeSqm?: boolean
   furnished?: boolean
   isPublished?: boolean
+  minimumStayLength?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "title" | "description" | "price" | "deposit" | "bedroom" | "bathroom" | "isAvailable" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "title" | "description" | "price" | "deposit" | "bedroom" | "bathroom" | "isAvailable" | "availableFrom" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "minimumStayLength" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
@@ -2422,6 +2761,7 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   propertyAmenities?: boolean | Prisma.Property$propertyAmenitiesArgs<ExtArgs>
   propertyReport?: boolean | Prisma.Property$propertyReportArgs<ExtArgs>
   propertyViews?: boolean | Prisma.Property$propertyViewsArgs<ExtArgs>
+  propertyRuleValue?: boolean | Prisma.Property$propertyRuleValueArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2446,6 +2786,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     propertyAmenities: Prisma.$PropertyAmenityPayload<ExtArgs>[]
     propertyReport: Prisma.$PropertyReportPayload<ExtArgs>[]
     propertyViews: Prisma.$PropertyViewPayload<ExtArgs>[]
+    propertyRuleValue: Prisma.$PropertyRuleValuePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2460,6 +2801,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     bedroom: number
     bathroom: number
     isAvailable: boolean
+    availableFrom: Date
     isFeatured: boolean
     featuredAt: Date | null
     totalViews: number
@@ -2467,6 +2809,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     sizeSqm: number
     furnished: boolean
     isPublished: boolean
+    minimumStayLength: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["property"]>
@@ -2871,6 +3214,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   propertyAmenities<T extends Prisma.Property$propertyAmenitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyAmenitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyAmenityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   propertyReport<T extends Prisma.Property$propertyReportArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyReportArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   propertyViews<T extends Prisma.Property$propertyViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  propertyRuleValue<T extends Prisma.Property$propertyRuleValueArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$propertyRuleValueArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyRuleValuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2912,6 +3256,7 @@ export interface PropertyFieldRefs {
   readonly bedroom: Prisma.FieldRef<"Property", 'Int'>
   readonly bathroom: Prisma.FieldRef<"Property", 'Int'>
   readonly isAvailable: Prisma.FieldRef<"Property", 'Boolean'>
+  readonly availableFrom: Prisma.FieldRef<"Property", 'DateTime'>
   readonly isFeatured: Prisma.FieldRef<"Property", 'Boolean'>
   readonly featuredAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly totalViews: Prisma.FieldRef<"Property", 'Int'>
@@ -2919,6 +3264,7 @@ export interface PropertyFieldRefs {
   readonly sizeSqm: Prisma.FieldRef<"Property", 'Int'>
   readonly furnished: Prisma.FieldRef<"Property", 'Boolean'>
   readonly isPublished: Prisma.FieldRef<"Property", 'Boolean'>
+  readonly minimumStayLength: Prisma.FieldRef<"Property", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Property", 'DateTime'>
 }
@@ -3434,6 +3780,30 @@ export type Property$propertyViewsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.PropertyViewScalarFieldEnum | Prisma.PropertyViewScalarFieldEnum[]
+}
+
+/**
+ * Property.propertyRuleValue
+ */
+export type Property$propertyRuleValueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyRuleValue
+   */
+  select?: Prisma.PropertyRuleValueSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyRuleValue
+   */
+  omit?: Prisma.PropertyRuleValueOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyRuleValueInclude<ExtArgs> | null
+  where?: Prisma.PropertyRuleValueWhereInput
+  orderBy?: Prisma.PropertyRuleValueOrderByWithRelationInput | Prisma.PropertyRuleValueOrderByWithRelationInput[]
+  cursor?: Prisma.PropertyRuleValueWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PropertyRuleValueScalarFieldEnum | Prisma.PropertyRuleValueScalarFieldEnum[]
 }
 
 /**

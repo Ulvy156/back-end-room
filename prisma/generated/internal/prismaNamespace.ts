@@ -392,6 +392,8 @@ export const ModelName = {
   Property: 'Property',
   PropertyType: 'PropertyType',
   PropertyView: 'PropertyView',
+  PropertyRules: 'PropertyRules',
+  PropertyRuleValue: 'PropertyRuleValue',
   PropertyReport: 'PropertyReport',
   PropertyImage: 'PropertyImage',
   Amenity: 'Amenity',
@@ -412,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "phone" | "province" | "district" | "locationView" | "property" | "propertyType" | "propertyView" | "propertyReport" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
+    modelProps: "user" | "phone" | "province" | "district" | "locationView" | "property" | "propertyType" | "propertyView" | "propertyRules" | "propertyRuleValue" | "propertyReport" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1008,6 +1010,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PropertyRules: {
+      payload: Prisma.$PropertyRulesPayload<ExtArgs>
+      fields: Prisma.PropertyRulesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PropertyRulesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PropertyRulesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        findFirst: {
+          args: Prisma.PropertyRulesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PropertyRulesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        findMany: {
+          args: Prisma.PropertyRulesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>[]
+        }
+        create: {
+          args: Prisma.PropertyRulesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        createMany: {
+          args: Prisma.PropertyRulesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PropertyRulesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>[]
+        }
+        delete: {
+          args: Prisma.PropertyRulesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        update: {
+          args: Prisma.PropertyRulesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        deleteMany: {
+          args: Prisma.PropertyRulesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PropertyRulesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PropertyRulesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>[]
+        }
+        upsert: {
+          args: Prisma.PropertyRulesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRulesPayload>
+        }
+        aggregate: {
+          args: Prisma.PropertyRulesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePropertyRules>
+        }
+        groupBy: {
+          args: Prisma.PropertyRulesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyRulesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PropertyRulesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyRulesCountAggregateOutputType> | number
+        }
+      }
+    }
+    PropertyRuleValue: {
+      payload: Prisma.$PropertyRuleValuePayload<ExtArgs>
+      fields: Prisma.PropertyRuleValueFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PropertyRuleValueFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PropertyRuleValueFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        findFirst: {
+          args: Prisma.PropertyRuleValueFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PropertyRuleValueFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        findMany: {
+          args: Prisma.PropertyRuleValueFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>[]
+        }
+        create: {
+          args: Prisma.PropertyRuleValueCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        createMany: {
+          args: Prisma.PropertyRuleValueCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PropertyRuleValueCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>[]
+        }
+        delete: {
+          args: Prisma.PropertyRuleValueDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        update: {
+          args: Prisma.PropertyRuleValueUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        deleteMany: {
+          args: Prisma.PropertyRuleValueDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PropertyRuleValueUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PropertyRuleValueUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>[]
+        }
+        upsert: {
+          args: Prisma.PropertyRuleValueUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyRuleValuePayload>
+        }
+        aggregate: {
+          args: Prisma.PropertyRuleValueAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePropertyRuleValue>
+        }
+        groupBy: {
+          args: Prisma.PropertyRuleValueGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyRuleValueGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PropertyRuleValueCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyRuleValueCountAggregateOutputType> | number
+        }
+      }
+    }
     PropertyReport: {
       payload: Prisma.$PropertyReportPayload<ExtArgs>
       fields: Prisma.PropertyReportFieldRefs
@@ -1485,6 +1635,7 @@ export const PropertyScalarFieldEnum = {
   bedroom: 'bedroom',
   bathroom: 'bathroom',
   isAvailable: 'isAvailable',
+  availableFrom: 'availableFrom',
   isFeatured: 'isFeatured',
   featuredAt: 'featuredAt',
   totalViews: 'totalViews',
@@ -1492,6 +1643,7 @@ export const PropertyScalarFieldEnum = {
   sizeSqm: 'sizeSqm',
   furnished: 'furnished',
   isPublished: 'isPublished',
+  minimumStayLength: 'minimumStayLength',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1522,6 +1674,27 @@ export const PropertyViewScalarFieldEnum = {
 export type PropertyViewScalarFieldEnum = (typeof PropertyViewScalarFieldEnum)[keyof typeof PropertyViewScalarFieldEnum]
 
 
+export const PropertyRulesScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  label: 'label',
+  icon: 'icon'
+} as const
+
+export type PropertyRulesScalarFieldEnum = (typeof PropertyRulesScalarFieldEnum)[keyof typeof PropertyRulesScalarFieldEnum]
+
+
+export const PropertyRuleValueScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  propertyRuleId: 'propertyRuleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyRuleValueScalarFieldEnum = (typeof PropertyRuleValueScalarFieldEnum)[keyof typeof PropertyRuleValueScalarFieldEnum]
+
+
 export const PropertyReportScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
@@ -1537,6 +1710,7 @@ export const PropertyImageScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
   imageKey: 'imageKey',
+  isCover: 'isCover',
   createdAt: 'createdAt'
 } as const
 
@@ -1782,6 +1956,8 @@ export type GlobalOmitConfig = {
   property?: Prisma.PropertyOmit
   propertyType?: Prisma.PropertyTypeOmit
   propertyView?: Prisma.PropertyViewOmit
+  propertyRules?: Prisma.PropertyRulesOmit
+  propertyRuleValue?: Prisma.PropertyRuleValueOmit
   propertyReport?: Prisma.PropertyReportOmit
   propertyImage?: Prisma.PropertyImageOmit
   amenity?: Prisma.AmenityOmit

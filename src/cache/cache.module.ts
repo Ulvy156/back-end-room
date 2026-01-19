@@ -1,5 +1,6 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Global, Module } from '@nestjs/common';
+import { CacheService } from './cache.service';
 
 @Global()
 @Module({
@@ -9,6 +10,10 @@ import { Global, Module } from '@nestjs/common';
       max: 1000, // max key in memory
     }),
   ],
-  exports: [CacheModule],
+  providers: [CacheService],
+  exports: [
+    CacheService,
+    CacheModule, // 👈 add this
+  ],
 })
 export class AppCacheModule {}

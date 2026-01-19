@@ -12,6 +12,12 @@ export async function seedPropertyTypes(prisma: PrismaClient) {
     },
     { code: 'house', nameEn: 'House', nameKh: 'ផ្ទះ', slug: 'house' },
     { code: 'villa', nameEn: 'Villa', nameKh: 'វីឡា', slug: 'villa' },
+    {
+      code: 'single_room',
+      nameEn: 'Single Room',
+      nameKh: 'វីឡា',
+      slug: 'single_room',
+    },
   ];
 
   for (const item of data) {

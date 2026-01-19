@@ -28,21 +28,21 @@ enum UserRole {
 // USER
 // ==============================
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  imgUrl    String?  @map("img_url")
-  isLocked  Boolean  @default(false)
-  role      UserRole @default(USER)
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  imgUrl   String?  @map("img_url")
+  isLocked Boolean  @default(false)
+  role     UserRole @default(USER)
 
-  properties Property[]
-  favorites  Favorite[]
-  phones     Phone[]
-  propertyReport     PropertyReport[]
+  properties     Property[]
+  favorites      Favorite[]
+  phones         Phone[]
+  propertyReport PropertyReport[]
 
-  createdAt DateTime @default(now())  @map("created_at")
-  updatedAt DateTime @updatedAt       @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([email])
   @@map("users")
@@ -58,8 +58,8 @@ model Phone {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())  @map("created_at")
-  updatedAt DateTime @updatedAt       @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
   @@map("phones")
@@ -84,13 +84,13 @@ model District {
   nameKh     String @map("name_kh")
   nameEn     String @map("name_en")
 
-  province      Province      @relation(fields: [provinceId], references: [id])
+  province      Province       @relation(fields: [provinceId], references: [id])
   properties    Property[]
   locationViews LocationView[]
 
-  @@index([provinceId])
   @@unique([provinceId, nameEn])
   @@unique([provinceId, nameKh])
+  @@index([provinceId])
   @@map("districts")
 }
 
@@ -98,7 +98,7 @@ model LocationView {
   id         Int      @id @default(autoincrement())
   districtId Int      @unique @map("district_id")
   views      Int      @default(0)
-  updatedAt  DateTime @updatedAt   @map("updated_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   district District @relation(fields: [districtId], references: [id])
 
@@ -120,22 +120,25 @@ model Property {
   title       String
   description String?
 
-  price    Float
-  deposit  Float?
+  price   Float
+  deposit Float?
 
-  bedroom  Int  @default(1)
-  bathroom  Int  @default(1)
-  isAvailable  Boolean  @default(true) @map("is_available")
+  bedroom  Int @default(1)
+  bathroom Int @default(1)
 
-  isFeatured Boolean  @default(false)
+  isAvailable   Boolean  @default(true) @map("is_available")
+  availableFrom DateTime @default(now()) @map("available_from")
+
+  isFeatured Boolean   @default(false)
   featuredAt DateTime?
 
   totalViews Int @default(0) @map("total_views")
 
-  propertyTypeId Int @map("property_type_id")
+  propertyTypeId Int     @map("property_type_id")
   sizeSqm        Int
   furnished      Boolean @default(true)
   isPublished    Boolean @default(true)
+  minimumStayLength Int @default(1) @map("minimum_stay_length")
 
   user         User         @relation(fields: [userId], references: [id])
   district     District     @relation(fields: [districtId], references: [id])
@@ -144,11 +147,12 @@ model Property {
   images            PropertyImage[]
   favorites         Favorite[]
   propertyAmenities PropertyAmenity[]
-  propertyReport PropertyReport[]
-  propertyViews PropertyView[]
+  propertyReport    PropertyReport[]
+  propertyViews     PropertyView[]
+  propertyRuleValue PropertyRuleValue[]
 
-  createdAt DateTime @default(now())  @map("created_at")
-  updatedAt DateTime @updatedAt       @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([districtId, isAvailable])
   @@index([propertyTypeId])
@@ -172,7 +176,7 @@ model PropertyType {
 
   properties Property[]
 
-  createdAt DateTime @default(now())  @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([slug])
   @@index([isRemoved])
@@ -192,34 +196,76 @@ model PropertyView {
 
   @@unique([propertyId, date])
   @@index([date])
+
+  @@map("property_views")
+}
+
+// ==============================
+// PROPERTY RULES
+// ==============================
+model PropertyRules {
+  id     Int                 @id @default(autoincrement())
+  key    String
+  label  String
+  icon   String
+  values PropertyRuleValue[]
+
+  @@unique([key])
+  @@unique([label])
+  @@index([key])
+
+  @@map("property_rules")
+}
+
+// ==============================
+// PROPERTY RULES VALUES
+// ==============================
+model PropertyRuleValue {
+  id Int @id @default(autoincrement())
+
+  propertyId     String
+  propertyRuleId Int
+
+  property Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  rule     PropertyRules @relation(fields: [propertyRuleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([propertyId, propertyRuleId])
+
+  @@map("property_rule_value")
 }
 
 // ==============================
 // PROPERTY REPORT
 // ==============================
 model PropertyReport {
-  id         Int      @id @default(autoincrement())
-  propertyId String   @map("property_id")
-  userId     String   @map("user_id")
-  description   String 
+  id          Int    @id @default(autoincrement())
+  propertyId  String @map("property_id")
+  userId      String @map("user_id")
+  description String
 
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())  @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([propertyId, userId])
+
+  @@map("property_reports")
+
 }
 
 // ==============================
 // PROPERTY IMAGE
 // ==============================
 model PropertyImage {
-  id         String @id @default(uuid())
-  propertyId String @map("property_id")
-  imageKey   String @map("image_key")
-
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  propertyId String   @map("property_id")
+  imageKey   String   @map("image_key")
+  isCover    Boolean  @default(false) @map("is_cover")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
