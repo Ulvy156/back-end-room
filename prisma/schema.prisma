@@ -116,6 +116,8 @@ model Property {
 
   address     String
   locationUrl String? @map("location_url")
+  lat Float?
+  lng Float?
 
   title       String
   description String?
@@ -206,12 +208,12 @@ model PropertyView {
 model PropertyRules {
   id     Int                 @id @default(autoincrement())
   key    String
-  label  String
+  nameEn    String  @unique @map("name_en")
+  nameKh    String  @unique @map("name_kh")
   icon   String
   values PropertyRuleValue[]
 
   @@unique([key])
-  @@unique([label])
   @@index([key])
 
   @@map("property_rules")

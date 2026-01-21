@@ -1628,6 +1628,8 @@ export const PropertyScalarFieldEnum = {
   districtId: 'districtId',
   address: 'address',
   locationUrl: 'locationUrl',
+  lat: 'lat',
+  lng: 'lng',
   title: 'title',
   description: 'description',
   price: 'price',
@@ -1677,7 +1679,8 @@ export type PropertyViewScalarFieldEnum = (typeof PropertyViewScalarFieldEnum)[k
 export const PropertyRulesScalarFieldEnum = {
   id: 'id',
   key: 'key',
-  label: 'label',
+  nameEn: 'nameEn',
+  nameKh: 'nameKh',
   icon: 'icon'
 } as const
 

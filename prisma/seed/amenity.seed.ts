@@ -5,13 +5,13 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'wifi',
       nameEn: 'Wi-Fi',
-      nameKh: 'វ៉ាយហ្វាយ',
+      nameKh: 'អ៊ីនធឺណិត (Wi-Fi)', // Added Khmer script for Internet + Wi-Fi
       icon: 'wifi',
     },
     {
       code: 'parking',
       nameEn: 'Parking',
-      nameKh: 'ចំណតរថយន្ត',
+      nameKh: 'កន្លែងចតយានយន្ត', // "Vehicle parking space" (covers cars/motors)
       icon: 'square-parking',
     },
     {
@@ -23,19 +23,19 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'water',
       nameEn: 'Water',
-      nameKh: 'ទឹក',
+      nameKh: 'ទឹកស្អាត (រដ្ឋ)', // "Clean Water (State)" - standard for rentals
       icon: 'droplets',
     },
     {
       code: 'electricity',
       nameEn: 'Electricity',
-      nameKh: 'អគ្គិសនី',
+      nameKh: 'ភ្លើង (រដ្ឋ)', // "Electricity (State)" - more common than "អគ្គិសនី" in daily talk
       icon: 'cable',
     },
     {
       code: 'security',
       nameEn: 'Security',
-      nameKh: 'សន្តិសុខ',
+      nameKh: 'សន្តិសុខ ២៤ម៉ោង', // Added "24h" because that's what people look for
       icon: 'shield-check',
     },
     {
@@ -49,7 +49,7 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'bed',
       nameEn: 'Bed',
-      nameKh: 'គ្រែ',
+      nameKh: 'គ្រែគេង', // "Sleeping bed"
       icon: 'bed',
     },
     {
@@ -93,7 +93,7 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'hot_water',
       nameEn: 'Hot Water',
-      nameKh: 'ទឹកក្តៅ',
+      nameKh: 'ម៉ាស៊ីនទឹកក្តៅ', // "Hot water machine" sounds more like a feature
       icon: 'thermometer-sun',
     },
 
@@ -107,7 +107,7 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'microwave',
       nameEn: 'Microwave',
-      nameKh: 'មីក្រូវ៉េវ',
+      nameKh: 'ឡម៉ៃក្រូវ៉េវ', // Added "Oven/Stove" prefix for clarity
       icon: 'microwave',
     },
 
@@ -115,7 +115,7 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'balcony',
       nameEn: 'Balcony',
-      nameKh: 'រានហាល',
+      nameKh: 'យ៉រ/រានហាល', // "Yor" is the common term for balcony
       icon: 'sun',
     },
     {
@@ -135,7 +135,7 @@ export async function seedAmenities(prisma: PrismaClient) {
     {
       code: 'pet_friendly',
       nameEn: 'Pet Friendly',
-      nameKh: 'អនុញ្ញាតសត្វចិញ្ចឹម',
+      nameKh: 'អនុញ្ញាតឱ្យមានសត្វចិញ្ចឹម',
       icon: 'paw-print',
     },
   ];

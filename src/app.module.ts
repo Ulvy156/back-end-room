@@ -12,6 +12,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { PropertyModule } from './property/property.module';
 import { AppCacheModule } from './cache/cache.module';
 import { LocationModule } from './location/location.module';
+import { PropertyAmenityModule } from './property-amenity/property-amenity.module';
+import { PropertyRulesModule } from './property-rules/property-rules.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -32,6 +34,8 @@ import { LocationModule } from './location/location.module';
     PropertyTypeModule,
     PropertyModule,
     LocationModule,
+    PropertyAmenityModule,
+    PropertyRulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

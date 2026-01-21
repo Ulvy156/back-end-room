@@ -4,57 +4,68 @@ export async function seedPropetyRules(prisma: PrismaClient) {
   const rules = [
     {
       key: 'pets_allowed',
-      label: 'Pets Allowed',
-      icon: 'paw',
+      nameEn: 'Pets ',
+      nameKh: 'អនុញ្ញាតឱ្យមានសត្វចិញ្ចឹម', // Added "have" for better flow
+      icon: 'paw-print',
     },
     {
       key: 'smoking_allowed',
-      label: 'Smoking Allowed',
-      icon: 'smoking',
+      nameEn: 'Smoking ',
+      nameKh: 'អនុញ្ញាតឱ្យជក់បារី',
+      icon: 'cigarette',
     },
     {
       key: 'guests_allowed',
-      label: 'Guests Allowed',
+      nameEn: 'Guests ',
+      nameKh: 'អនុញ្ញាតឱ្យមានភ្ញៀវ', // More natural than just "allow guests"
       icon: 'users',
     },
     {
       key: 'overnight_guests',
-      label: 'Overnight Guests',
+      nameEn: 'Overnight Guests',
+      nameKh: 'អនុញ្ញាតឱ្យស្នាក់នៅយប់',
       icon: 'moon',
     },
     {
       key: 'parties_allowed',
-      label: 'Parties Allowed',
+      nameEn: 'Parties ',
+      nameKh: 'អនុញ្ញាតឱ្យរៀបចំកម្មវិធី', // "Organize programs/parties" sounds better
       icon: 'music',
     },
     {
       key: 'cooking_allowed',
-      label: 'Cooking Allowed',
+      nameEn: 'Cooking ',
+      nameKh: 'អនុញ្ញាតឱ្យចម្អិនអាហារ',
       icon: 'chef-hat',
     },
     {
       key: 'parking_available',
-      label: 'Parking Available',
+      nameEn: 'Parking Available',
+      nameKh: 'មានកន្លែងចតយានយន្ត', // "Parking space" is more professional
       icon: 'car',
     },
     {
       key: 'internet_included',
-      label: 'Internet Included',
+      nameEn: 'Internet Included',
+      nameKh: 'រួមបញ្ចូលសេវាអ៊ីនធឺណិត',
       icon: 'wifi',
     },
     {
       key: 'water_included',
-      label: 'Water Included',
+      nameEn: 'Water Included',
+      nameKh: 'រួមបញ្ចូលថ្លៃទឹក', // Specifically "water fee"
       icon: 'droplet',
     },
     {
       key: 'electricity_included',
-      label: 'Electricity Included',
+      nameEn: 'Electricity Included',
+      nameKh: 'រួមបញ្ចូលថ្លៃអគ្គិសនី', // Specifically "electricity fee"
       icon: 'bolt',
     },
     {
       key: 'minimum_stay_required',
-      label: 'Minimum Stay Required',
+      nameEn: 'Minimum Stay Required',
+      nameKh: 'តម្រូវឱ្យស្នាក់នៅអប្បបរមា',
       icon: 'calendar',
     },
   ];

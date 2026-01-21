@@ -5,4 +5,6 @@ export enum CACHE_KEYS {
   HOME_PAGE = 'home_page',
   PROPERTY_TYPE = 'property_type',
   LOCATION_SUGGESTIONS = 'location_suggestions',
+  AMENITIES = 'amenities',
+  PROPERTY_RULES = 'property_rules',
 }

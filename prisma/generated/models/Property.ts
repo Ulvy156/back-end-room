@@ -28,6 +28,8 @@ export type AggregateProperty = {
 
 export type PropertyAvgAggregateOutputType = {
   districtId: number | null
+  lat: number | null
+  lng: number | null
   price: number | null
   deposit: number | null
   bedroom: number | null
@@ -40,6 +42,8 @@ export type PropertyAvgAggregateOutputType = {
 
 export type PropertySumAggregateOutputType = {
   districtId: number | null
+  lat: number | null
+  lng: number | null
   price: number | null
   deposit: number | null
   bedroom: number | null
@@ -56,6 +60,8 @@ export type PropertyMinAggregateOutputType = {
   districtId: number | null
   address: string | null
   locationUrl: string | null
+  lat: number | null
+  lng: number | null
   title: string | null
   description: string | null
   price: number | null
@@ -82,6 +88,8 @@ export type PropertyMaxAggregateOutputType = {
   districtId: number | null
   address: string | null
   locationUrl: string | null
+  lat: number | null
+  lng: number | null
   title: string | null
   description: string | null
   price: number | null
@@ -108,6 +116,8 @@ export type PropertyCountAggregateOutputType = {
   districtId: number
   address: number
   locationUrl: number
+  lat: number
+  lng: number
   title: number
   description: number
   price: number
@@ -132,6 +142,8 @@ export type PropertyCountAggregateOutputType = {
 
 export type PropertyAvgAggregateInputType = {
   districtId?: true
+  lat?: true
+  lng?: true
   price?: true
   deposit?: true
   bedroom?: true
@@ -144,6 +156,8 @@ export type PropertyAvgAggregateInputType = {
 
 export type PropertySumAggregateInputType = {
   districtId?: true
+  lat?: true
+  lng?: true
   price?: true
   deposit?: true
   bedroom?: true
@@ -160,6 +174,8 @@ export type PropertyMinAggregateInputType = {
   districtId?: true
   address?: true
   locationUrl?: true
+  lat?: true
+  lng?: true
   title?: true
   description?: true
   price?: true
@@ -186,6 +202,8 @@ export type PropertyMaxAggregateInputType = {
   districtId?: true
   address?: true
   locationUrl?: true
+  lat?: true
+  lng?: true
   title?: true
   description?: true
   price?: true
@@ -212,6 +230,8 @@ export type PropertyCountAggregateInputType = {
   districtId?: true
   address?: true
   locationUrl?: true
+  lat?: true
+  lng?: true
   title?: true
   description?: true
   price?: true
@@ -325,6 +345,8 @@ export type PropertyGroupByOutputType = {
   districtId: number
   address: string
   locationUrl: string | null
+  lat: number | null
+  lng: number | null
   title: string
   description: string | null
   price: number
@@ -374,6 +396,8 @@ export type PropertyWhereInput = {
   districtId?: Prisma.IntFilter<"Property"> | number
   address?: Prisma.StringFilter<"Property"> | string
   locationUrl?: Prisma.StringNullableFilter<"Property"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Property"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Property"> | number | null
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
@@ -409,6 +433,8 @@ export type PropertyOrderByWithRelationInput = {
   districtId?: Prisma.SortOrder
   address?: Prisma.SortOrder
   locationUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  lat?: Prisma.SortOrderInput | Prisma.SortOrder
+  lng?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -447,6 +473,8 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   districtId?: Prisma.IntFilter<"Property"> | number
   address?: Prisma.StringFilter<"Property"> | string
   locationUrl?: Prisma.StringNullableFilter<"Property"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Property"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Property"> | number | null
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
@@ -482,6 +510,8 @@ export type PropertyOrderByWithAggregationInput = {
   districtId?: Prisma.SortOrder
   address?: Prisma.SortOrder
   locationUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  lat?: Prisma.SortOrderInput | Prisma.SortOrder
+  lng?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -516,6 +546,8 @@ export type PropertyScalarWhereWithAggregatesInput = {
   districtId?: Prisma.IntWithAggregatesFilter<"Property"> | number
   address?: Prisma.StringWithAggregatesFilter<"Property"> | string
   locationUrl?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  lat?: Prisma.FloatNullableWithAggregatesFilter<"Property"> | number | null
+  lng?: Prisma.FloatNullableWithAggregatesFilter<"Property"> | number | null
   title?: Prisma.StringWithAggregatesFilter<"Property"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Property"> | number
@@ -540,6 +572,8 @@ export type PropertyCreateInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -574,6 +608,8 @@ export type PropertyUncheckedCreateInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -604,6 +640,8 @@ export type PropertyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -638,6 +676,8 @@ export type PropertyUncheckedUpdateInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -670,6 +710,8 @@ export type PropertyCreateManyInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -694,6 +736,8 @@ export type PropertyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -719,6 +763,8 @@ export type PropertyUncheckedUpdateManyInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -755,6 +801,8 @@ export type PropertyCountOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
   address?: Prisma.SortOrder
   locationUrl?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -777,6 +825,8 @@ export type PropertyCountOrderByAggregateInput = {
 
 export type PropertyAvgOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   bedroom?: Prisma.SortOrder
@@ -793,6 +843,8 @@ export type PropertyMaxOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
   address?: Prisma.SortOrder
   locationUrl?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -819,6 +871,8 @@ export type PropertyMinOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
   address?: Prisma.SortOrder
   locationUrl?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -841,6 +895,8 @@ export type PropertyMinOrderByAggregateInput = {
 
 export type PropertySumOrderByAggregateInput = {
   districtId?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
   price?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   bedroom?: Prisma.SortOrder
@@ -940,16 +996,16 @@ export type PropertyUncheckedUpdateManyWithoutDistrictNestedInput = {
   deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
 }
 
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
   increment?: number
   decrement?: number
   multiply?: number
@@ -1090,6 +1146,8 @@ export type PropertyCreateWithoutUserInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1122,6 +1180,8 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1183,6 +1243,8 @@ export type PropertyScalarWhereInput = {
   districtId?: Prisma.IntFilter<"Property"> | number
   address?: Prisma.StringFilter<"Property"> | string
   locationUrl?: Prisma.StringNullableFilter<"Property"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Property"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Property"> | number | null
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringNullableFilter<"Property"> | string | null
   price?: Prisma.FloatFilter<"Property"> | number
@@ -1207,6 +1269,8 @@ export type PropertyCreateWithoutDistrictInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1239,6 +1303,8 @@ export type PropertyUncheckedCreateWithoutDistrictInput = {
   userId: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1295,6 +1361,8 @@ export type PropertyCreateWithoutPropertyTypeInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1328,6 +1396,8 @@ export type PropertyUncheckedCreateWithoutPropertyTypeInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1383,6 +1453,8 @@ export type PropertyCreateWithoutPropertyViewsInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1416,6 +1488,8 @@ export type PropertyUncheckedCreateWithoutPropertyViewsInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1461,6 +1535,8 @@ export type PropertyUpdateWithoutPropertyViewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1494,6 +1570,8 @@ export type PropertyUncheckedUpdateWithoutPropertyViewsInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1523,6 +1601,8 @@ export type PropertyCreateWithoutPropertyRuleValueInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1556,6 +1636,8 @@ export type PropertyUncheckedCreateWithoutPropertyRuleValueInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1601,6 +1683,8 @@ export type PropertyUpdateWithoutPropertyRuleValueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1634,6 +1718,8 @@ export type PropertyUncheckedUpdateWithoutPropertyRuleValueInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1663,6 +1749,8 @@ export type PropertyCreateWithoutPropertyReportInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1696,6 +1784,8 @@ export type PropertyUncheckedCreateWithoutPropertyReportInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1741,6 +1831,8 @@ export type PropertyUpdateWithoutPropertyReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1774,6 +1866,8 @@ export type PropertyUncheckedUpdateWithoutPropertyReportInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1803,6 +1897,8 @@ export type PropertyCreateWithoutImagesInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1836,6 +1932,8 @@ export type PropertyUncheckedCreateWithoutImagesInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1881,6 +1979,8 @@ export type PropertyUpdateWithoutImagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1914,6 +2014,8 @@ export type PropertyUncheckedUpdateWithoutImagesInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1943,6 +2045,8 @@ export type PropertyCreateWithoutPropertyAmenitiesInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -1976,6 +2080,8 @@ export type PropertyUncheckedCreateWithoutPropertyAmenitiesInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2021,6 +2127,8 @@ export type PropertyUpdateWithoutPropertyAmenitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2054,6 +2162,8 @@ export type PropertyUncheckedUpdateWithoutPropertyAmenitiesInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2083,6 +2193,8 @@ export type PropertyCreateWithoutFavoritesInput = {
   id?: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2116,6 +2228,8 @@ export type PropertyUncheckedCreateWithoutFavoritesInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2161,6 +2275,8 @@ export type PropertyUpdateWithoutFavoritesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2194,6 +2310,8 @@ export type PropertyUncheckedUpdateWithoutFavoritesInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2224,6 +2342,8 @@ export type PropertyCreateManyUserInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2248,6 +2368,8 @@ export type PropertyUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2280,6 +2402,8 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2311,6 +2435,8 @@ export type PropertyUncheckedUpdateManyWithoutUserInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2336,6 +2462,8 @@ export type PropertyCreateManyDistrictInput = {
   userId: string
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2360,6 +2488,8 @@ export type PropertyUpdateWithoutDistrictInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2392,6 +2522,8 @@ export type PropertyUncheckedUpdateWithoutDistrictInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2423,6 +2555,8 @@ export type PropertyUncheckedUpdateManyWithoutDistrictInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2449,6 +2583,8 @@ export type PropertyCreateManyPropertyTypeInput = {
   districtId: number
   address: string
   locationUrl?: string | null
+  lat?: number | null
+  lng?: number | null
   title: string
   description?: string | null
   price: number
@@ -2472,6 +2608,8 @@ export type PropertyUpdateWithoutPropertyTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2505,6 +2643,8 @@ export type PropertyUncheckedUpdateWithoutPropertyTypeInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2536,6 +2676,8 @@ export type PropertyUncheckedUpdateManyWithoutPropertyTypeInput = {
   districtId?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
   locationUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2637,6 +2779,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   districtId?: boolean
   address?: boolean
   locationUrl?: boolean
+  lat?: boolean
+  lng?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -2673,6 +2817,8 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   districtId?: boolean
   address?: boolean
   locationUrl?: boolean
+  lat?: boolean
+  lng?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -2702,6 +2848,8 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   districtId?: boolean
   address?: boolean
   locationUrl?: boolean
+  lat?: boolean
+  lng?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -2731,6 +2879,8 @@ export type PropertySelectScalar = {
   districtId?: boolean
   address?: boolean
   locationUrl?: boolean
+  lat?: boolean
+  lng?: boolean
   title?: boolean
   description?: boolean
   price?: boolean
@@ -2751,7 +2901,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "title" | "description" | "price" | "deposit" | "bedroom" | "bathroom" | "isAvailable" | "availableFrom" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "minimumStayLength" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "districtId" | "address" | "locationUrl" | "lat" | "lng" | "title" | "description" | "price" | "deposit" | "bedroom" | "bathroom" | "isAvailable" | "availableFrom" | "isFeatured" | "featuredAt" | "totalViews" | "propertyTypeId" | "sizeSqm" | "furnished" | "isPublished" | "minimumStayLength" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   district?: boolean | Prisma.DistrictDefaultArgs<ExtArgs>
@@ -2794,6 +2944,8 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     districtId: number
     address: string
     locationUrl: string | null
+    lat: number | null
+    lng: number | null
     title: string
     description: string | null
     price: number
@@ -3249,6 +3401,8 @@ export interface PropertyFieldRefs {
   readonly districtId: Prisma.FieldRef<"Property", 'Int'>
   readonly address: Prisma.FieldRef<"Property", 'String'>
   readonly locationUrl: Prisma.FieldRef<"Property", 'String'>
+  readonly lat: Prisma.FieldRef<"Property", 'Float'>
+  readonly lng: Prisma.FieldRef<"Property", 'Float'>
   readonly title: Prisma.FieldRef<"Property", 'String'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly price: Prisma.FieldRef<"Property", 'Float'>
