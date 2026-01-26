@@ -39,6 +39,7 @@ export type PropertyTypeMinAggregateOutputType = {
   code: string | null
   nameEn: string | null
   nameKh: string | null
+  icon: string | null
   slug: string | null
   isRemoved: boolean | null
   createdAt: Date | null
@@ -49,6 +50,7 @@ export type PropertyTypeMaxAggregateOutputType = {
   code: string | null
   nameEn: string | null
   nameKh: string | null
+  icon: string | null
   slug: string | null
   isRemoved: boolean | null
   createdAt: Date | null
@@ -59,6 +61,7 @@ export type PropertyTypeCountAggregateOutputType = {
   code: number
   nameEn: number
   nameKh: number
+  icon: number
   slug: number
   isRemoved: number
   createdAt: number
@@ -79,6 +82,7 @@ export type PropertyTypeMinAggregateInputType = {
   code?: true
   nameEn?: true
   nameKh?: true
+  icon?: true
   slug?: true
   isRemoved?: true
   createdAt?: true
@@ -89,6 +93,7 @@ export type PropertyTypeMaxAggregateInputType = {
   code?: true
   nameEn?: true
   nameKh?: true
+  icon?: true
   slug?: true
   isRemoved?: true
   createdAt?: true
@@ -99,6 +104,7 @@ export type PropertyTypeCountAggregateInputType = {
   code?: true
   nameEn?: true
   nameKh?: true
+  icon?: true
   slug?: true
   isRemoved?: true
   createdAt?: true
@@ -196,6 +202,7 @@ export type PropertyTypeGroupByOutputType = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved: boolean
   createdAt: Date
@@ -229,6 +236,7 @@ export type PropertyTypeWhereInput = {
   code?: Prisma.StringFilter<"PropertyType"> | string
   nameEn?: Prisma.StringFilter<"PropertyType"> | string
   nameKh?: Prisma.StringFilter<"PropertyType"> | string
+  icon?: Prisma.StringFilter<"PropertyType"> | string
   slug?: Prisma.StringFilter<"PropertyType"> | string
   isRemoved?: Prisma.BoolFilter<"PropertyType"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PropertyType"> | Date | string
@@ -240,6 +248,7 @@ export type PropertyTypeOrderByWithRelationInput = {
   code?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isRemoved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -255,6 +264,7 @@ export type PropertyTypeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PropertyTypeWhereInput | Prisma.PropertyTypeWhereInput[]
   OR?: Prisma.PropertyTypeWhereInput[]
   NOT?: Prisma.PropertyTypeWhereInput | Prisma.PropertyTypeWhereInput[]
+  icon?: Prisma.StringFilter<"PropertyType"> | string
   isRemoved?: Prisma.BoolFilter<"PropertyType"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PropertyType"> | Date | string
   properties?: Prisma.PropertyListRelationFilter
@@ -265,6 +275,7 @@ export type PropertyTypeOrderByWithAggregationInput = {
   code?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isRemoved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -283,6 +294,7 @@ export type PropertyTypeScalarWhereWithAggregatesInput = {
   code?: Prisma.StringWithAggregatesFilter<"PropertyType"> | string
   nameEn?: Prisma.StringWithAggregatesFilter<"PropertyType"> | string
   nameKh?: Prisma.StringWithAggregatesFilter<"PropertyType"> | string
+  icon?: Prisma.StringWithAggregatesFilter<"PropertyType"> | string
   slug?: Prisma.StringWithAggregatesFilter<"PropertyType"> | string
   isRemoved?: Prisma.BoolWithAggregatesFilter<"PropertyType"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PropertyType"> | Date | string
@@ -292,6 +304,7 @@ export type PropertyTypeCreateInput = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved?: boolean
   createdAt?: Date | string
@@ -303,6 +316,7 @@ export type PropertyTypeUncheckedCreateInput = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved?: boolean
   createdAt?: Date | string
@@ -313,6 +327,7 @@ export type PropertyTypeUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -324,6 +339,7 @@ export type PropertyTypeUncheckedUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -335,6 +351,7 @@ export type PropertyTypeCreateManyInput = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved?: boolean
   createdAt?: Date | string
@@ -344,6 +361,7 @@ export type PropertyTypeUpdateManyMutationInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,6 +372,7 @@ export type PropertyTypeUncheckedUpdateManyInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,6 +388,7 @@ export type PropertyTypeCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isRemoved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -383,6 +403,7 @@ export type PropertyTypeMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isRemoved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -393,6 +414,7 @@ export type PropertyTypeMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
+  icon?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isRemoved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -420,6 +442,7 @@ export type PropertyTypeCreateWithoutPropertiesInput = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved?: boolean
   createdAt?: Date | string
@@ -430,6 +453,7 @@ export type PropertyTypeUncheckedCreateWithoutPropertiesInput = {
   code: string
   nameEn: string
   nameKh: string
+  icon: string
   slug: string
   isRemoved?: boolean
   createdAt?: Date | string
@@ -455,6 +479,7 @@ export type PropertyTypeUpdateWithoutPropertiesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -465,6 +490,7 @@ export type PropertyTypeUncheckedUpdateWithoutPropertiesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isRemoved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -506,6 +532,7 @@ export type PropertyTypeSelect<ExtArgs extends runtime.Types.Extensions.Internal
   code?: boolean
   nameEn?: boolean
   nameKh?: boolean
+  icon?: boolean
   slug?: boolean
   isRemoved?: boolean
   createdAt?: boolean
@@ -518,6 +545,7 @@ export type PropertyTypeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   code?: boolean
   nameEn?: boolean
   nameKh?: boolean
+  icon?: boolean
   slug?: boolean
   isRemoved?: boolean
   createdAt?: boolean
@@ -528,6 +556,7 @@ export type PropertyTypeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   code?: boolean
   nameEn?: boolean
   nameKh?: boolean
+  icon?: boolean
   slug?: boolean
   isRemoved?: boolean
   createdAt?: boolean
@@ -538,12 +567,13 @@ export type PropertyTypeSelectScalar = {
   code?: boolean
   nameEn?: boolean
   nameKh?: boolean
+  icon?: boolean
   slug?: boolean
   isRemoved?: boolean
   createdAt?: boolean
 }
 
-export type PropertyTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "nameEn" | "nameKh" | "slug" | "isRemoved" | "createdAt", ExtArgs["result"]["propertyType"]>
+export type PropertyTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "nameEn" | "nameKh" | "icon" | "slug" | "isRemoved" | "createdAt", ExtArgs["result"]["propertyType"]>
 export type PropertyTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   properties?: boolean | Prisma.PropertyType$propertiesArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -561,6 +591,7 @@ export type $PropertyTypePayload<ExtArgs extends runtime.Types.Extensions.Intern
     code: string
     nameEn: string
     nameKh: string
+    icon: string
     slug: string
     isRemoved: boolean
     createdAt: Date
@@ -992,6 +1023,7 @@ export interface PropertyTypeFieldRefs {
   readonly code: Prisma.FieldRef<"PropertyType", 'String'>
   readonly nameEn: Prisma.FieldRef<"PropertyType", 'String'>
   readonly nameKh: Prisma.FieldRef<"PropertyType", 'String'>
+  readonly icon: Prisma.FieldRef<"PropertyType", 'String'>
   readonly slug: Prisma.FieldRef<"PropertyType", 'String'>
   readonly isRemoved: Prisma.FieldRef<"PropertyType", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PropertyType", 'DateTime'>

@@ -16,4 +16,8 @@ export class CreatePropertyTypeDto {
   @IsNotEmpty()
   @IsString()
   slug: string;
+
+  @IsNotEmpty()
+  @IsString()
+  icon: string;
 }

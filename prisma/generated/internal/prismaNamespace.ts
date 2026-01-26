@@ -1658,6 +1658,7 @@ export const PropertyTypeScalarFieldEnum = {
   code: 'code',
   nameEn: 'nameEn',
   nameKh: 'nameKh',
+  icon: 'icon',
   slug: 'slug',
   isRemoved: 'isRemoved',
   createdAt: 'createdAt'

@@ -14,6 +14,7 @@ import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/auth/public.decorator';
+import { BrowsePropertyDto } from './dto/browser-property.dto';
 
 @Public()
 @Controller('property')
@@ -37,6 +38,11 @@ export class PropertyController {
   @Get('/home-page')
   getDataHomePage() {
     return this.propertyService.getDataHomePage();
+  }
+
+  @Post('/browse-properties')
+  browserProperties(@Body() filter: BrowsePropertyDto) {
+    return this.propertyService.browseProperties(filter);
   }
 
   @Get(':id')

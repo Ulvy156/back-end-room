@@ -173,6 +173,7 @@ model PropertyType {
   code      String  @unique
   nameEn    String  @unique @map("name_en")
   nameKh    String  @unique @map("name_kh")
+  icon      String
   slug      String  @unique
   isRemoved Boolean @default(false) @map("is_removed")
 

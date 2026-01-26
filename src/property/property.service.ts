@@ -10,6 +10,9 @@ import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
 import { CacheService } from 'src/cache/cache.service';
 import { CACHE_KEYS } from 'src/cache/cache.key';
+import { BrowsePropertyDto } from './dto/browser-property.dto';
+import { Prisma } from 'prisma/generated/client';
+import { buildOrder } from 'src/utils/buildOrder';
 
 @Injectable()
 export class PropertyService {
@@ -197,6 +200,7 @@ export class PropertyService {
         isAvailable: true,
         images: {
           take: 1,
+          where: { isCover: true },
           select: {
             imageKey: true,
           },
@@ -252,6 +256,7 @@ export class PropertyService {
         isAvailable: true,
         images: {
           take: 1,
+          where: { isCover: true },
           select: {
             imageKey: true,
           },
@@ -311,5 +316,112 @@ export class PropertyService {
     await this.cache.set(CACHE_KEYS.POPULAR_LOCATIONS, popularLocations);
 
     return popularLocations;
+  }
+
+  async browseProperties(filter: BrowsePropertyDto) {
+    const where: Prisma.PropertyWhereInput = {};
+    // default get only public property
+    where.isPublished = true;
+    // price
+    if (filter.maxPrice && filter.maxPrice > 0) {
+      where.price = {
+        gte: filter.minPrice ?? 0,
+        lte: filter.maxPrice || undefined,
+      };
+    }
+
+    // location
+    if (filter.location && filter.location !== 0) {
+      where.districtId = filter.location;
+    }
+    // property type
+    if (filter.roomType && filter.roomType !== 0) {
+      where.propertyTypeId = filter.roomType;
+    }
+    // bedroom
+    if (filter.bedroom && filter.bedroom > 0) {
+      where.bedroom = filter.bedroom;
+    }
+    // bathroom
+    if (filter.bathroom && filter.bathroom > 0) {
+      where.bathroom = filter.bathroom;
+    }
+
+    // property amenities
+    if (filter.amenities?.length) {
+      where.propertyAmenities = {
+        some: {
+          amenityId: { in: filter.amenities },
+        },
+      };
+    }
+    // property rules
+    if (filter.houseRules?.length) {
+      where.propertyRuleValue = {
+        some: {
+          id: { in: filter.houseRules },
+        },
+      };
+    }
+
+    const page = filter.page && filter.page > 0 ? filter.page : 1;
+    const limit = filter.limit && filter.limit > 0 ? filter.limit : 12;
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.prisma.property.findMany({
+        where,
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          sizeSqm: true,
+          totalViews: true,
+          bathroom: true,
+          bedroom: true,
+          isAvailable: true,
+          images: {
+            take: 1,
+            where: { isCover: true },
+            select: {
+              imageKey: true,
+            },
+          },
+          district: {
+            select: {
+              nameEn: true,
+              nameKh: true,
+              province: {
+                select: {
+                  nameEn: true,
+                  nameKh: true,
+                },
+              },
+            },
+          },
+          propertyType: {
+            select: {
+              nameEn: true,
+              nameKh: true,
+              icon: true,
+            },
+          },
+        },
+        orderBy: buildOrder(filter.orderType),
+      }),
+      this.prisma.property.count({ where }),
+    ]);
+
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }
