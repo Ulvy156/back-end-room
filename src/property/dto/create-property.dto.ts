@@ -49,6 +49,16 @@ export class CreatePropertyDto {
   @IsNumber()
   deposit?: number;
 
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  bedroom?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  bathroom?: number;
+
   @Type(() => Number)
   @IsInt()
   propertyTypeId: number;

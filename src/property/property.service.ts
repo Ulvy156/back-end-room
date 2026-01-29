@@ -221,6 +221,7 @@ export class PropertyService {
           select: {
             nameEn: true,
             nameKh: true,
+            icon: true,
           },
         },
       },
@@ -277,6 +278,7 @@ export class PropertyService {
           select: {
             nameEn: true,
             nameKh: true,
+            icon: true,
           },
         },
       },
@@ -365,7 +367,7 @@ export class PropertyService {
     }
 
     const page = filter.page && filter.page > 0 ? filter.page : 1;
-    const limit = filter.limit && filter.limit > 0 ? filter.limit : 12;
+    const limit = filter.limit && filter.limit > 0 ? filter.limit : 6;
     const skip = (page - 1) * limit;
 
     const [items, total] = await Promise.all([
