@@ -82,9 +82,81 @@ export class PropertyService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.property.findUniqueOrThrow({
-      where: { id },
+    const property = await this.prisma.property.findFirstOrThrow({
+      where: {
+        id,
+        isPublished: true,
+      },
+      include: {
+        user: {
+          select: {
+            imgUrl: true,
+            role: true,
+            phones: {
+              select: {
+                phoneNumber: true,
+              },
+            },
+            name: true,
+            email: true,
+          },
+        },
+        images: {
+          select: {
+            imageKey: true,
+          },
+        },
+        propertyType: {
+          select: {
+            nameEn: true,
+            nameKh: true,
+            icon: true,
+          },
+        },
+        propertyAmenities: {
+          select: {
+            amenity: {
+              select: {
+                nameEn: true,
+                nameKh: true,
+                icon: true,
+              },
+            },
+          },
+        },
+        district: {
+          select: {
+            nameEn: true,
+            nameKh: true,
+            province: {
+              select: {
+                nameEn: true,
+                nameKh: true,
+              },
+            },
+          },
+        },
+        propertyRuleValue: {
+          select: {
+            rule: {
+              select: {
+                nameEn: true,
+                nameKh: true,
+                icon: true,
+              },
+            },
+          },
+        },
+      },
     });
+
+    return {
+      ...property,
+      amenities: property.propertyAmenities.map((p) => p.amenity),
+      rules: property.propertyRuleValue.map((r) => r.rule),
+      propertyAmenities: undefined,
+      propertyRuleValue: undefined,
+    };
   }
 
   private async clearCacheHomePage() {
