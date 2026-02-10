@@ -68,6 +68,11 @@ export type LocationView = Prisma.LocationViewModel
  */
 export type Property = Prisma.PropertyModel
 /**
+ * Model Parking
+ * 
+ */
+export type Parking = Prisma.ParkingModel
+/**
  * Model PropertyType
  * 
  */

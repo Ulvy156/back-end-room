@@ -16,3 +16,13 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const ParkingType = {
+  MOTO: 'MOTO',
+  BICYCLE: 'BICYCLE',
+  CAR: 'CAR',
+  TUK_TUK: 'TUK_TUK'
+} as const
+
+export type ParkingType = (typeof ParkingType)[keyof typeof ParkingType]

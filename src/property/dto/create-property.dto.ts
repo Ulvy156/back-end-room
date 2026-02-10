@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { plainToInstance, Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -10,7 +10,9 @@ import {
   IsString,
   IsUrl,
   Matches,
+  ValidateNested,
 } from 'class-validator';
+import { CreateParkingDto } from './create-parking.dto';
 
 export class CreatePropertyDto {
   @IsNotEmpty()
@@ -42,7 +44,7 @@ export class CreatePropertyDto {
 
   @Type(() => Number)
   @IsNumber()
-  price: number;
+  monthly_price: number;
 
   @IsOptional()
   @Type(() => Number)
@@ -66,6 +68,14 @@ export class CreatePropertyDto {
   @Type(() => Number)
   @IsNumber()
   sizeSqm: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  floor: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  totalFloors: number;
 
   @IsOptional()
   @IsBoolean()
@@ -94,4 +104,25 @@ export class CreatePropertyDto {
     Array.isArray(value) ? value.map(Number) : [Number(value)],
   )
   amenityKeys: number[];
+
+  @IsOptional()
+  @Transform(
+    ({ value }) => {
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (!Array.isArray(parsed)) return [];
+          return plainToInstance(CreateParkingDto, parsed);
+        } catch {
+          return [];
+        }
+      }
+      return value;
+    },
+    { toClassOnly: true },
+  )
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateParkingDto)
+  parkings?: CreateParkingDto[];
 }

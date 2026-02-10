@@ -57,6 +57,7 @@ export const ModelName = {
   District: 'District',
   LocationView: 'LocationView',
   Property: 'Property',
+  Parking: 'Parking',
   PropertyType: 'PropertyType',
   PropertyView: 'PropertyView',
   PropertyRules: 'PropertyRules',
@@ -147,12 +148,15 @@ export const PropertyScalarFieldEnum = {
   locationUrl: 'locationUrl',
   lat: 'lat',
   lng: 'lng',
+  nearby_location: 'nearby_location',
   title: 'title',
   description: 'description',
-  price: 'price',
+  monthly_price: 'monthly_price',
   deposit: 'deposit',
   bedroom: 'bedroom',
   bathroom: 'bathroom',
+  floor: 'floor',
+  totalFloors: 'totalFloors',
   isAvailable: 'isAvailable',
   availableFrom: 'availableFrom',
   isFeatured: 'isFeatured',
@@ -168,6 +172,21 @@ export const PropertyScalarFieldEnum = {
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const ParkingScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  type: 'type',
+  slots: 'slots',
+  isFree: 'isFree',
+  price: 'price',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ParkingScalarFieldEnum = (typeof ParkingScalarFieldEnum)[keyof typeof ParkingScalarFieldEnum]
 
 
 export const PropertyTypeScalarFieldEnum = {

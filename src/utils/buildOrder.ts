@@ -12,10 +12,10 @@ export function buildOrder(
 ): Prisma.PropertyOrderByWithRelationInput {
   switch (orderType) {
     case OrderType.PRICE_LOW_TO_HIGH:
-      return { price: 'asc' };
+      return { monthly_price: 'asc' };
 
     case OrderType.PRICE_HIGH_TO_LOW:
-      return { price: 'desc' };
+      return { monthly_price: 'desc' };
 
     case OrderType.MOST_POPULAR:
       return { totalViews: 'desc' };

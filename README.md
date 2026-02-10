@@ -57,6 +57,30 @@ $ pnpm run test:e2e
 $ pnpm run test:cov
 ```
 
+## Mobile Java project
+
+A standalone Java 21 project that can host mobile-specific domain logic now lives under `mobile-app/`. It is built with Gradle (Kotlin DSL) and ships with an `application` entry point plus a JUnit 5 smoke test.
+
+### Layout
+
+- `mobile-app/build.gradle.kts` – Gradle configuration targeting Java 21 (JDK via toolchains) with JUnit 5.
+- `mobile-app/src/main/java/com/rentroom/mobile/MobileApp.java` – placeholder entry point to wire higher-level mobile flows later.
+- `mobile-app/src/test/java/com/rentroom/mobile/MobileAppTest.java` – basic test scaffold exercising the main class without crashing.
+
+### Build & Run
+
+1. Install Gradle **8.5+** (or reuse an existing installation) because the wrapper binaries are not checked in yet.
+2. From the repo root run:
+
+   ```bash
+   cd mobile-app
+   gradle wrapper   # optional but recommended to capture a consistent wrapper
+   ./gradlew test   # or `gradle test` if you skip the wrapper
+   ./gradlew run
+   ```
+
+The first run downloads toolchain dependencies; subsequent runs are incremental. To customize the package or versioning, edit the Gradle file and rerun the wrapper task.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.

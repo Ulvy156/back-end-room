@@ -23,6 +23,12 @@ enum UserRole {
   LANDLORD
   ADMIN
 }
+enum ParkingType {
+  MOTO
+  BICYCLE
+  CAR
+  TUK_TUK
+}
 
 // ==============================
 // USER
@@ -118,15 +124,18 @@ model Property {
   locationUrl String? @map("location_url")
   lat Float?
   lng Float?
+  nearby_location String? @default("")
 
   title       String
   description String?
 
-  price   Float
+  monthly_price   Float
   deposit Float?
 
   bedroom  Int @default(1)
   bathroom Int @default(1)
+  floor Int @default(1)        // current floor
+  totalFloors Int @default(1) // building height
 
   isAvailable   Boolean  @default(true) @map("is_available")
   availableFrom DateTime @default(now()) @map("available_from")
@@ -152,18 +161,43 @@ model Property {
   propertyReport    PropertyReport[]
   propertyViews     PropertyView[]
   propertyRuleValue PropertyRuleValue[]
+  parkings           Parking[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([districtId, isAvailable])
   @@index([propertyTypeId])
-  @@index([price])
+  @@index([monthly_price])
   @@index([isPublished])
   @@index([districtId, propertyTypeId])
-  @@index([isPublished, price])
+  @@index([isPublished, monthly_price])
   @@map("properties")
 }
+
+// ==============================
+// PARKING
+// ==============================
+model Parking {
+  id           String   @id @default(uuid())
+
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  type         ParkingType
+  slots        Int      @default(0) // total slots
+  isFree       Boolean  @default(true)
+  price        Float?   // nullable if free
+  note         String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([propertyId])
+
+  @@map("parkings")
+}
+
 
 // ==============================
 // PROPERTY TYPE

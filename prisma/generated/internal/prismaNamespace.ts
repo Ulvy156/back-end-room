@@ -390,6 +390,7 @@ export const ModelName = {
   District: 'District',
   LocationView: 'LocationView',
   Property: 'Property',
+  Parking: 'Parking',
   PropertyType: 'PropertyType',
   PropertyView: 'PropertyView',
   PropertyRules: 'PropertyRules',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "phone" | "province" | "district" | "locationView" | "property" | "propertyType" | "propertyView" | "propertyRules" | "propertyRuleValue" | "propertyReport" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
+    modelProps: "user" | "phone" | "province" | "district" | "locationView" | "property" | "parking" | "propertyType" | "propertyView" | "propertyRules" | "propertyRuleValue" | "propertyReport" | "propertyImage" | "amenity" | "propertyAmenity" | "favorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -859,6 +860,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PropertyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PropertyCountAggregateOutputType> | number
+        }
+      }
+    }
+    Parking: {
+      payload: Prisma.$ParkingPayload<ExtArgs>
+      fields: Prisma.ParkingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ParkingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ParkingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        findFirst: {
+          args: Prisma.ParkingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ParkingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        findMany: {
+          args: Prisma.ParkingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>[]
+        }
+        create: {
+          args: Prisma.ParkingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        createMany: {
+          args: Prisma.ParkingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ParkingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>[]
+        }
+        delete: {
+          args: Prisma.ParkingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        update: {
+          args: Prisma.ParkingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        deleteMany: {
+          args: Prisma.ParkingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ParkingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ParkingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>[]
+        }
+        upsert: {
+          args: Prisma.ParkingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ParkingPayload>
+        }
+        aggregate: {
+          args: Prisma.ParkingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateParking>
+        }
+        groupBy: {
+          args: Prisma.ParkingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ParkingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ParkingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ParkingCountAggregateOutputType> | number
         }
       }
     }
@@ -1630,12 +1705,15 @@ export const PropertyScalarFieldEnum = {
   locationUrl: 'locationUrl',
   lat: 'lat',
   lng: 'lng',
+  nearby_location: 'nearby_location',
   title: 'title',
   description: 'description',
-  price: 'price',
+  monthly_price: 'monthly_price',
   deposit: 'deposit',
   bedroom: 'bedroom',
   bathroom: 'bathroom',
+  floor: 'floor',
+  totalFloors: 'totalFloors',
   isAvailable: 'isAvailable',
   availableFrom: 'availableFrom',
   isFeatured: 'isFeatured',
@@ -1651,6 +1729,21 @@ export const PropertyScalarFieldEnum = {
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const ParkingScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  type: 'type',
+  slots: 'slots',
+  isFree: 'isFree',
+  price: 'price',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ParkingScalarFieldEnum = (typeof ParkingScalarFieldEnum)[keyof typeof ParkingScalarFieldEnum]
 
 
 export const PropertyTypeScalarFieldEnum = {
@@ -1857,6 +1950,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'ParkingType'
+ */
+export type EnumParkingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParkingType'>
+    
+
+
+/**
+ * Reference to a field of type 'ParkingType[]'
+ */
+export type ListEnumParkingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParkingType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1958,6 +2065,7 @@ export type GlobalOmitConfig = {
   district?: Prisma.DistrictOmit
   locationView?: Prisma.LocationViewOmit
   property?: Prisma.PropertyOmit
+  parking?: Prisma.ParkingOmit
   propertyType?: Prisma.PropertyTypeOmit
   propertyView?: Prisma.PropertyViewOmit
   propertyRules?: Prisma.PropertyRulesOmit

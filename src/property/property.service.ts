@@ -32,7 +32,7 @@ export class PropertyService {
         throw new BadRequestException('At least one file is required');
       }
 
-      const { amenityKeys, ...propertyData } = createPropertyDto;
+      const { amenityKeys, parkings, ...propertyData } = createPropertyDto;
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
         createPropertyDto.folderType,
@@ -41,8 +41,9 @@ export class PropertyService {
         data: {
           ...propertyData,
           images: {
-            create: uploadedImgKeys.map((img) => ({
+            create: uploadedImgKeys.map((img, index) => ({
               imageKey: img.key,
+              isCover: index === 0, // first image be selected as cover
             })),
           },
 
@@ -53,6 +54,17 @@ export class PropertyService {
               },
             })),
           },
+          parkings: parkings?.length
+            ? {
+                create: parkings.map((p) => ({
+                  type: p.type,
+                  slots: p.slots,
+                  isFree: p.isFree ?? true,
+                  price: p.isFree ? null : (p.price ?? null), // if free price = null
+                  note: p.note ?? null,
+                })),
+              }
+            : undefined,
         },
       });
 
@@ -140,6 +152,7 @@ export class PropertyService {
           select: {
             rule: {
               select: {
+                id: true,
                 nameEn: true,
                 nameKh: true,
                 icon: true,
@@ -147,15 +160,45 @@ export class PropertyService {
             },
           },
         },
+        parkings: {
+          select: {
+            id: true,
+            type: true,
+            slots: true,
+            isFree: true,
+            price: true,
+            note: true,
+          },
+        },
       },
     });
 
+    const allRules = await this.prisma.propertyRules.findMany({
+      select: {
+        id: true,
+        nameEn: true,
+        nameKh: true,
+        icon: true,
+      },
+    });
+
+    const selectedRuleIds = new Set(
+      property.propertyRuleValue.map((prv) => prv.rule.id),
+    );
+
+    const rules = allRules.map((rule) => ({
+      nameEn: rule.nameEn,
+      nameKh: rule.nameKh,
+      icon: rule.icon,
+      is_allow: selectedRuleIds.has(rule.id) ? true : false,
+    }));
+
+    const { propertyAmenities, ...rest } = property;
+
     return {
-      ...property,
-      amenities: property.propertyAmenities.map((p) => p.amenity),
-      rules: property.propertyRuleValue.map((r) => r.rule),
-      propertyAmenities: undefined,
-      propertyRuleValue: undefined,
+      ...rest,
+      amenities: propertyAmenities.map((p) => p.amenity),
+      rules,
     };
   }
 
@@ -170,14 +213,62 @@ export class PropertyService {
 
   async update(id: string, updatePropertyDto: UpdatePropertyDto) {
     try {
-      const updateProperty = await this.prisma.property.update({
-        data: updatePropertyDto,
-        where: { id },
+      const {
+        userId, // ❌ never update
+        amenityKeys, // ❌ handled separately
+        parkings, // ❌ handled separately
+        ...updateData // ✅ scalar fields only
+      } = updatePropertyDto;
+
+      const property = await this.prisma.$transaction(async (tx) => {
+        // 1️⃣ Update property main fields
+        const updatedProperty = await tx.property.update({
+          where: { id },
+          data: updateData,
+        });
+
+        // 2️⃣ Update amenities (REPLACE)
+        if (amenityKeys) {
+          await tx.propertyAmenity.deleteMany({
+            where: { propertyId: id },
+          });
+
+          if (amenityKeys.length) {
+            await tx.propertyAmenity.createMany({
+              data: amenityKeys.map((amenityId) => ({
+                propertyId: id,
+                amenityId,
+              })),
+            });
+          }
+        }
+
+        // 3️⃣ Update parking (REPLACE)
+        if (parkings) {
+          await tx.parking.deleteMany({
+            where: { propertyId: id },
+          });
+
+          if (parkings.length) {
+            await tx.parking.createMany({
+              data: parkings.map((p) => ({
+                propertyId: id,
+                type: p.type, // generated enum ✅
+                slots: p.slots,
+                isFree: p.isFree ?? true,
+                price: p.price ?? null,
+                note: p.note ?? null,
+              })),
+            });
+          }
+        }
+
+        return updatedProperty;
       });
 
       await this.clearCacheHomePage();
 
-      return updateProperty;
+      return property;
     } catch (error) {
       prismaError(error);
     }
@@ -264,7 +355,7 @@ export class PropertyService {
       select: {
         id: true,
         title: true,
-        price: true,
+        monthly_price: true,
         sizeSqm: true,
         totalViews: true,
         bathroom: true,
@@ -321,7 +412,7 @@ export class PropertyService {
       select: {
         id: true,
         title: true,
-        price: true,
+        monthly_price: true,
         sizeSqm: true,
         totalViews: true,
         bathroom: true,
@@ -396,9 +487,9 @@ export class PropertyService {
     const where: Prisma.PropertyWhereInput = {};
     // default get only public property
     where.isPublished = true;
-    // price
+    // monthly_price
     if (filter.maxPrice && filter.maxPrice > 0) {
-      where.price = {
+      where.monthly_price = {
         gte: filter.minPrice ?? 0,
         lte: filter.maxPrice || undefined,
       };
@@ -450,7 +541,7 @@ export class PropertyService {
         select: {
           id: true,
           title: true,
-          price: true,
+          monthly_price: true,
           sizeSqm: true,
           totalViews: true,
           bathroom: true,

@@ -24,11 +24,11 @@ export class R2Service {
 
   private async optimizeImage(buffer: Buffer) {
     return await sharp(buffer)
-      .resize(1200, 800, {
+      .resize(2400, 3200, {
         fit: 'inside',
-        withoutEnlargement: true,
+        withoutEnlargement: true, // Small images are NOT upscaled
       })
-      .webp({ quality: 75 })
+      .webp({ quality: 82 })
       .toBuffer();
   }
 

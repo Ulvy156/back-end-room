@@ -246,6 +246,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumParkingTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ParkingType | Prisma.EnumParkingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel> | $Enums.ParkingType
+}
+
+export type EnumParkingTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ParkingType | Prisma.EnumParkingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumParkingTypeWithAggregatesFilter<$PrismaModel> | $Enums.ParkingType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -478,6 +495,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumParkingTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ParkingType | Prisma.EnumParkingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel> | $Enums.ParkingType
+}
+
+export type NestedEnumParkingTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ParkingType | Prisma.EnumParkingTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ParkingType[] | Prisma.ListEnumParkingTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumParkingTypeWithAggregatesFilter<$PrismaModel> | $Enums.ParkingType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumParkingTypeFilter<$PrismaModel>
 }
 
 
