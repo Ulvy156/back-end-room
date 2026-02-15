@@ -28,56 +28,76 @@ export type AggregateProvince = {
 
 export type ProvinceAvgAggregateOutputType = {
   id: number | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type ProvinceSumAggregateOutputType = {
   id: number | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type ProvinceMinAggregateOutputType = {
   id: number | null
   nameKh: string | null
   nameEn: string | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type ProvinceMaxAggregateOutputType = {
   id: number | null
   nameKh: string | null
   nameEn: string | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type ProvinceCountAggregateOutputType = {
   id: number
   nameKh: number
   nameEn: number
+  latitude: number
+  longitude: number
   _all: number
 }
 
 
 export type ProvinceAvgAggregateInputType = {
   id?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type ProvinceSumAggregateInputType = {
   id?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type ProvinceMinAggregateInputType = {
   id?: true
   nameKh?: true
   nameEn?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type ProvinceMaxAggregateInputType = {
   id?: true
   nameKh?: true
   nameEn?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type ProvinceCountAggregateInputType = {
   id?: true
   nameKh?: true
   nameEn?: true
+  latitude?: true
+  longitude?: true
   _all?: true
 }
 
@@ -171,6 +191,8 @@ export type ProvinceGroupByOutputType = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
   _count: ProvinceCountAggregateOutputType | null
   _avg: ProvinceAvgAggregateOutputType | null
   _sum: ProvinceSumAggregateOutputType | null
@@ -200,6 +222,8 @@ export type ProvinceWhereInput = {
   id?: Prisma.IntFilter<"Province"> | number
   nameKh?: Prisma.StringFilter<"Province"> | string
   nameEn?: Prisma.StringFilter<"Province"> | string
+  latitude?: Prisma.FloatFilter<"Province"> | number
+  longitude?: Prisma.FloatFilter<"Province"> | number
   districts?: Prisma.DistrictListRelationFilter
 }
 
@@ -207,6 +231,8 @@ export type ProvinceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   districts?: Prisma.DistrictOrderByRelationAggregateInput
 }
 
@@ -217,6 +243,8 @@ export type ProvinceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProvinceWhereInput | Prisma.ProvinceWhereInput[]
   nameKh?: Prisma.StringFilter<"Province"> | string
   nameEn?: Prisma.StringFilter<"Province"> | string
+  latitude?: Prisma.FloatFilter<"Province"> | number
+  longitude?: Prisma.FloatFilter<"Province"> | number
   districts?: Prisma.DistrictListRelationFilter
 }, "id">
 
@@ -224,6 +252,8 @@ export type ProvinceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   _count?: Prisma.ProvinceCountOrderByAggregateInput
   _avg?: Prisma.ProvinceAvgOrderByAggregateInput
   _max?: Prisma.ProvinceMaxOrderByAggregateInput
@@ -238,12 +268,16 @@ export type ProvinceScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Province"> | number
   nameKh?: Prisma.StringWithAggregatesFilter<"Province"> | string
   nameEn?: Prisma.StringWithAggregatesFilter<"Province"> | string
+  latitude?: Prisma.FloatWithAggregatesFilter<"Province"> | number
+  longitude?: Prisma.FloatWithAggregatesFilter<"Province"> | number
 }
 
 export type ProvinceCreateInput = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
   districts?: Prisma.DistrictCreateNestedManyWithoutProvinceInput
 }
 
@@ -251,6 +285,8 @@ export type ProvinceUncheckedCreateInput = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
   districts?: Prisma.DistrictUncheckedCreateNestedManyWithoutProvinceInput
 }
 
@@ -258,6 +294,8 @@ export type ProvinceUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   districts?: Prisma.DistrictUpdateManyWithoutProvinceNestedInput
 }
 
@@ -265,6 +303,8 @@ export type ProvinceUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   districts?: Prisma.DistrictUncheckedUpdateManyWithoutProvinceNestedInput
 }
 
@@ -272,49 +312,73 @@ export type ProvinceCreateManyInput = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
 }
 
 export type ProvinceUpdateManyMutationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type ProvinceUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type ProvinceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type ProvinceAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type ProvinceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type ProvinceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nameKh?: Prisma.SortOrder
   nameEn?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type ProvinceSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type ProvinceScalarRelationFilter = {
   is?: Prisma.ProvinceWhereInput
   isNot?: Prisma.ProvinceWhereInput
+}
+
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type ProvinceCreateNestedOneWithoutDistrictsInput = {
@@ -335,12 +399,16 @@ export type ProvinceCreateWithoutDistrictsInput = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
 }
 
 export type ProvinceUncheckedCreateWithoutDistrictsInput = {
   id: number
   nameKh: string
   nameEn: string
+  latitude: number
+  longitude: number
 }
 
 export type ProvinceCreateOrConnectWithoutDistrictsInput = {
@@ -363,12 +431,16 @@ export type ProvinceUpdateWithoutDistrictsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type ProvinceUncheckedUpdateWithoutDistrictsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nameKh?: Prisma.StringFieldUpdateOperationsInput | string
   nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 
@@ -406,6 +478,8 @@ export type ProvinceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   nameKh?: boolean
   nameEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
   districts?: boolean | Prisma.Province$districtsArgs<ExtArgs>
   _count?: boolean | Prisma.ProvinceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["province"]>
@@ -414,21 +488,27 @@ export type ProvinceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   nameKh?: boolean
   nameEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
 }, ExtArgs["result"]["province"]>
 
 export type ProvinceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nameKh?: boolean
   nameEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
 }, ExtArgs["result"]["province"]>
 
 export type ProvinceSelectScalar = {
   id?: boolean
   nameKh?: boolean
   nameEn?: boolean
+  latitude?: boolean
+  longitude?: boolean
 }
 
-export type ProvinceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nameKh" | "nameEn", ExtArgs["result"]["province"]>
+export type ProvinceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nameKh" | "nameEn" | "latitude" | "longitude", ExtArgs["result"]["province"]>
 export type ProvinceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   districts?: boolean | Prisma.Province$districtsArgs<ExtArgs>
   _count?: boolean | Prisma.ProvinceCountOutputTypeDefaultArgs<ExtArgs>
@@ -445,6 +525,8 @@ export type $ProvincePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: number
     nameKh: string
     nameEn: string
+    latitude: number
+    longitude: number
   }, ExtArgs["result"]["province"]>
   composites: {}
 }
@@ -872,6 +954,8 @@ export interface ProvinceFieldRefs {
   readonly id: Prisma.FieldRef<"Province", 'Int'>
   readonly nameKh: Prisma.FieldRef<"Province", 'String'>
   readonly nameEn: Prisma.FieldRef<"Province", 'String'>
+  readonly latitude: Prisma.FieldRef<"Province", 'Float'>
+  readonly longitude: Prisma.FieldRef<"Province", 'Float'>
 }
     
 

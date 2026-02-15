@@ -26,3 +26,11 @@ export const ParkingType = {
 } as const
 
 export type ParkingType = (typeof ParkingType)[keyof typeof ParkingType]
+
+
+export const PhoneNumberType = {
+  TELEGRAM: 'TELEGRAM',
+  PHONE: 'PHONE'
+} as const
+
+export type PhoneNumberType = (typeof PhoneNumberType)[keyof typeof PhoneNumberType]

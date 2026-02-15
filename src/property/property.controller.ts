@@ -45,6 +45,11 @@ export class PropertyController {
     return this.propertyService.browseProperties(filter);
   }
 
+  @Get('/related-properties/:id')
+  getRelatedProperties(@Param('id') id: string) {
+    return this.propertyService.getRelatedProperties(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertyService.findOne(id);

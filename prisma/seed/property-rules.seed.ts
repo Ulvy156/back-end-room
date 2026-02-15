@@ -23,7 +23,7 @@ export async function seedPropetyRules(prisma: PrismaClient) {
     {
       key: 'overnight_guests',
       nameEn: 'Overnight Guests',
-      nameKh: 'អនុញ្ញាតឱ្យស្នាក់នៅយប់',
+      nameKh: 'អនុញ្ញាតឱ្យភ្ញៀវស្នាក់នៅយប់',
       icon: 'moon',
     },
     {
@@ -33,40 +33,10 @@ export async function seedPropetyRules(prisma: PrismaClient) {
       icon: 'music',
     },
     {
-      key: 'cooking_allowed',
-      nameEn: 'Cooking ',
-      nameKh: 'អនុញ្ញាតឱ្យចម្អិនអាហារ',
-      icon: 'chef-hat',
-    },
-    {
-      key: 'parking_available',
-      nameEn: 'Parking Available',
-      nameKh: 'មានកន្លែងចតយានយន្ត', // "Parking space" is more professional
+      key: 'parking_available_for_guess',
+      nameEn: 'Parking Available For Guess',
+      nameKh: 'មានចំណតរថយន្តសម្រាប់ភ្ញៀវ', // "Parking space" is more professional
       icon: 'car',
-    },
-    {
-      key: 'internet_included',
-      nameEn: 'Internet Included',
-      nameKh: 'រួមបញ្ចូលសេវាអ៊ីនធឺណិត',
-      icon: 'wifi',
-    },
-    {
-      key: 'water_included',
-      nameEn: 'Water Included',
-      nameKh: 'រួមបញ្ចូលថ្លៃទឹក', // Specifically "water fee"
-      icon: 'droplet',
-    },
-    {
-      key: 'electricity_included',
-      nameEn: 'Electricity Included',
-      nameKh: 'រួមបញ្ចូលថ្លៃអគ្គិសនី', // Specifically "electricity fee"
-      icon: 'bolt',
-    },
-    {
-      key: 'minimum_stay_required',
-      nameEn: 'Minimum Stay Required',
-      nameKh: 'តម្រូវឱ្យស្នាក់នៅអប្បបរមា',
-      icon: 'calendar',
     },
   ];
 

@@ -1660,6 +1660,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const PhoneScalarFieldEnum = {
   id: 'id',
   phoneNumber: 'phoneNumber',
+  type: 'type',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1671,7 +1672,9 @@ export type PhoneScalarFieldEnum = (typeof PhoneScalarFieldEnum)[keyof typeof Ph
 export const ProvinceScalarFieldEnum = {
   id: 'id',
   nameKh: 'nameKh',
-  nameEn: 'nameEn'
+  nameEn: 'nameEn',
+  latitude: 'latitude',
+  longitude: 'longitude'
 } as const
 
 export type ProvinceScalarFieldEnum = (typeof ProvinceScalarFieldEnum)[keyof typeof ProvinceScalarFieldEnum]
@@ -1934,6 +1937,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PhoneNumberType'
+ */
+export type EnumPhoneNumberTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberType'>
+    
+
+
+/**
+ * Reference to a field of type 'PhoneNumberType[]'
+ */
+export type ListEnumPhoneNumberTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberType[]'>
     
 
 

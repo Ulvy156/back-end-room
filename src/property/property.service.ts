@@ -13,6 +13,7 @@ import { CACHE_KEYS } from 'src/cache/cache.key';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { Prisma } from 'prisma/generated/client';
 import { buildOrder } from 'src/utils/buildOrder';
+import { Property } from 'prisma/generated/browser';
 
 @Injectable()
 export class PropertyService {
@@ -107,6 +108,7 @@ export class PropertyService {
             phones: {
               select: {
                 phoneNumber: true,
+                type: true,
               },
             },
             name: true,
@@ -483,6 +485,7 @@ export class PropertyService {
     return popularLocations;
   }
 
+  // filter properties
   async browseProperties(filter: BrowsePropertyDto) {
     const where: Prisma.PropertyWhereInput = {};
     // default get only public property
@@ -497,21 +500,47 @@ export class PropertyService {
 
     // location
     if (filter.location && filter.location !== 0) {
-      where.districtId = filter.location;
+      if (filter.locationType === 'province') {
+        where.district = {
+          provinceId: filter.location,
+        };
+      } else {
+        where.districtId = filter.location;
+      }
     }
+    if (filter.lat && filter.lng && filter.orderType === 4) {
+      const radius = 15; // default 15km
+
+      const latDelta = radius / 111;
+      const lngDelta = radius / 111;
+
+      where.lat = {
+        gte: filter.lat - latDelta,
+        lte: filter.lat + latDelta,
+      };
+
+      where.lng = {
+        gte: filter.lng - lngDelta,
+        lte: filter.lng + lngDelta,
+      };
+    }
+
     // property type
     if (filter.roomType && filter.roomType !== 0) {
       where.propertyTypeId = filter.roomType;
     }
     // bedroom
     if (filter.bedroom && filter.bedroom > 0) {
-      where.bedroom = filter.bedroom;
+      where.bedroom = {
+        gte: filter.bedroom,
+      };
     }
     // bathroom
     if (filter.bathroom && filter.bathroom > 0) {
-      where.bathroom = filter.bathroom;
+      where.bathroom = {
+        gte: filter.bathroom,
+      };
     }
-
     // property amenities
     if (filter.amenities?.length) {
       where.propertyAmenities = {
@@ -547,6 +576,8 @@ export class PropertyService {
           bathroom: true,
           bedroom: true,
           isAvailable: true,
+          deposit: true,
+          availableFrom: true,
           images: {
             take: 1,
             where: { isCover: true },
@@ -588,5 +619,92 @@ export class PropertyService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  // get related properties based on current selected properties
+  async getRelatedProperties(propertyId: string) {
+    const property = await this.prisma.property.findUnique({
+      where: { id: propertyId },
+    });
+
+    if (!property) throw new NotFoundException();
+
+    const minPrice = property.monthly_price * 0.8;
+    const maxPrice = property.monthly_price * 1.2;
+    const bedroom = property.bedroom;
+
+    // get related property IDs using distance
+    const nearby = await this.prisma.$queryRaw<{ id: string }[]>`
+    SELECT sub.id
+    FROM (
+      SELECT p.id,
+      (
+        6371 * acos(
+          cos(radians(${property.lat})) *
+          cos(radians(p.lat)) *
+          cos(radians(p.lng) - radians(${property.lng})) +
+          sin(radians(${property.lat})) *
+          sin(radians(p.lat))
+        )
+      ) AS distance
+      FROM properties p
+      WHERE p.id != ${property.id}
+        AND p.bedroom BETWEEN (${bedroom - 2}) AND ${bedroom + 2}
+        AND p.property_type_id = ${property.propertyTypeId}
+        AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
+        AND p.lat IS NOT NULL
+        AND p.lng IS NOT NULL
+    ) sub
+    WHERE sub.distance < 15
+    ORDER BY sub.distance ASC
+    LIMIT 6
+  `;
+
+    const ids = nearby.map((p) => p.id);
+
+    if (!ids.length) return [];
+
+    // fetch full structured data
+    return this.prisma.property.findMany({
+      where: {
+        id: { in: ids },
+      },
+      select: {
+        id: true,
+        title: true,
+        monthly_price: true,
+        sizeSqm: true,
+        totalViews: true,
+        bathroom: true,
+        bedroom: true,
+        isAvailable: true,
+        deposit: true,
+        availableFrom: true,
+        images: {
+          take: 1,
+          where: { isCover: true },
+          select: { imageKey: true },
+        },
+        district: {
+          select: {
+            nameEn: true,
+            nameKh: true,
+            province: {
+              select: {
+                nameEn: true,
+                nameKh: true,
+              },
+            },
+          },
+        },
+        propertyType: {
+          select: {
+            nameEn: true,
+            nameKh: true,
+            icon: true,
+          },
+        },
+      },
+    });
   }
 }

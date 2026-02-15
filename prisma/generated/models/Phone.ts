@@ -37,6 +37,7 @@ export type PhoneSumAggregateOutputType = {
 export type PhoneMinAggregateOutputType = {
   id: number | null
   phoneNumber: string | null
+  type: $Enums.PhoneNumberType | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +46,7 @@ export type PhoneMinAggregateOutputType = {
 export type PhoneMaxAggregateOutputType = {
   id: number | null
   phoneNumber: string | null
+  type: $Enums.PhoneNumberType | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +55,7 @@ export type PhoneMaxAggregateOutputType = {
 export type PhoneCountAggregateOutputType = {
   id: number
   phoneNumber: number
+  type: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -71,6 +74,7 @@ export type PhoneSumAggregateInputType = {
 export type PhoneMinAggregateInputType = {
   id?: true
   phoneNumber?: true
+  type?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -79,6 +83,7 @@ export type PhoneMinAggregateInputType = {
 export type PhoneMaxAggregateInputType = {
   id?: true
   phoneNumber?: true
+  type?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +92,7 @@ export type PhoneMaxAggregateInputType = {
 export type PhoneCountAggregateInputType = {
   id?: true
   phoneNumber?: true
+  type?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -182,6 +188,7 @@ export type PhoneGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type PhoneGroupByOutputType = {
   id: number
   phoneNumber: string
+  type: $Enums.PhoneNumberType
   userId: string
   createdAt: Date
   updatedAt: Date
@@ -213,6 +220,7 @@ export type PhoneWhereInput = {
   NOT?: Prisma.PhoneWhereInput | Prisma.PhoneWhereInput[]
   id?: Prisma.IntFilter<"Phone"> | number
   phoneNumber?: Prisma.StringFilter<"Phone"> | string
+  type?: Prisma.EnumPhoneNumberTypeFilter<"Phone"> | $Enums.PhoneNumberType
   userId?: Prisma.StringFilter<"Phone"> | string
   createdAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
@@ -222,6 +230,7 @@ export type PhoneWhereInput = {
 export type PhoneOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -234,6 +243,7 @@ export type PhoneWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PhoneWhereInput | Prisma.PhoneWhereInput[]
   OR?: Prisma.PhoneWhereInput[]
   NOT?: Prisma.PhoneWhereInput | Prisma.PhoneWhereInput[]
+  type?: Prisma.EnumPhoneNumberTypeFilter<"Phone"> | $Enums.PhoneNumberType
   userId?: Prisma.StringFilter<"Phone"> | string
   createdAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
@@ -243,6 +253,7 @@ export type PhoneWhereUniqueInput = Prisma.AtLeast<{
 export type PhoneOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -259,6 +270,7 @@ export type PhoneScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PhoneScalarWhereWithAggregatesInput | Prisma.PhoneScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Phone"> | number
   phoneNumber?: Prisma.StringWithAggregatesFilter<"Phone"> | string
+  type?: Prisma.EnumPhoneNumberTypeWithAggregatesFilter<"Phone"> | $Enums.PhoneNumberType
   userId?: Prisma.StringWithAggregatesFilter<"Phone"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Phone"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Phone"> | Date | string
@@ -266,6 +278,7 @@ export type PhoneScalarWhereWithAggregatesInput = {
 
 export type PhoneCreateInput = {
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPhonesInput
@@ -274,6 +287,7 @@ export type PhoneCreateInput = {
 export type PhoneUncheckedCreateInput = {
   id?: number
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -281,6 +295,7 @@ export type PhoneUncheckedCreateInput = {
 
 export type PhoneUpdateInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPhonesNestedInput
@@ -289,6 +304,7 @@ export type PhoneUpdateInput = {
 export type PhoneUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -297,6 +313,7 @@ export type PhoneUncheckedUpdateInput = {
 export type PhoneCreateManyInput = {
   id?: number
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -304,6 +321,7 @@ export type PhoneCreateManyInput = {
 
 export type PhoneUpdateManyMutationInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -311,6 +329,7 @@ export type PhoneUpdateManyMutationInput = {
 export type PhoneUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -329,6 +348,7 @@ export type PhoneOrderByRelationAggregateInput = {
 export type PhoneCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -341,6 +361,7 @@ export type PhoneAvgOrderByAggregateInput = {
 export type PhoneMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -349,6 +370,7 @@ export type PhoneMaxOrderByAggregateInput = {
 export type PhoneMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -400,6 +422,10 @@ export type PhoneUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.PhoneScalarWhereInput | Prisma.PhoneScalarWhereInput[]
 }
 
+export type EnumPhoneNumberTypeFieldUpdateOperationsInput = {
+  set?: $Enums.PhoneNumberType
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -410,6 +436,7 @@ export type IntFieldUpdateOperationsInput = {
 
 export type PhoneCreateWithoutUserInput = {
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -417,6 +444,7 @@ export type PhoneCreateWithoutUserInput = {
 export type PhoneUncheckedCreateWithoutUserInput = {
   id?: number
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -453,6 +481,7 @@ export type PhoneScalarWhereInput = {
   NOT?: Prisma.PhoneScalarWhereInput | Prisma.PhoneScalarWhereInput[]
   id?: Prisma.IntFilter<"Phone"> | number
   phoneNumber?: Prisma.StringFilter<"Phone"> | string
+  type?: Prisma.EnumPhoneNumberTypeFilter<"Phone"> | $Enums.PhoneNumberType
   userId?: Prisma.StringFilter<"Phone"> | string
   createdAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Phone"> | Date | string
@@ -461,12 +490,14 @@ export type PhoneScalarWhereInput = {
 export type PhoneCreateManyUserInput = {
   id?: number
   phoneNumber: string
+  type?: $Enums.PhoneNumberType
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PhoneUpdateWithoutUserInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -474,6 +505,7 @@ export type PhoneUpdateWithoutUserInput = {
 export type PhoneUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -481,6 +513,7 @@ export type PhoneUncheckedUpdateWithoutUserInput = {
 export type PhoneUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPhoneNumberTypeFieldUpdateOperationsInput | $Enums.PhoneNumberType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -490,6 +523,7 @@ export type PhoneUncheckedUpdateManyWithoutUserInput = {
 export type PhoneSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   phoneNumber?: boolean
+  type?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -499,6 +533,7 @@ export type PhoneSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type PhoneSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   phoneNumber?: boolean
+  type?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -508,6 +543,7 @@ export type PhoneSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type PhoneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   phoneNumber?: boolean
+  type?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -517,12 +553,13 @@ export type PhoneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type PhoneSelectScalar = {
   id?: boolean
   phoneNumber?: boolean
+  type?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PhoneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phoneNumber" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["phone"]>
+export type PhoneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phoneNumber" | "type" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["phone"]>
 export type PhoneInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -541,6 +578,7 @@ export type $PhonePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     phoneNumber: string
+    type: $Enums.PhoneNumberType
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -970,6 +1008,7 @@ export interface Prisma__PhoneClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface PhoneFieldRefs {
   readonly id: Prisma.FieldRef<"Phone", 'Int'>
   readonly phoneNumber: Prisma.FieldRef<"Phone", 'String'>
+  readonly type: Prisma.FieldRef<"Phone", 'PhoneNumberType'>
   readonly userId: Prisma.FieldRef<"Phone", 'String'>
   readonly createdAt: Prisma.FieldRef<"Phone", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Phone", 'DateTime'>

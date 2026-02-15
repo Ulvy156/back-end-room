@@ -29,6 +29,10 @@ enum ParkingType {
   CAR
   TUK_TUK
 }
+enum PhoneNumberType {
+  TELEGRAM
+  PHONE
+}
 
 // ==============================
 // USER
@@ -60,6 +64,7 @@ model User {
 model Phone {
   id          Int    @id @default(autoincrement())
   phoneNumber String @unique @map("phone_number")
+  type        PhoneNumberType @default(PHONE)
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -78,6 +83,8 @@ model Province {
   id     Int    @id
   nameKh String @map("name_kh")
   nameEn String @map("name_en")
+  latitude  Float
+  longitude Float
 
   districts District[]
 
