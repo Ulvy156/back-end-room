@@ -654,6 +654,7 @@ export class PropertyService {
         AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
         AND p.lat IS NOT NULL
         AND p.lng IS NOT NULL
+        AND p.isPublished = true
     ) sub
     WHERE sub.distance < 15
     ORDER BY sub.distance ASC
