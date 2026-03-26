@@ -15,6 +15,7 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/auth/public.decorator';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
+import { PropertyDetailDTO } from './dto/property-detail.dto';
 
 @Public()
 @Controller('property')
@@ -50,9 +51,9 @@ export class PropertyController {
     return this.propertyService.getRelatedProperties(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.propertyService.findOne(id);
+  @Post('/property-details')
+  findOne(@Body() filter: PropertyDetailDTO) {
+    return this.propertyService.findOne(filter);
   }
 
   @Patch(':id')

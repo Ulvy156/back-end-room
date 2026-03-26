@@ -14,6 +14,8 @@ import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { Prisma } from 'prisma/generated/client';
 import { buildOrder } from 'src/utils/buildOrder';
 import { Property } from 'prisma/generated/browser';
+import { haversineKm } from 'src/utils/geDistanceKm';
+import { PropertyDetailDTO } from './dto/property-detail.dto';
 
 @Injectable()
 export class PropertyService {
@@ -94,10 +96,10 @@ export class PropertyService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(filter: PropertyDetailDTO) {
     const property = await this.prisma.property.findFirstOrThrow({
       where: {
-        id,
+        id: filter.id,
         isPublished: true,
       },
       include: {
@@ -174,6 +176,15 @@ export class PropertyService {
         },
       },
     });
+    property['distanceKm'] = '~';
+    if (filter.lat && filter.lng && property.lat && property.lng) {
+      property['distanceKm'] = haversineKm(
+        filter.lat,
+        filter.lng,
+        property.lat,
+        property.lng,
+      ).toFixed(2);
+    }
 
     const allRules = await this.prisma.propertyRules.findMany({
       select: {
@@ -293,7 +304,11 @@ export class PropertyService {
 
   async setPropertyToFeature(id: string) {
     try {
-      const property = await this.findOne(id);
+      const property = await this.prisma.property.findFirstOrThrow({
+        where: {
+          id,
+        },
+      });
       if (!property) throw new NotFoundException('Property not found!');
 
       // Only check limit when turning feature ON
@@ -474,7 +489,7 @@ export class PropertyService {
       FROM "properties" p
       JOIN "districts" d
         ON d.id = p."district_id"
-      WHERE p."isPublished" = true
+      WHERE p."is_published" = true
       GROUP BY p."district_id", d.name_en, d.name_kh
       ORDER BY "totalListings" DESC
       LIMIT 10;
@@ -562,7 +577,8 @@ export class PropertyService {
     const limit = filter.limit && filter.limit > 0 ? filter.limit : 6;
     const skip = (page - 1) * limit;
 
-    const [items, total] = await Promise.all([
+    // eslint-disable-next-line prefer-const
+    let [items, total] = await Promise.all([
       this.prisma.property.findMany({
         where,
         skip,
@@ -578,6 +594,8 @@ export class PropertyService {
           isAvailable: true,
           deposit: true,
           availableFrom: true,
+          lat: true,
+          lng: true,
           images: {
             take: 1,
             where: { isCover: true },
@@ -609,6 +627,20 @@ export class PropertyService {
       }),
       this.prisma.property.count({ where }),
     ]);
+
+    // calculate real distance + sort
+    items = items
+      .map((p) => {
+        const lat = p.lat ?? 0;
+        const lng = p.lng ?? 0;
+        const distance = haversineKm(filter.lat!, filter.lng!, lat, lng);
+
+        return {
+          ...p,
+          distanceKm: Number(distance.toFixed(2)),
+        };
+      })
+      .sort((a, b) => a.distanceKm - b.distanceKm);
 
     return {
       items,
@@ -654,7 +686,7 @@ export class PropertyService {
         AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
         AND p.lat IS NOT NULL
         AND p.lng IS NOT NULL
-        AND p.isPublished = true
+        AND p.is_published = true
     ) sub
     WHERE sub.distance < 15
     ORDER BY sub.distance ASC

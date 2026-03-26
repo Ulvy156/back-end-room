@@ -147,15 +147,15 @@ model Property {
   isAvailable   Boolean  @default(true) @map("is_available")
   availableFrom DateTime @default(now()) @map("available_from")
 
-  isFeatured Boolean   @default(false)
-  featuredAt DateTime?
+  isFeatured Boolean   @default(false) @map("is_featured")
+  featuredAt DateTime? @map("featured_at")
 
   totalViews Int @default(0) @map("total_views")
 
   propertyTypeId Int     @map("property_type_id")
-  sizeSqm        Int
+  sizeSqm        Int     @map("size_sqm")
   furnished      Boolean @default(true)
-  isPublished    Boolean @default(true)
+  isPublished    Boolean @default(true) @map("is_published")
   minimumStayLength Int @default(1) @map("minimum_stay_length")
 
   user         User         @relation(fields: [userId], references: [id])
@@ -179,6 +179,9 @@ model Property {
   @@index([isPublished])
   @@index([districtId, propertyTypeId])
   @@index([isPublished, monthly_price])
+  @@index([lat])
+  @@index([lng])
+  @@index([lat, lng])
   @@map("properties")
 }
 
