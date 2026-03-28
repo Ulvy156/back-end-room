@@ -629,18 +629,16 @@ export class PropertyService {
     ]);
 
     // calculate real distance + sort
-    items = items
-      .map((p) => {
-        const lat = p.lat ?? 0;
-        const lng = p.lng ?? 0;
-        const distance = haversineKm(filter.lat!, filter.lng!, lat, lng);
+    items = items.map((p) => {
+      const lat = p.lat ?? 0;
+      const lng = p.lng ?? 0;
+      const distance = haversineKm(filter.lat!, filter.lng!, lat, lng);
 
-        return {
-          ...p,
-          distanceKm: Number(distance.toFixed(2)),
-        };
-      })
-      .sort((a, b) => a.distanceKm - b.distanceKm);
+      return {
+        ...p,
+        distanceKm: Number(distance.toFixed(2)),
+      };
+    });
 
     return {
       items,
