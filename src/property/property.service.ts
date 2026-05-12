@@ -226,12 +226,8 @@ export class PropertyService {
 
   async update(id: string, updatePropertyDto: UpdatePropertyDto) {
     try {
-      const {
-        userId, // ❌ never update
-        amenityKeys, // ❌ handled separately
-        parkings, // ❌ handled separately
-        ...updateData // ✅ scalar fields only
-      } = updatePropertyDto;
+      const { userId, amenityKeys, parkings, ...updateData } =
+        updatePropertyDto;
 
       const property = await this.prisma.$transaction(async (tx) => {
         // 1️⃣ Update property main fields
@@ -266,7 +262,7 @@ export class PropertyService {
             await tx.parking.createMany({
               data: parkings.map((p) => ({
                 propertyId: id,
-                type: p.type, // generated enum ✅
+                type: p.type, // generated enum
                 slots: p.slots,
                 isFree: p.isFree ?? true,
                 price: p.price ?? null,

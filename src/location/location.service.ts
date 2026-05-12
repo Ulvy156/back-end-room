@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { prismaError } from 'src/utils/prismaError';
 
 @Injectable()
 export class LocationService {
@@ -40,5 +41,43 @@ export class LocationService {
         type: 'province' as const,
       })),
     ];
+  }
+
+  async getAllProvinces() {
+    try {
+      return await this.prisma.province.findMany();
+    } catch (error) {
+      return prismaError(error);
+    }
+  }
+
+  async getProvinceById(id: number) {
+    try {
+      return await this.prisma.province.findFirstOrThrow({
+        where: { id },
+      });
+    } catch (error) {
+      return prismaError(error);
+    }
+  }
+
+  async getDistrictById(id: number) {
+    try {
+      return await this.prisma.district.findFirstOrThrow({
+        where: { id },
+      });
+    } catch (error) {
+      return prismaError(error);
+    }
+  }
+
+  async getDistrictByProvinceId(id: number) {
+    try {
+      return await this.prisma.district.findFirstOrThrow({
+        where: { provinceId: id },
+      });
+    } catch (error) {
+      return prismaError(error);
+    }
   }
 }
