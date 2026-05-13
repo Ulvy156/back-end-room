@@ -14,6 +14,7 @@ import { AppCacheModule } from './cache/cache.module';
 import { LocationModule } from './location/location.module';
 import { PropertyAmenityModule } from './property-amenity/property-amenity.module';
 import { PropertyRulesModule } from './property-rules/property-rules.module';
+import { UserFavouriteModule } from './user-favourite/user-favourite.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -36,6 +37,7 @@ import { PropertyRulesModule } from './property-rules/property-rules.module';
     LocationModule,
     PropertyAmenityModule,
     PropertyRulesModule,
+    UserFavouriteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

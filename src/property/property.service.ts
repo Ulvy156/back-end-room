@@ -13,7 +13,6 @@ import { CACHE_KEYS } from 'src/cache/cache.key';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { Prisma } from 'prisma/generated/client';
 import { buildOrder } from 'src/utils/buildOrder';
-import { Property } from 'prisma/generated/browser';
 import { haversineKm } from 'src/utils/geDistanceKm';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
 
