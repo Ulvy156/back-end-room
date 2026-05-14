@@ -1,26 +1,20 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { UserRole } from 'prisma/generated/enums';
 
-/**
- * Payload stored INSIDE JWT
- * (this is NOT your DB user)
- */
-interface JwtTokenPayload {
-  sub: string; // userId
+interface JwtAccessPayload {
+  sub: string;
   role: UserRole;
 }
 
-/**
- * Minimal user data used for login
- */
+interface JwtRefreshPayload extends JwtAccessPayload {
+  jti: string;
+}
+
 interface LoginUser {
   id: string;
   role: UserRole;
@@ -34,87 +28,109 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  /**
-   * Validate email + password (local login)
-   */
-  async validateUser(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+  private get refreshSecret(): string {
+    const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
+    if (!secret) throw new Error('JWT_REFRESH_SECRET is not set');
+    return secret;
+  }
 
-    if (!user) throw new NotFoundException('User not found');
+  private get refreshExpiresInSeconds(): number {
+    return this.configService.get<number>('JWT_REFRESH_EXPIRES_IN', 604800);
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    // return null for unknown email — same path as wrong password, prevents email enumeration
+    if (!user) return null;
 
     if (user.isLocked) {
-      throw new UnauthorizedException(
-        'User has been locked, please contact to admin',
-      );
+      throw new UnauthorizedException('Account is locked, please contact admin');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return null;
 
-    // remove password before returning
-    user.password = '';
-    return user;
+    const { password: _, ...result } = user;
+    return result;
   }
 
-  /**
-   * Issue access + refresh tokens
-   */
-  login(user: LoginUser) {
-    const payload: JwtTokenPayload = {
-      sub: user.id,
-      role: user.role,
-    };
+  async login(user: LoginUser) {
+    const accessPayload: JwtAccessPayload = { sub: user.id, role: user.role };
+    const accessToken = this.jwtService.sign(accessPayload);
 
-    const accessToken = this.generateAccessToken(payload);
+    const jti = randomUUID();
+    const refreshToken = await this.jwtService.signAsync(
+      { ...accessPayload, jti } satisfies JwtRefreshPayload,
+      { secret: this.refreshSecret, expiresIn: this.refreshExpiresInSeconds },
+    );
 
-    const refreshToken = this.generateRefreshToken(payload);
+    const expiresAt = new Date(Date.now() + this.refreshExpiresInSeconds * 1000);
+    await this.prisma.refreshToken.create({
+      data: { jti, userId: user.id, expiresAt },
+    });
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return { accessToken, refreshToken };
   }
 
-  /**
-   * Refresh tokens using refresh token
-   */
-  refreshTokens(refreshToken: string) {
+  async refreshTokens(token: string) {
+    let payload: JwtRefreshPayload;
     try {
-      const payload = this.jwtService.verify<JwtTokenPayload>(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET!,
+      payload = this.jwtService.verify<JwtRefreshPayload>(token, {
+        secret: this.refreshSecret,
       });
-
-      const newPayload: JwtTokenPayload = {
-        sub: payload.sub,
-        role: payload.role,
-      };
-
-      const newAccessToken = this.generateAccessToken(newPayload);
-
-      const newRefreshToken = this.generateRefreshToken(newPayload);
-
-      return {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-      };
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
-  }
 
-  private generateAccessToken(payload: JwtTokenPayload) {
-    return this.jwtService.sign(payload);
-  }
+    if (!payload.jti) throw new UnauthorizedException('Invalid refresh token');
 
-  private generateRefreshToken(payload: JwtTokenPayload) {
-    return this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get<number>(
-        'JWT_REFRESH_EXPIRES_IN',
-        604800,
-      ),
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { jti: payload.jti },
     });
+
+    if (
+      !stored ||
+      stored.userId !== payload.sub ||
+      stored.expiresAt < new Date()
+    ) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const newJti = randomUUID();
+    const expiresAt = new Date(Date.now() + this.refreshExpiresInSeconds * 1000);
+
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      Promise.resolve(
+        this.jwtService.sign({ sub: payload.sub, role: payload.role }),
+      ),
+      this.jwtService.signAsync(
+        { sub: payload.sub, role: payload.role, jti: newJti },
+        { secret: this.refreshSecret, expiresIn: this.refreshExpiresInSeconds },
+      ),
+    ]);
+
+    await this.prisma.refreshToken.update({
+      where: { jti: payload.jti },
+      data: { jti: newJti, expiresAt },
+    });
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+  }
+
+  async logout(token: string | undefined) {
+    if (!token) return;
+    try {
+      const payload = this.jwtService.verify<JwtRefreshPayload>(token, {
+        secret: this.refreshSecret,
+      });
+      if (payload.jti) {
+        await this.prisma.refreshToken.deleteMany({
+          where: { jti: payload.jti },
+        });
+      }
+    } catch {
+      // token already invalid — nothing to revoke
+    }
   }
 }

@@ -26,12 +26,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.sub },
     });
 
-    if (!user) {
-      throw new UnauthorizedException('Unauthorized');
-    }
+    if (!user) throw new UnauthorizedException('Unauthorized');
+    if (user.isLocked) throw new UnauthorizedException('Account is locked');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user; // remove password safely
-    return result; // injected into req.user
+    const { password, ...result } = user;
+    return result;
   }
 }

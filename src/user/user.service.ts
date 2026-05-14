@@ -147,7 +147,8 @@ export class UserService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    await this.findOne(id);
+    return this.prisma.user.delete({ where: { id } });
   }
 }

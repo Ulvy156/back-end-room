@@ -13,11 +13,6 @@ async function bootstrap() {
   // parse cookies
   app.use(cookieParser());
 
-  app.enableCors({
-    origin: process.env.FRONT_END_URL ?? 'http://localhost:3000',
-    credentials: true,
-  });
-
   // Global JWT guard
   const reflector = app.get(Reflector);
   // Apply JWT guard globally

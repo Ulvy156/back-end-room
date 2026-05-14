@@ -50,12 +50,28 @@ model User {
   favorites      Favorite[]
   phones         Phone[]
   propertyReport PropertyReport[]
+  refreshTokens  RefreshToken[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([email])
   @@map("users")
+}
+
+// ==============================
+// REFRESH TOKENS
+// ==============================
+model RefreshToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
 
 // ==============================
