@@ -10,12 +10,14 @@ export async function seedUser(prisma: PrismaClient) {
       email: 'ulvyromy156@gmail.com',
       password,
       role: UserRole.ADMIN,
+      isVerified: true,
     },
     {
       name: 'land lord',
       email: 'landlord@gmail.com',
       password,
       role: UserRole.LANDLORD,
+      isVerified: true,
     },
   ];
 

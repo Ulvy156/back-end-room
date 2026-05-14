@@ -43,14 +43,16 @@ model User {
   email    String   @unique
   password String
   imgUrl   String?  @map("img_url")
-  isLocked Boolean  @default(false)
-  role     UserRole @default(USER)
+  isVerified Boolean  @default(false) @map("is_verified")
+  isLocked   Boolean  @default(false)
+  role       UserRole @default(USER)
 
-  properties     Property[]
-  favorites      Favorite[]
-  phones         Phone[]
-  propertyReport PropertyReport[]
-  refreshTokens  RefreshToken[]
+  properties         Property[]
+  favorites          Favorite[]
+  phones             Phone[]
+  propertyReport     PropertyReport[]
+  refreshTokens      RefreshToken[]
+  passwordResetToken PasswordResetToken?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -72,6 +74,22 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+// ==============================
+// PASSWORD RESET TOKENS
+// ==============================
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  otp       String   // SHA-256 hash of the 6-digit OTP
+  channel   String   // "telegram" | "email"
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
 }
 
 // ==============================

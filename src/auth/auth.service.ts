@@ -1,10 +1,21 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { createHash, createHmac, randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-import { UserRole } from 'prisma/generated/enums';
+import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
+import { TelegramLoginDto } from './dto/telegram-login.dto';
+import { TelegramService } from '../notification/telegram.service';
+import { EmailService } from '../notification/email.service';
+import { hashingPassword } from '../utils/hashingPassword';
+import { prismaError } from '../utils/prismaError';
+import { RegisterDto } from './dto/register.dto';
+import { VerifyAccountDto } from './dto/verify-account.dto';
 
 interface JwtAccessPayload {
   sub: string;
@@ -26,7 +37,11 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly telegramService: TelegramService,
+    private readonly emailService: EmailService,
   ) {}
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
 
   private get refreshSecret(): string {
     const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
@@ -38,14 +53,109 @@ export class AuthService {
     return this.configService.get<number>('JWT_REFRESH_EXPIRES_IN', 604800);
   }
 
+  private generateOtp(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  private hashOtp(otp: string): string {
+    return createHash('sha256').update(otp).digest('hex');
+  }
+
+  private async storeOtp(userId: string, otp: string, channel: string) {
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await this.prisma.passwordResetToken.upsert({
+      where: { userId },
+      create: { userId, otp: this.hashOtp(otp), channel, expiresAt },
+      update: { otp: this.hashOtp(otp), channel, expiresAt },
+    });
+  }
+
+  // ─── Register ───────────────────────────────────────────────────────────────
+
+  async register(dto: RegisterDto) {
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          name: dto.name,
+          email: dto.email,
+          password: await hashingPassword(dto.password),
+          role: dto.role ?? UserRole.USER,
+          isVerified: false,
+        },
+      });
+
+      // Send verification OTP to email
+      const otp = this.generateOtp();
+      await this.storeOtp(user.id, otp, 'verification');
+      await this.emailService.sendVerificationOtp(dto.email, otp);
+
+      return { userId: user.id };
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async verifyAccount(dto: VerifyAccountDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (!user) throw new BadRequestException('Invalid or expired OTP');
+
+    if (user.isVerified) {
+      throw new BadRequestException('Account is already verified');
+    }
+
+    const tokenRecord = await this.prisma.passwordResetToken.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (
+      !tokenRecord ||
+      tokenRecord.channel !== 'verification' ||
+      tokenRecord.expiresAt < new Date()
+    ) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    if (this.hashOtp(dto.otp) !== tokenRecord.otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { isVerified: true },
+      }),
+      this.prisma.passwordResetToken.delete({ where: { userId: user.id } }),
+    ]);
+
+    const { accessToken, refreshToken } = await this.login({
+      id: user.id,
+      role: user.role,
+    });
+
+    return { accessToken, refreshToken, userId: user.id };
+  }
+
+  // ─── Login ──────────────────────────────────────────────────────────────────
+
   async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
-    // return null for unknown email — same path as wrong password, prevents email enumeration
+    // same return path as wrong password — prevents email enumeration
     if (!user) return null;
 
+    if (!user.isVerified) {
+      throw new UnauthorizedException(
+        'Account not verified. Please check your email for the OTP.',
+      );
+    }
+
     if (user.isLocked) {
-      throw new UnauthorizedException('Account is locked, please contact admin');
+      throw new UnauthorizedException(
+        'Account is locked, please contact admin',
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -54,6 +164,8 @@ export class AuthService {
     const { password: _, ...result } = user;
     return result;
   }
+
+  // ─── Token management ───────────────────────────────────────────────────────
 
   async login(user: LoginUser) {
     const accessPayload: JwtAccessPayload = { sub: user.id, role: user.role };
@@ -65,7 +177,9 @@ export class AuthService {
       { secret: this.refreshSecret, expiresIn: this.refreshExpiresInSeconds },
     );
 
-    const expiresAt = new Date(Date.now() + this.refreshExpiresInSeconds * 1000);
+    const expiresAt = new Date(
+      Date.now() + this.refreshExpiresInSeconds * 1000,
+    );
     await this.prisma.refreshToken.create({
       data: { jti, userId: user.id, expiresAt },
     });
@@ -98,7 +212,9 @@ export class AuthService {
     }
 
     const newJti = randomUUID();
-    const expiresAt = new Date(Date.now() + this.refreshExpiresInSeconds * 1000);
+    const expiresAt = new Date(
+      Date.now() + this.refreshExpiresInSeconds * 1000,
+    );
 
     const [newAccessToken, newRefreshToken] = await Promise.all([
       Promise.resolve(
@@ -132,5 +248,134 @@ export class AuthService {
     } catch {
       // token already invalid — nothing to revoke
     }
+  }
+
+  // ─── Telegram login ──────────────────────────────────────────────────────────
+
+  private verifyTelegramHash(data: TelegramLoginDto): boolean {
+    const botToken = this.configService.get<string>('TG_BOT_TOKEN');
+    if (!botToken) throw new Error('TG_BOT_TOKEN is not set');
+
+    const { hash, ...fields } = data;
+
+    // Build the data-check-string: sorted key=value pairs joined by \n
+    const dataCheckString = Object.keys(fields)
+      .sort()
+      .filter((k) => fields[k as keyof typeof fields] !== undefined)
+      .map((k) => `${k}=${fields[k as keyof typeof fields]}`)
+      .join('\n');
+
+    // Secret key = SHA-256 of the bot token (raw bytes, not hex)
+    const secretKey = createHash('sha256').update(botToken).digest();
+
+    const expectedHash = createHmac('sha256', secretKey)
+      .update(dataCheckString)
+      .digest('hex');
+
+    return expectedHash === hash;
+  }
+
+  async telegramLogin(data: TelegramLoginDto) {
+    // 1. Verify Telegram signature
+    if (!this.verifyTelegramHash(data)) {
+      throw new UnauthorizedException('Invalid Telegram authentication data');
+    }
+
+    // 2. Reject stale auth_date (must be within 24 hours)
+    const authDate = new Date(data.auth_date * 1000);
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    if (authDate < oneDayAgo) {
+      throw new UnauthorizedException('Telegram authentication has expired');
+    }
+
+    // 3. Look up user by their Telegram ID stored in the Phone table
+    const phone = await this.prisma.phone.findFirst({
+      where: {
+        phoneNumber: String(data.id),
+        type: PhoneNumberType.TELEGRAM,
+      },
+      include: { user: true },
+    });
+
+    if (!phone) {
+      throw new UnauthorizedException(
+        'No account linked to this Telegram account',
+      );
+    }
+
+    if (!phone.user.isVerified) {
+      throw new UnauthorizedException('Account not verified');
+    }
+
+    if (phone.user.isLocked) {
+      throw new UnauthorizedException(
+        'Account is locked, please contact admin',
+      );
+    }
+
+    return phone.user;
+  }
+
+  // ─── Password reset ──────────────────────────────────────────────────────────
+
+  async forgotPassword(email: string, channel: 'telegram' | 'email') {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { phones: true },
+    });
+
+    // Silent return — do not reveal whether the email exists or is unverified
+    if (!user || user.isLocked || !user.isVerified) return;
+
+    const otp = this.generateOtp();
+
+    if (channel === 'telegram') {
+      const telegramPhone = user.phones.find(
+        (p) => p.type === PhoneNumberType.TELEGRAM,
+      );
+      if (!telegramPhone) {
+        throw new BadRequestException(
+          'No Telegram account linked to this user',
+        );
+      }
+      await this.storeOtp(user.id, otp, channel);
+      await this.telegramService.sendMessage(
+        telegramPhone.phoneNumber,
+        `🔐 *Rent Room — Password Reset*\n\nYour OTP is: *${otp}*\n\nExpires in 10 minutes. Do not share this with anyone.`,
+      );
+    } else {
+      await this.storeOtp(user.id, otp, channel);
+      await this.emailService.sendOtp(email, otp);
+    }
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    if (!user) throw new BadRequestException('Invalid or expired OTP');
+
+    const tokenRecord = await this.prisma.passwordResetToken.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    if (this.hashOtp(otp) !== tokenRecord.otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    const hashed = await hashingPassword(newPassword);
+
+    // Update password, remove OTP record, and invalidate all sessions atomically
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashed },
+      }),
+      this.prisma.passwordResetToken.delete({ where: { userId: user.id } }),
+      this.prisma.refreshToken.deleteMany({ where: { userId: user.id } }),
+    ]);
   }
 }
