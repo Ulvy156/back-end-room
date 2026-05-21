@@ -1,10 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateMyInfoDto } from './dto/update-my-info.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
+
+const USER_PUBLIC_FIELDS = {
+  id: true,
+  name: true,
+  email: true,
+  imgUrl: true,
+  role: true,
+  isVerified: true,
+  isLocked: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
 
 @Injectable()
 export class UserService {
@@ -13,9 +26,10 @@ export class UserService {
     private readonly r2Service: R2Service,
   ) {}
 
+  // ─── Admin ───────────────────────────────────────────────────────────────────
+
   async create(createUserDto: CreateUserDto, profile?: Express.Multer.File) {
     try {
-      // upload only if user has profile pf
       if (profile) {
         const { key } = await this.r2Service.uploadSingleFile(
           profile,
@@ -24,10 +38,9 @@ export class UserService {
         createUserDto.img_url = key;
       }
       createUserDto.password = await hashingPassword(createUserDto.password);
-      const user = await this.prisma.user.create({
+      const { password: _, ...user } = await this.prisma.user.create({
         data: createUserDto,
       });
-
       return user;
     } catch (error) {
       if (createUserDto.img_url) {
@@ -37,79 +50,20 @@ export class UserService {
     }
   }
 
-  async deleteProfileByUserId(userId: string) {
-    try {
-      // Fetch user
-      const user = await this.findOne(userId);
-
-      // Delete file first (if exists)
-      if (user.imgUrl) {
-        await this.r2Service.deleteSingleFile(user.imgUrl);
-      }
-
-      // Update DB
-      const updatedUser = await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          imgUrl: null,
-        },
-      });
-      return updatedUser;
-    } catch (error) {
-      prismaError(error);
-    }
-  }
-
-  async updateProfileByUserId(userId: string, profile: Express.Multer.File) {
-    let newImageKey: string | null = null;
-    try {
-      // Fetch user
-      const user = await this.findOne(userId);
-
-      if (profile) {
-        const { key } = await this.r2Service.uploadSingleFile(
-          profile,
-          'profile',
-        );
-        newImageKey = key;
-      }
-
-      // Update DB
-      const updatedUser = await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          imgUrl: newImageKey,
-        },
-      });
-
-      // Delete file first (if exists)
-      if (user.imgUrl) {
-        await this.r2Service.deleteSingleFile(user.imgUrl);
-      }
-      return updatedUser;
-    } catch (error) {
-      console.log(error);
-      // roll back
-      if (newImageKey) {
-        await this.r2Service.deleteSingleFile(newImageKey);
-      }
-      prismaError(error);
-    }
-  }
-
   async findAll() {
-    return await this.prisma.user.findMany();
+    return this.prisma.user.findMany({ select: USER_PUBLIC_FIELDS });
   }
 
   async findOne(id: string) {
     return this.prisma.user.findUniqueOrThrow({
       where: { id },
+      select: USER_PUBLIC_FIELDS,
     });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const user = await this.prisma.user.update({
+      const { password: _, ...user } = await this.prisma.user.update({
         data: updateUserDto,
         where: { id },
       });
@@ -121,13 +75,11 @@ export class UserService {
 
   async lockUser(id: string) {
     try {
-      const user = await this.prisma.user.update({
-        data: {
-          isLocked: true,
-        },
+      return await this.prisma.user.update({
+        data: { isLocked: true },
         where: { id },
+        select: USER_PUBLIC_FIELDS,
       });
-      return user;
     } catch (error) {
       prismaError(error);
     }
@@ -135,13 +87,11 @@ export class UserService {
 
   async unlockUser(id: string) {
     try {
-      const user = await this.prisma.user.update({
-        data: {
-          isLocked: false,
-        },
+      return await this.prisma.user.update({
+        data: { isLocked: false },
         where: { id },
+        select: USER_PUBLIC_FIELDS,
       });
-      return user;
     } catch (error) {
       prismaError(error);
     }
@@ -149,6 +99,81 @@ export class UserService {
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.user.delete({ where: { id } });
+    return await this.prisma.user.delete({ where: { id } });
+  }
+
+  // ─── Self-service ─────────────────────────────────────────────────────────────
+
+  async getMyProfile(userId: string) {
+    return this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        ...USER_PUBLIC_FIELDS,
+        phones: {
+          select: { phoneNumber: true, type: true },
+        },
+      },
+    });
+  }
+
+  async updateMyInfo(userId: string, dto: UpdateMyInfoDto) {
+    try {
+      return this.prisma.user.update({
+        where: { id: userId },
+        data: { name: dto.name },
+        select: USER_PUBLIC_FIELDS,
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async updateProfileByUserId(userId: string, profile: Express.Multer.File) {
+    let newImageKey: string | null = null;
+    try {
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+      });
+
+      const { key } = await this.r2Service.uploadSingleFile(profile, 'profile');
+      newImageKey = key;
+
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { imgUrl: newImageKey },
+        select: USER_PUBLIC_FIELDS,
+      });
+
+      if (user.imgUrl) {
+        await this.r2Service.deleteSingleFile(user.imgUrl);
+      }
+
+      return updatedUser;
+    } catch (error) {
+      if (newImageKey) {
+        await this.r2Service.deleteSingleFile(newImageKey);
+      }
+      prismaError(error);
+    }
+  }
+
+  async deleteProfileByUserId(userId: string) {
+    try {
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+      });
+
+      if (user.imgUrl) {
+        await this.r2Service.deleteSingleFile(user.imgUrl);
+      }
+
+      return this.prisma.user.update({
+        where: { id: userId },
+        data: { imgUrl: null },
+        select: USER_PUBLIC_FIELDS,
+      });
+    } catch (error) {
+      prismaError(error);
+    }
   }
 }

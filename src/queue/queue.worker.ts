@@ -69,8 +69,12 @@ export class QueueWorker implements OnModuleInit {
     await this.queue.work(QUEUE_JOBS.PURGE_EXPIRED_TOKENS, async () => {
       const now = new Date();
       const [refreshResult, otpResult] = await Promise.all([
-        this.prisma.refreshToken.deleteMany({ where: { expiresAt: { lt: now } } }),
-        this.prisma.passwordResetToken.deleteMany({ where: { expiresAt: { lt: now } } }),
+        this.prisma.refreshToken.deleteMany({
+          where: { expiresAt: { lt: now } },
+        }),
+        this.prisma.passwordResetToken.deleteMany({
+          where: { expiresAt: { lt: now } },
+        }),
       ]);
       this.logger.log(
         `Purged ${refreshResult.count} refresh tokens and ${otpResult.count} OTP records`,

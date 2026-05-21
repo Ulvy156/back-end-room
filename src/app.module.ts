@@ -40,7 +40,11 @@ import { QueueModule } from './queue/queue.module';
             : // Prod: JSON to stdout + JSON to log file
               {
                 targets: [
-                  { target: 'pino/file', options: { destination: 1 }, level: 'info' },
+                  {
+                    target: 'pino/file',
+                    options: { destination: 1 },
+                    level: 'info',
+                  },
                   {
                     target: 'pino/file',
                     options: { destination: './logs/app.log', mkdir: true },

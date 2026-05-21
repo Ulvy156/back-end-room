@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { UserFavouriteService } from './user-favourite.service';
@@ -19,7 +27,10 @@ export class UserFavouriteController {
     @Body() createUserFavouriteDto: CreateUserFavouriteDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.userFavouriteService.create(createUserFavouriteDto, req.user.id);
+    return this.userFavouriteService.create(
+      createUserFavouriteDto,
+      req.user.id,
+    );
   }
 
   @Get(':id')
@@ -37,7 +48,11 @@ export class UserFavouriteController {
     @Param('id') id: string,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.userFavouriteService.getAllFavouriteUserByUserID(id, req.user.id, req.user.role);
+    return this.userFavouriteService.getAllFavouriteUserByUserID(
+      id,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Get('/user-id/:id')
@@ -45,6 +60,10 @@ export class UserFavouriteController {
     @Param('id') id: string,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.userFavouriteService.getFavouriteUserByUserID(id, req.user.id, req.user.role);
+    return this.userFavouriteService.getFavouriteUserByUserID(
+      id,
+      req.user.id,
+      req.user.role,
+    );
   }
 }

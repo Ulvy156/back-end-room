@@ -223,7 +223,9 @@ export class PropertyService {
     const property = await this.prisma.property.findUnique({ where: { id } });
     if (!property) throw new NotFoundException('Property not found');
     if (property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException('You do not have permission to perform this action');
+      throw new ForbiddenException(
+        'You do not have permission to perform this action',
+      );
     return property;
   }
 
@@ -236,7 +238,12 @@ export class PropertyService {
     ]);
   }
 
-  async update(id: string, updatePropertyDto: UpdatePropertyDto, requesterId: string, role: UserRole) {
+  async update(
+    id: string,
+    updatePropertyDto: UpdatePropertyDto,
+    requesterId: string,
+    role: UserRole,
+  ) {
     try {
       await this.assertOwner(id, requesterId, role);
 
@@ -297,6 +304,55 @@ export class PropertyService {
     }
   }
 
+  async getMyProperties(userId: string) {
+    return this.prisma.property.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        monthly_price: true,
+        isPublished: true,
+        isAvailable: true,
+        isFeatured: true,
+        totalViews: true,
+        createdAt: true,
+        images: {
+          take: 1,
+          where: { isCover: true },
+          select: { imageKey: true },
+        },
+        district: {
+          select: {
+            nameEn: true,
+            nameKh: true,
+            province: { select: { nameEn: true, nameKh: true } },
+          },
+        },
+      },
+    });
+  }
+
+  async togglePublish(id: string, requesterId: string, role: UserRole) {
+    const property = await this.assertOwner(id, requesterId, role);
+    const updated = await this.prisma.property.update({
+      where: { id },
+      data: { isPublished: !property.isPublished },
+      select: { id: true, isPublished: true },
+    });
+    await this.clearCacheHomePage();
+    return updated;
+  }
+
+  async toggleAvailability(id: string, requesterId: string, role: UserRole) {
+    const property = await this.assertOwner(id, requesterId, role);
+    return this.prisma.property.update({
+      where: { id },
+      data: { isAvailable: !property.isAvailable },
+      select: { id: true, isAvailable: true },
+    });
+  }
+
   async remove(id: string, requesterId: string, role: UserRole) {
     await this.assertOwner(id, requesterId, role);
 
@@ -306,7 +362,9 @@ export class PropertyService {
     });
 
     if (images.length) {
-      await this.r2Service.deleteMultipleFiles(images.map((img) => img.imageKey));
+      await this.r2Service.deleteMultipleFiles(
+        images.map((img) => img.imageKey),
+      );
     }
 
     await this.prisma.property.delete({ where: { id } });

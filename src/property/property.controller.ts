@@ -71,13 +71,40 @@ export class PropertyController {
     return this.propertyService.findOne(filter);
   }
 
+  @Get('/my-properties')
+  getMyProperties(@Req() req: AuthenticatedRequest) {
+    return this.propertyService.getMyProperties(req.user.id);
+  }
+
+  @Patch('/toggle-publish/:id')
+  togglePublish(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.propertyService.togglePublish(id, req.user.id, req.user.role);
+  }
+
+  @Patch('/toggle-availability/:id')
+  toggleAvailability(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.propertyService.toggleAvailability(
+      id,
+      req.user.id,
+      req.user.role,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updatePropertyDto: UpdatePropertyDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.propertyService.update(id, updatePropertyDto, req.user.id, req.user.role);
+    return this.propertyService.update(
+      id,
+      updatePropertyDto,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Public()

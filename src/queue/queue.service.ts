@@ -1,6 +1,17 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { PgBoss as PgBossClass, ScheduleOptions, SendOptions, WorkHandler, WorkOptions } from 'pg-boss';
+import type {
+  PgBoss as PgBossClass,
+  ScheduleOptions,
+  SendOptions,
+  WorkHandler,
+  WorkOptions,
+} from 'pg-boss';
 
 @Injectable()
 export class QueueService implements OnModuleInit, OnModuleDestroy {
@@ -40,7 +51,10 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   // Registers a worker for the given queue name.
   // In pg-boss v12 the handler always receives an array — use jobs[0] when batchSize is 1 (default).
   // If the handler throws, pg-boss marks the job as failed and retries up to retryLimit.
-  async work<T extends object>(name: string, handler: WorkHandler<T>): Promise<string>;
+  async work<T extends object>(
+    name: string,
+    handler: WorkHandler<T>,
+  ): Promise<string>;
   async work<T extends object>(
     name: string,
     options: WorkOptions,
@@ -52,7 +66,11 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     maybeHandler?: WorkHandler<T>,
   ): Promise<string> {
     if (maybeHandler) {
-      return this.boss.work<T>(name, optionsOrHandler as WorkOptions, maybeHandler);
+      return this.boss.work<T>(
+        name,
+        optionsOrHandler as WorkOptions,
+        maybeHandler,
+      );
     }
     return this.boss.work<T>(name, optionsOrHandler as WorkHandler<T>);
   }
