@@ -19,6 +19,7 @@ import { haversineKm } from 'src/utils/geDistanceKm';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
 import { QueueService } from 'src/queue/queue.service';
 import { QUEUE_JOBS, IncrementPropertyViewJob } from 'src/queue/queue.jobs';
+import { TranslationService } from 'src/i18n/translation.service';
 
 @Injectable()
 export class PropertyService {
@@ -27,6 +28,7 @@ export class PropertyService {
     private readonly r2Service: R2Service,
     private readonly cache: CacheService,
     private readonly queue: QueueService,
+    private readonly translation: TranslationService,
   ) {}
 
   async create(
@@ -36,7 +38,7 @@ export class PropertyService {
     let uploadedImgKeys: Array<{ key: string; url: string }> = [];
     try {
       if (!files.length) {
-        throw new BadRequestException('At least one file is required');
+        throw new BadRequestException(this.translation.t('errors.property.image_required'));
       }
 
       const { amenityKeys, parkings, ...propertyData } = createPropertyDto;
@@ -221,11 +223,9 @@ export class PropertyService {
 
   private async assertOwner(id: string, requesterId: string, role: UserRole) {
     const property = await this.prisma.property.findUnique({ where: { id } });
-    if (!property) throw new NotFoundException('Property not found');
+    if (!property) throw new NotFoundException(this.translation.t('errors.property.not_found'));
     if (property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(
-        'You do not have permission to perform this action',
-      );
+      throw new ForbiddenException(this.translation.t('errors.property.forbidden'));
     return property;
   }
 
@@ -393,9 +393,7 @@ export class PropertyService {
         });
 
         if (featuredCount >= 3) {
-          throw new BadRequestException(
-            'You can only feature up to 4 properties',
-          );
+          throw new BadRequestException(this.translation.t('errors.property.feature_limit'));
         }
       }
 

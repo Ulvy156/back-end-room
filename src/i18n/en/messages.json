@@ -1,0 +1,10 @@
+{
+  "feedback": {
+    "submitted": "Feedback submitted. Thank you!"
+  },
+  "auth": {
+    "otp_sent": "If an account with that email exists, an OTP has been sent",
+    "password_reset": "Password reset successfully. Please log in again.",
+    "account_created": "Account created. Please check your email for the OTP to verify your account."
+  }
+}

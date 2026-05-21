@@ -1,0 +1,31 @@
+{
+  "auth": {
+    "not_verified": "គណនីមិនទាន់ផ្ទៀងផ្ទាត់ទេ។ សូមពិនិត្យអ៊ីមែលរបស់អ្នកសម្រាប់លេខ OTP។",
+    "locked": "គណនីត្រូវបានចាក់សោ។ សូមទាក់ទងអ្នកគ្រប់គ្រង",
+    "invalid_credentials": "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ",
+    "invalid_otp": "លេខ OTP មិនត្រឹមត្រូវ ឬផុតកំណត់",
+    "already_verified": "គណនីត្រូវបានផ្ទៀងផ្ទាត់រួចហើយ",
+    "invalid_telegram": "ទិន្នន័យការផ្ទៀងផ្ទាត់ Telegram មិនត្រឹមត្រូវ",
+    "telegram_expired": "ការផ្ទៀងផ្ទាត់ Telegram ផុតកំណត់",
+    "no_telegram_linked": "គ្មានគណនីភ្ជាប់ជាមួយ Telegram នេះ",
+    "no_telegram_on_user": "គ្មានគណនី Telegram ភ្ជាប់ជាមួយអ្នកប្រើប្រាស់នេះ",
+    "invalid_refresh_token": "Token បន្ត session មិនត្រឹមត្រូវ",
+    "missing_refresh_token": "បាត់ Token បន្ត session"
+  },
+  "property": {
+    "not_found": "មិនរកឃើញអចលនទ្រព្យ",
+    "forbidden": "អ្នកមិនមានសិទ្ធិធ្វើសកម្មភាពនេះ",
+    "image_required": "ត្រូវការរូបភាពយ៉ាងហោចណាស់មួយ",
+    "monthly_limit": "អ្នកអាចបង្ហោះអចលនទ្រព្យបានតែ ៣ ក្នុងមួយខែ",
+    "feature_limit": "អ្នកអាចដាក់ពិសេសអចលនទ្រព្យបានតែ ៣ ក្នុងមួយពេល"
+  },
+  "favourite": {
+    "not_found": "មិនរកឃើញការចូលចិត្ត",
+    "forbidden": "អ្នកមិនមានសិទ្ធិធ្វើសកម្មភាពនេះ"
+  },
+  "file": {
+    "required": "ត្រូវការឯកសារ",
+    "invalid_type": "ប្រភេទរូបភាពមិនត្រឹមត្រូវ",
+    "too_large": "ទំហំឯកសារអតិបរមាគឺ 1MB"
+  }
+}

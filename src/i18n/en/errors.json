@@ -1,0 +1,31 @@
+{
+  "auth": {
+    "not_verified": "Account not verified. Please check your email for the OTP.",
+    "locked": "Account is locked, please contact admin",
+    "invalid_credentials": "Invalid credentials",
+    "invalid_otp": "Invalid or expired OTP",
+    "already_verified": "Account is already verified",
+    "invalid_telegram": "Invalid Telegram authentication data",
+    "telegram_expired": "Telegram authentication has expired",
+    "no_telegram_linked": "No account linked to this Telegram account",
+    "no_telegram_on_user": "No Telegram account linked to this user",
+    "invalid_refresh_token": "Invalid refresh token",
+    "missing_refresh_token": "Missing refresh token"
+  },
+  "property": {
+    "not_found": "Property not found",
+    "forbidden": "You do not have permission to perform this action",
+    "image_required": "At least one image is required",
+    "monthly_limit": "You can only post up to 3 properties per month",
+    "feature_limit": "You can only feature up to 3 properties at a time"
+  },
+  "favourite": {
+    "not_found": "Favourite not found",
+    "forbidden": "You do not have permission to perform this action"
+  },
+  "file": {
+    "required": "File is required",
+    "invalid_type": "Invalid image type",
+    "too_large": "Maximum file size is 1MB"
+  }
+}

@@ -4,6 +4,7 @@ export const QUEUE_JOBS = {
   SEND_OTP_TELEGRAM: 'send-otp-telegram',
   INCREMENT_PROPERTY_VIEW: 'increment-property-view',
   PURGE_EXPIRED_TOKENS: 'purge-expired-tokens',
+  SEND_FEEDBACK_NOTIFICATION: 'send-feedback-notification',
 } as const;
 
 export interface SendVerificationOtpJob {
@@ -23,4 +24,10 @@ export interface SendOtpTelegramJob {
 
 export interface IncrementPropertyViewJob {
   propertyId: string;
+}
+
+export interface SendFeedbackNotificationJob {
+  type: string;
+  description: string;
+  userName: string;
 }

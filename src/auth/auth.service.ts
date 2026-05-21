@@ -21,6 +21,7 @@ import { hashingPassword } from '../utils/hashingPassword';
 import { prismaError } from '../utils/prismaError';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
+import { TranslationService } from '../i18n/translation.service';
 
 interface JwtAccessPayload {
   sub: string;
@@ -43,6 +44,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly queue: QueueService,
+    private readonly translation: TranslationService,
   ) {}
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -108,10 +110,10 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    if (!user) throw new BadRequestException('Invalid or expired OTP');
+    if (!user) throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
 
     if (user.isVerified) {
-      throw new BadRequestException('Account is already verified');
+      throw new BadRequestException(this.translation.t('errors.auth.already_verified'));
     }
 
     const tokenRecord = await this.prisma.passwordResetToken.findUnique({
@@ -123,11 +125,11 @@ export class AuthService {
       tokenRecord.channel !== 'verification' ||
       tokenRecord.expiresAt < new Date()
     ) {
-      throw new BadRequestException('Invalid or expired OTP');
+      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
     }
 
     if (this.hashOtp(dto.otp) !== tokenRecord.otp) {
-      throw new BadRequestException('Invalid or expired OTP');
+      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
     }
 
     await this.prisma.$transaction([
@@ -155,15 +157,11 @@ export class AuthService {
     if (!user) return null;
 
     if (!user.isVerified) {
-      throw new UnauthorizedException(
-        'Account not verified. Please check your email for the OTP.',
-      );
+      throw new UnauthorizedException(this.translation.t('errors.auth.not_verified'));
     }
 
     if (user.isLocked) {
-      throw new UnauthorizedException(
-        'Account is locked, please contact admin',
-      );
+      throw new UnauthorizedException(this.translation.t('errors.auth.locked'));
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -202,10 +200,10 @@ export class AuthService {
         secret: this.refreshSecret,
       });
     } catch {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
     }
 
-    if (!payload.jti) throw new UnauthorizedException('Invalid refresh token');
+    if (!payload.jti) throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
 
     const stored = await this.prisma.refreshToken.findUnique({
       where: { jti: payload.jti },
@@ -216,7 +214,7 @@ export class AuthService {
       stored.userId !== payload.sub ||
       stored.expiresAt < new Date()
     ) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
     }
 
     const newJti = randomUUID();
@@ -286,14 +284,14 @@ export class AuthService {
   async telegramLogin(data: TelegramLoginDto) {
     // 1. Verify Telegram signature
     if (!this.verifyTelegramHash(data)) {
-      throw new UnauthorizedException('Invalid Telegram authentication data');
+      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_telegram'));
     }
 
     // 2. Reject stale auth_date (must be within 24 hours)
     const authDate = new Date(data.auth_date * 1000);
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     if (authDate < oneDayAgo) {
-      throw new UnauthorizedException('Telegram authentication has expired');
+      throw new UnauthorizedException(this.translation.t('errors.auth.telegram_expired'));
     }
 
     // 3. Look up user by their Telegram ID stored in the Phone table
@@ -306,19 +304,15 @@ export class AuthService {
     });
 
     if (!phone) {
-      throw new UnauthorizedException(
-        'No account linked to this Telegram account',
-      );
+      throw new UnauthorizedException(this.translation.t('errors.auth.no_telegram_linked'));
     }
 
     if (!phone.user.isVerified) {
-      throw new UnauthorizedException('Account not verified');
+      throw new UnauthorizedException(this.translation.t('errors.auth.not_verified'));
     }
 
     if (phone.user.isLocked) {
-      throw new UnauthorizedException(
-        'Account is locked, please contact admin',
-      );
+      throw new UnauthorizedException(this.translation.t('errors.auth.locked'));
     }
 
     return phone.user;
@@ -342,9 +336,7 @@ export class AuthService {
         (p) => p.type === PhoneNumberType.TELEGRAM,
       );
       if (!telegramPhone) {
-        throw new BadRequestException(
-          'No Telegram account linked to this user',
-        );
+        throw new BadRequestException(this.translation.t('errors.auth.no_telegram_on_user'));
       }
       await this.storeOtp(user.id, otp, channel);
       await this.queue.send<SendOtpTelegramJob>(
@@ -365,18 +357,18 @@ export class AuthService {
   async resetPassword(email: string, otp: string, newPassword: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
-    if (!user) throw new BadRequestException('Invalid or expired OTP');
+    if (!user) throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
 
     const tokenRecord = await this.prisma.passwordResetToken.findUnique({
       where: { userId: user.id },
     });
 
     if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
-      throw new BadRequestException('Invalid or expired OTP');
+      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
     }
 
     if (this.hashOtp(otp) !== tokenRecord.otp) {
-      throw new BadRequestException('Invalid or expired OTP');
+      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
     }
 
     const hashed = await hashingPassword(newPassword);

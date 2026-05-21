@@ -51,7 +51,7 @@ export class UserService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany({ select: USER_PUBLIC_FIELDS });
+    return await this.prisma.user.findMany({ select: USER_PUBLIC_FIELDS });
   }
 
   async findOne(id: string) {

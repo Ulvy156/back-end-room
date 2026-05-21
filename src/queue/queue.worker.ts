@@ -1,10 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../notification/email.service';
 import { TelegramService } from '../notification/telegram.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   IncrementPropertyViewJob,
   QUEUE_JOBS,
+  SendFeedbackNotificationJob,
   SendOtpEmailJob,
   SendOtpTelegramJob,
   SendVerificationOtpJob,
@@ -20,6 +22,7 @@ export class QueueWorker implements OnModuleInit {
     private readonly email: EmailService,
     private readonly telegram: TelegramService,
     private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -63,6 +66,22 @@ export class QueueWorker implements OnModuleInit {
           data: { totalViews: { increment: 1 } },
           where: { id: job.data.propertyId },
         });
+      },
+    );
+
+    await this.queue.work<SendFeedbackNotificationJob>(
+      QUEUE_JOBS.SEND_FEEDBACK_NOTIFICATION,
+      async (jobs) => {
+        const job = jobs[0];
+        const adminChatId = this.config.getOrThrow<string>(
+          'ADMIN_TELEGRAM_CHAT_ID',
+        );
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const { type, userName, description } = job.data;
+        await this.telegram.sendMessage(
+          adminChatId,
+          `📬 *New Feedback — ${String(type)}*\n\nFrom: ${String(userName)}\n\n${String(description)}`,
+        );
       },
     );
 

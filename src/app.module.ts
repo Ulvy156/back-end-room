@@ -1,6 +1,9 @@
+import * as path from 'path';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
+import { I18nModule, HeaderResolver } from 'nestjs-i18n';
+import { TranslationModule } from './i18n/translation.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -62,6 +65,15 @@ import { QueueModule } from './queue/queue.module';
         },
       ],
     }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: process.env.NODE_ENV !== 'production',
+      },
+      resolvers: [{ use: HeaderResolver, options: ['accept-language'] }],
+    }),
+    TranslationModule,
     AppCacheModule,
     AppConfigModule,
     PrismaModule,

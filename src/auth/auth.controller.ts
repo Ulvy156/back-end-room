@@ -19,6 +19,7 @@ import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Throttle } from '@nestjs/throttler';
+import { TranslationService } from '../i18n/translation.service';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string; role: string };
@@ -34,7 +35,10 @@ const cookieOptions = {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly translation: TranslationService,
+  ) {}
 
   // ─── Login ───────────────────────────────────────────────────────────────────
 
@@ -47,7 +51,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.authService.validateUser(dto.email, dto.password);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user)
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.invalid_credentials'),
+      );
 
     const { accessToken, refreshToken } = await this.authService.login({
       id: user.id,
@@ -67,8 +74,7 @@ export class AuthController {
   async register(@Body() dto: RegisterDto) {
     const result = await this.authService.register(dto);
     return {
-      message:
-        'Account created. Please check your email for the OTP to verify your account.',
+      message: this.translation.t('messages.auth.account_created'),
       user_id: result?.userId,
     };
   }
@@ -98,7 +104,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = (req.cookies as Record<string, string>)?.refresh_token;
-    if (!refreshToken) throw new UnauthorizedException('Missing refresh token');
+    if (!refreshToken)
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.missing_refresh_token'),
+      );
 
     const tokens = await this.authService.refreshTokens(refreshToken);
 
@@ -152,7 +161,7 @@ export class AuthController {
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     await this.authService.forgotPassword(dto.email, dto.channel);
     return {
-      message: 'If an account with that email exists, an OTP has been sent',
+      message: this.translation.t('messages.auth.otp_sent'),
     };
   }
 
@@ -162,6 +171,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
     await this.authService.resetPassword(dto.email, dto.otp, dto.newPassword);
-    return { message: 'Password reset successfully. Please log in again.' };
+    return { message: this.translation.t('messages.auth.password_reset') };
   }
 }

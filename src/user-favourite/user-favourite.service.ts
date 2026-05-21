@@ -7,10 +7,14 @@ import { CreateUserFavouriteDto } from './dto/create-user-favourite.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { prismaError } from 'src/utils/prismaError';
 import { UserRole } from 'prisma/generated/enums';
+import { TranslationService } from 'src/i18n/translation.service';
 
 @Injectable()
 export class UserFavouriteService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly translation: TranslationService,
+  ) {}
 
   private async assertOwner(
     favouriteId: string,
@@ -20,11 +24,9 @@ export class UserFavouriteService {
     const favourite = await this.prisma.favorite.findUnique({
       where: { id: favouriteId },
     });
-    if (!favourite) throw new NotFoundException('Favourite not found');
+    if (!favourite) throw new NotFoundException(this.translation.t('errors.favourite.not_found'));
     if (favourite.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(
-        'You do not have permission to perform this action',
-      );
+      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
     return favourite;
   }
 
@@ -64,9 +66,7 @@ export class UserFavouriteService {
     role: UserRole,
   ) {
     if (userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(
-        'You do not have permission to perform this action',
-      );
+      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
     try {
       return await this.prisma.favorite.findMany({ where: { userId } });
     } catch (error) {
@@ -80,9 +80,7 @@ export class UserFavouriteService {
     role: UserRole,
   ) {
     if (userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(
-        'You do not have permission to perform this action',
-      );
+      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
     try {
       return await this.prisma.favorite.findFirstOrThrow({ where: { userId } });
     } catch (error) {
