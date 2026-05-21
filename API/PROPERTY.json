@@ -1,0 +1,244 @@
+{
+  "info": {
+    "_postman_id": "b2c3d4e5-property-collection-rent-room",
+    "name": "Property",
+    "description": "Property listing endpoints for Rent Room.\n\nBase URL: {{baseUrl}}\n\nPublic endpoints (no auth): home-page, browse-properties, property-details, related-properties, increment-view.\n\nAll other endpoints require: Authorization: Bearer {{accessToken}}\n\nCreate/update/delete require ownership (LANDLORD role) or ADMIN.\nset-feature requires ADMIN.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "propertyId", "value": "", "type": "string" },
+    { "key": "imageId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Get Homepage Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/property/home-page", "host": ["{{baseUrl}}"], "path": ["property", "home-page"] },
+            "description": "Returns featured listings (up to 3), latest listings (up to 4), and popular locations (top 10). All results are cached."
+          },
+          "response": []
+        },
+        {
+          "name": "Browse Properties",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 6,\n  \"minPrice\": 0,\n  \"maxPrice\": 500,\n  \"location\": 0,\n  \"locationType\": \"district\",\n  \"roomType\": 0,\n  \"bedroom\": 0,\n  \"bathroom\": 0,\n  \"amenities\": [],\n  \"houseRules\": [],\n  \"orderType\": 1,\n  \"lat\": null,\n  \"lng\": null\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/property/browse-properties", "host": ["{{baseUrl}}"], "path": ["property", "browse-properties"] },
+            "description": "Filter and paginate published properties.\n\norderType: 1=newest, 2=price asc, 3=price desc, 4=nearest (requires lat/lng)\nlocationType: 'district' or 'province'\n\nReturns: { items[], meta: { page, limit, total, totalPages } }"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property Detail",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{propertyId}}\",\n  \"lat\": null,\n  \"lng\": null\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/property/property-details", "host": ["{{baseUrl}}"], "path": ["property", "property-details"] },
+            "description": "Returns full property detail including amenities, rules (all rules with is_allow flag), parking, landlord info, and distance if lat/lng provided. Only published properties are returned."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Related Properties",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/property/related-properties/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "related-properties", "{{propertyId}}"] },
+            "description": "Returns up to 6 published properties near the given property with similar price range (±20%), bedroom count (±2), and property type. Sorted by distance. Returns [] if none found."
+          },
+          "response": []
+        },
+        {
+          "name": "Increment View Count",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/property/increment-view/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "increment-view", "{{propertyId}}"] },
+            "description": "Fire-and-forget — enqueues a background job to increment totalViews. Returns 204 immediately.\n\nRate limit: 10 per minute."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Landlord",
+      "item": [
+        {
+          "name": "Create Property",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "files", "type": "file", "description": "At least one image required. Multiple allowed." },
+                { "key": "title", "value": "Modern Room near Market", "type": "text" },
+                { "key": "address", "value": "Street 123, Phnom Penh", "type": "text" },
+                { "key": "description", "value": "Bright room with natural light.", "type": "text" },
+                { "key": "monthly_price", "value": "250", "type": "text" },
+                { "key": "deposit", "value": "250", "type": "text" },
+                { "key": "bedroom", "value": "1", "type": "text" },
+                { "key": "bathroom", "value": "1", "type": "text" },
+                { "key": "floor", "value": "2", "type": "text" },
+                { "key": "totalFloors", "value": "4", "type": "text" },
+                { "key": "sizeSqm", "value": "25", "type": "text" },
+                { "key": "furnished", "value": "true", "type": "text" },
+                { "key": "districtId", "value": "1201", "type": "text" },
+                { "key": "propertyTypeId", "value": "1", "type": "text" },
+                { "key": "amenityKeys", "value": "[1, 2]", "type": "text", "description": "JSON array of amenity IDs" },
+                { "key": "lat", "value": "11.5564", "type": "text" },
+                { "key": "lng", "value": "104.9282", "type": "text" },
+                { "key": "folderType", "value": "properties", "type": "text" },
+                { "key": "userId", "value": "", "type": "text", "description": "Landlord user ID" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/property", "host": ["{{baseUrl}}"], "path": ["property"] },
+            "description": "Creates a new property listing as a draft (isPublished: false by default). Uploads images to R2, optimized to WebP.\n\nRole: LANDLORD or ADMIN.\nLimit: 3 properties per 30 days per landlord.\nRate limit: 2 per 10 minutes.\n\nErrors:\n- 400: No images provided\n- 400: Monthly limit reached\n- 403: Not LANDLORD or ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Properties",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/my-properties", "host": ["{{baseUrl}}"], "path": ["property", "my-properties"] },
+            "description": "Returns all properties belonging to the authenticated landlord, ordered by newest first. Includes isPublished, isAvailable, isFeatured status for management dashboard."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Property",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"monthly_price\": 280,\n  \"amenityKeys\": [1, 3]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/property/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "{{propertyId}}"] },
+            "description": "Updates property fields. Amenities and parkings are REPLACED (not merged) if provided.\n\nOwnership required — 403 if not owner or ADMIN."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Publish",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/toggle-publish/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "toggle-publish", "{{propertyId}}"] },
+            "description": "Flips isPublished on the property. Unpublished properties are hidden from browse, homepage, and detail endpoints.\n\nOwnership required."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/toggle-availability/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "toggle-availability", "{{propertyId}}"] },
+            "description": "Flips isAvailable on the property. Use when a property is rented out — it stays visible but signals unavailability to tenants.\n\nOwnership required."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Property",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "{{propertyId}}"] },
+            "description": "Deletes the property and removes all associated images from R2.\n\nOwnership required. Rate limit: 10 per minute."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Properties",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property", "host": ["{{baseUrl}}"], "path": ["property"] },
+            "description": "Returns all properties (published and unpublished). Admin-only management view."
+          },
+          "response": []
+        },
+        {
+          "name": "Set Featured",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/set-feature/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "set-feature", "{{propertyId}}"] },
+            "description": "Toggles isFeatured on the property. Maximum 3 featured properties at a time.\n\nRole: ADMIN only."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Property Images",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "description": "Single image file (JPEG, PNG, WEBP). Max 1MB." }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/property-image/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property-image", "{{propertyId}}"] },
+            "description": "Uploads a new image to an existing property. Image is resized and converted to WebP before upload.\n\nOwnership required. Rate limit: 10 per minute.\n\nErrors:\n- 400: Invalid file type or size > 1MB\n- 403: Not property owner or ADMIN\n- 404: Property not found"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Cover Image",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property-image/{{imageId}}/set-cover", "host": ["{{baseUrl}}"], "path": ["property-image", "{{imageId}}", "set-cover"] },
+            "description": "Sets this image as the cover photo. Atomically unsets isCover on all other images for the same property.\n\nOwnership required. Returns 204."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Image",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property-image/{{imageId}}", "host": ["{{baseUrl}}"], "path": ["property-image", "{{imageId}}"] },
+            "description": "Deletes the image from R2 and removes the DB record.\n\nOwnership required. Returns 204."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

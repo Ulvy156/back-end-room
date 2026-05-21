@@ -10,7 +10,8 @@
     "no_telegram_linked": "គ្មានគណនីភ្ជាប់ជាមួយ Telegram នេះ",
     "no_telegram_on_user": "គ្មានគណនី Telegram ភ្ជាប់ជាមួយអ្នកប្រើប្រាស់នេះ",
     "invalid_refresh_token": "Token បន្ត session មិនត្រឹមត្រូវ",
-    "missing_refresh_token": "បាត់ Token បន្ត session"
+    "missing_refresh_token": "បាត់ Token បន្ត session",
+    "wrong_current_password": "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ"
   },
   "property": {
     "not_found": "មិនរកឃើញអចលនទ្រព្យ",
@@ -22,6 +23,10 @@
   "favourite": {
     "not_found": "មិនរកឃើញការចូលចិត្ត",
     "forbidden": "អ្នកមិនមានសិទ្ធិធ្វើសកម្មភាពនេះ"
+  },
+  "property_image": {
+    "not_found": "មិនរកឃើញរូបភាព",
+    "forbidden": "អ្នកមិនមានសិទ្ធិគ្រប់គ្រងរូបភាពនេះ"
   },
   "file": {
     "required": "ត្រូវការឯកសារ",

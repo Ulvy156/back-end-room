@@ -10,7 +10,8 @@
     "no_telegram_linked": "No account linked to this Telegram account",
     "no_telegram_on_user": "No Telegram account linked to this user",
     "invalid_refresh_token": "Invalid refresh token",
-    "missing_refresh_token": "Missing refresh token"
+    "missing_refresh_token": "Missing refresh token",
+    "wrong_current_password": "Current password is incorrect"
   },
   "property": {
     "not_found": "Property not found",
@@ -22,6 +23,10 @@
   "favourite": {
     "not_found": "Favourite not found",
     "forbidden": "You do not have permission to perform this action"
+  },
+  "property_image": {
+    "not_found": "Image not found",
+    "forbidden": "You do not have permission to manage this image"
   },
   "file": {
     "required": "File is required",

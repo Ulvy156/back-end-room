@@ -22,6 +22,7 @@ import { PropertyRulesModule } from './property-rules/property-rules.module';
 import { UserFavouriteModule } from './user-favourite/user-favourite.module';
 import { RolesGuard } from './auth/roles.guard';
 import { QueueModule } from './queue/queue.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { QueueModule } from './queue/queue.module';
     PropertyAmenityModule,
     PropertyRulesModule,
     UserFavouriteModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [

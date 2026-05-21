@@ -1,0 +1,94 @@
+{
+  "info": {
+    "_postman_id": "d4e5f6a7-favourite-collection-rent-room",
+    "name": "Favourite",
+    "description": "User favourite (saved properties) endpoints for Rent Room.\n\nBase URL: {{baseUrl}}\n\nAll endpoints require: Authorization: Bearer {{accessToken}}\n\nUsers can only access their own favourites. ADMIN can access any user's favourites.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "favouriteId", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Save Property",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"propertyId\": \"property-uuid-here\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/user-favourite", "host": ["{{baseUrl}}"], "path": ["user-favourite"] },
+        "description": "Saves a property to the authenticated user's favourites. userId is taken from the JWT — never from the request body.\n\nRate limit: 20 per minute.\n\nErrors:\n- 400: Property already saved (unique constraint)"
+      },
+      "response": [
+        {
+          "name": "201 Created",
+          "originalRequest": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"propertyId\": \"property-uuid-here\"\n}" }, "url": { "raw": "{{baseUrl}}/user-favourite", "host": ["{{baseUrl}}"], "path": ["user-favourite"] } },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": \"favourite-uuid\",\n  \"userId\": \"user-uuid\",\n  \"propertyId\": \"property-uuid\",\n  \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Favourite by ID",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/user-favourite/{{favouriteId}}", "host": ["{{baseUrl}}"], "path": ["user-favourite", "{{favouriteId}}"] },
+        "description": "Returns a single favourite record by its ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Remove Saved Property",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/user-favourite/{{favouriteId}}", "host": ["{{baseUrl}}"], "path": ["user-favourite", "{{favouriteId}}"] },
+        "description": "Removes a saved property. Only the user who saved it (or ADMIN) can remove it.\n\nErrors:\n- 403: Not the owner of this favourite\n- 404: Favourite not found"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All My Favourites",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/user-favourite/all/user-id/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user-favourite", "all", "user-id", "{{userId}}"] },
+        "description": "Returns all saved properties for the given userId.\n\nThe userId in the path must match the authenticated user's ID. ADMIN can query any userId.\n\nErrors:\n- 403: Requesting another user's favourites without ADMIN role"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/user-favourite/all/user-id/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user-favourite", "all", "user-id", "{{userId}}"] } },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "[\n  {\n    \"id\": \"favourite-uuid\",\n    \"userId\": \"user-uuid\",\n    \"propertyId\": \"property-uuid\",\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Get Latest Favourite",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/user-favourite/user-id/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user-favourite", "user-id", "{{userId}}"] },
+        "description": "Returns the most recent favourite for the given userId.\n\nSame ownership rules as Get All My Favourites.\n\nErrors:\n- 403: Requesting another user's favourite without ADMIN role\n- 404: No favourite found for this user"
+      },
+      "response": []
+    }
+  ]
+}

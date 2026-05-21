@@ -383,4 +383,15 @@ export class AuthService {
       this.prisma.refreshToken.deleteMany({ where: { userId: user.id } }),
     ]);
   }
+
+  // ─── Change password ─────────────────────────────────────────────────────────
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid)
+      throw new BadRequestException(this.translation.t('errors.auth.wrong_current_password'));
+    const hashed = await hashingPassword(newPassword);
+    await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+  }
 }

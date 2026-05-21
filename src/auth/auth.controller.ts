@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Patch,
   Body,
   UnauthorizedException,
   Res,
@@ -18,6 +19,7 @@ import { VerifyAccountDto } from './dto/verify-account.dto';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Throttle } from '@nestjs/throttler';
 import { TranslationService } from '../i18n/translation.service';
 
@@ -172,5 +174,20 @@ export class AuthController {
   async resetPassword(@Body() dto: ResetPasswordDto) {
     await this.authService.resetPassword(dto.email, dto.otp, dto.newPassword);
     return { message: this.translation.t('messages.auth.password_reset') };
+  }
+
+  // [USER] Change own password — requires current password to be correct
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Patch('change-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Body() dto: ChangePasswordDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    await this.authService.changePassword(
+      req.user.id!,
+      dto.currentPassword,
+      dto.newPassword,
+    );
   }
 }
