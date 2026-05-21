@@ -11,6 +11,8 @@ import { PropertyAmenityService } from './property-amenity.service';
 import { CreatePropertyAmenityDto } from './dto/create-property-amenity.dto';
 import { UpdatePropertyAmenityDto } from './dto/update-property-amenity.dto';
 import { Public } from 'src/auth/public.decorator';
+import { Roles } from 'src/auth/roles.decorator';
+import { UserRole } from 'prisma/generated/enums';
 
 @Controller('property-amenity')
 export class PropertyAmenityController {
@@ -18,6 +20,7 @@ export class PropertyAmenityController {
     private readonly propertyAmenityService: PropertyAmenityService,
   ) {}
 
+  @Roles(UserRole.ADMIN)
   @Post()
   create(@Body() createPropertyAmenityDto: CreatePropertyAmenityDto) {
     return this.propertyAmenityService.create(createPropertyAmenityDto);
@@ -34,6 +37,7 @@ export class PropertyAmenityController {
     return this.propertyAmenityService.findOne(+id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -42,6 +46,7 @@ export class PropertyAmenityController {
     return this.propertyAmenityService.update(+id, updatePropertyAmenityDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.propertyAmenityService.remove(+id);

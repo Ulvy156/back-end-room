@@ -9,20 +9,26 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private readonly config: ConfigService) {}
 
+  // pg-boss v12 is pure ESM so it must be loaded with dynamic import at runtime.
+  // Static `import PgBoss from 'pg-boss'` would fail because this project compiles to CommonJS.
   async onModuleInit() {
     const { PgBoss } = await import('pg-boss');
     this.boss = new PgBoss({
       connectionString: this.config.getOrThrow<string>('DATABASE_URL'),
     });
+    // Surface pg-boss internal errors through NestJS logger instead of crashing the process.
     this.boss.on('error', (err) => this.logger.error('pg-boss error', err));
     await this.boss.start();
     this.logger.log('pg-boss started');
   }
 
   async onModuleDestroy() {
+    // Graceful shutdown — waits for active jobs to finish before disconnecting.
     await this.boss.stop();
   }
 
+  // Enqueues a job. Returns the job ID, or null if a singleton/throttle policy blocked it.
+  // Pass retry options (retryLimit, retryDelay, retryBackoff) here for per-job retry behaviour.
   async send<T extends object>(
     name: string,
     data: T,
@@ -31,6 +37,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     return this.boss.send(name, data, options);
   }
 
+  // Registers a worker for the given queue name.
+  // In pg-boss v12 the handler always receives an array — use jobs[0] when batchSize is 1 (default).
+  // If the handler throws, pg-boss marks the job as failed and retries up to retryLimit.
   async work<T extends object>(name: string, handler: WorkHandler<T>): Promise<string>;
   async work<T extends object>(
     name: string,
@@ -48,6 +57,8 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     return this.boss.work<T>(name, optionsOrHandler as WorkHandler<T>);
   }
 
+  // Creates or updates a recurring cron schedule in the pgboss.schedule table.
+  // The matching worker (registered via work()) will be invoked each time the cron fires.
   async schedule(
     name: string,
     cron: string,

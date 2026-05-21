@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { UserRole } from 'prisma/generated/enums';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -217,6 +219,14 @@ export class PropertyService {
     };
   }
 
+  private async assertOwner(id: string, requesterId: string, role: UserRole) {
+    const property = await this.prisma.property.findUnique({ where: { id } });
+    if (!property) throw new NotFoundException('Property not found');
+    if (property.userId !== requesterId && role !== UserRole.ADMIN)
+      throw new ForbiddenException('You do not have permission to perform this action');
+    return property;
+  }
+
   private async clearCacheHomePage() {
     // remove home page cache
     await Promise.all([
@@ -226,8 +236,10 @@ export class PropertyService {
     ]);
   }
 
-  async update(id: string, updatePropertyDto: UpdatePropertyDto) {
+  async update(id: string, updatePropertyDto: UpdatePropertyDto, requesterId: string, role: UserRole) {
     try {
+      await this.assertOwner(id, requesterId, role);
+
       const { userId, amenityKeys, parkings, ...updateData } =
         updatePropertyDto;
 
@@ -285,8 +297,19 @@ export class PropertyService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} property`;
+  async remove(id: string, requesterId: string, role: UserRole) {
+    await this.assertOwner(id, requesterId, role);
+
+    const images = await this.prisma.propertyImage.findMany({
+      where: { propertyId: id },
+      select: { imageKey: true },
+    });
+
+    if (images.length) {
+      await this.r2Service.deleteMultipleFiles(images.map((img) => img.imageKey));
+    }
+
+    await this.prisma.property.delete({ where: { id } });
   }
 
   async incrementView(id: string): Promise<void> {

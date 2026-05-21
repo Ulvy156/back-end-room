@@ -1,21 +1,23 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { UserFavouriteService } from './user-favourite.service';
 import { CreateUserFavouriteDto } from './dto/create-user-favourite.dto';
-import { Public } from 'src/auth/public.decorator';
+import { UserRole } from 'prisma/generated/enums';
 
-@Public()
+interface AuthenticatedRequest extends Request {
+  user: { id: string; role: UserRole };
+}
+
 @Controller('user-favourite')
 export class UserFavouriteController {
   constructor(private readonly userFavouriteService: UserFavouriteService) {}
 
   @Post()
-  create(@Body() createUserFavouriteDto: CreateUserFavouriteDto) {
-    return this.userFavouriteService.create(createUserFavouriteDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.userFavouriteService.findAll();
+  create(
+    @Body() createUserFavouriteDto: CreateUserFavouriteDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.userFavouriteService.create(createUserFavouriteDto, req.user.id);
   }
 
   @Get(':id')
@@ -24,17 +26,23 @@ export class UserFavouriteController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userFavouriteService.remove(id);
+  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.userFavouriteService.remove(id, req.user.id, req.user.role);
   }
 
   @Get('/all/user-id/:id')
-  getAllFavouriteUserByUserID(@Param('id') id: string) {
-    return this.userFavouriteService.getAllFavouriteUserByUserID(id);
+  getAllFavouriteUserByUserID(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.userFavouriteService.getAllFavouriteUserByUserID(id, req.user.id, req.user.role);
   }
 
   @Get('/user-id/:id')
-  getFavouriteUserByUserID(@Param('id') id: string) {
-    return this.userFavouriteService.getFavouriteUserByUserID(id);
+  getFavouriteUserByUserID(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.userFavouriteService.getFavouriteUserByUserID(id, req.user.id, req.user.role);
   }
 }

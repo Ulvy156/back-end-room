@@ -5,11 +5,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { corsConfig } from './config/cors.config';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: ['error', 'warn', 'log'],
+    // Disable built-in logger — Pino takes over via app.useLogger below.
+    bufferLogs: true,
   });
+  app.useLogger(app.get(Logger));
   // parse cookies
   app.use(cookieParser());
 

@@ -12,7 +12,6 @@ import { CreatePropertyTypeDto } from './dto/create-property-type.dto';
 import { UpdatePropertyTypeDto } from './dto/update-property-type.dto';
 import { Public } from 'src/auth/public.decorator';
 
-@Public()
 @Controller('property-type')
 export class PropertyTypeController {
   constructor(private readonly propertyTypeService: PropertyTypeService) {}
@@ -22,11 +21,13 @@ export class PropertyTypeController {
     return this.propertyTypeService.create(createPropertyTypeDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.propertyTypeService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertyTypeService.findOne(+id);

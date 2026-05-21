@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -21,6 +22,34 @@ import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? // Dev: readable pretty output in terminal
+              {
+                target: 'pino-pretty',
+                options: {
+                  singleLine: true,
+                  colorize: true,
+                  translateTime: 'SYS:HH:MM:ss',
+                  ignore: 'pid,hostname',
+                },
+              }
+            : // Prod: JSON to stdout + JSON to log file
+              {
+                targets: [
+                  { target: 'pino/file', options: { destination: 1 }, level: 'info' },
+                  {
+                    target: 'pino/file',
+                    options: { destination: './logs/app.log', mkdir: true },
+                    level: 'info',
+                  },
+                ],
+              },
+      },
+    }),
     ThrottlerModule.forRoot({
       throttlers: [
         {
