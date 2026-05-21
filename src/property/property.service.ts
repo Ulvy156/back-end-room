@@ -15,6 +15,8 @@ import { Prisma } from 'prisma/generated/client';
 import { buildOrder } from 'src/utils/buildOrder';
 import { haversineKm } from 'src/utils/geDistanceKm';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
+import { QueueService } from 'src/queue/queue.service';
+import { QUEUE_JOBS, IncrementPropertyViewJob } from 'src/queue/queue.jobs';
 
 @Injectable()
 export class PropertyService {
@@ -22,6 +24,7 @@ export class PropertyService {
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
     private readonly cache: CacheService,
+    private readonly queue: QueueService,
   ) {}
 
   async create(
@@ -286,15 +289,11 @@ export class PropertyService {
     return `This action removes a #${id} property`;
   }
 
-  async incrementView(id: string) {
-    return await this.prisma.property.update({
-      data: {
-        totalViews: {
-          increment: 1,
-        },
-      },
-      where: { id },
-    });
+  async incrementView(id: string): Promise<void> {
+    await this.queue.send<IncrementPropertyViewJob>(
+      QUEUE_JOBS.INCREMENT_PROPERTY_VIEW,
+      { propertyId: id },
+    );
   }
 
   async setPropertyToFeature(id: string) {

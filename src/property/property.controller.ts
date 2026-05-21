@@ -8,6 +8,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
@@ -65,8 +67,9 @@ export class PropertyController {
   }
 
   @Patch('/increment-view/:id')
-  incrementView(@Param('id') id: string) {
-    return this.propertyService.incrementView(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async incrementView(@Param('id') id: string) {
+    await this.propertyService.incrementView(id);
   }
 
   @Patch('/set-feature/:id')

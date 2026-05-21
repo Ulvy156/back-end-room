@@ -17,6 +17,7 @@ import { PropertyAmenityModule } from './property-amenity/property-amenity.modul
 import { PropertyRulesModule } from './property-rules/property-rules.module';
 import { UserFavouriteModule } from './user-favourite/user-favourite.module';
 import { RolesGuard } from './auth/roles.guard';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RolesGuard } from './auth/roles.guard';
     AppCacheModule,
     AppConfigModule,
     PrismaModule,
+    QueueModule,
     PropertyImageModule,
     AuthModule,
     UserModule,

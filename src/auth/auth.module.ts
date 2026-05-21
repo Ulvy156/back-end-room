@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
-import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { NotificationModule } from '../notification/notification.module';
         },
       }),
     }),
-    NotificationModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

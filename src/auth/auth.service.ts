@@ -10,8 +10,13 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
-import { TelegramService } from '../notification/telegram.service';
-import { EmailService } from '../notification/email.service';
+import { QueueService } from '../queue/queue.service';
+import {
+  QUEUE_JOBS,
+  SendOtpEmailJob,
+  SendOtpTelegramJob,
+  SendVerificationOtpJob,
+} from '../queue/queue.jobs';
 import { hashingPassword } from '../utils/hashingPassword';
 import { prismaError } from '../utils/prismaError';
 import { RegisterDto } from './dto/register.dto';
@@ -37,8 +42,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly telegramService: TelegramService,
-    private readonly emailService: EmailService,
+    private readonly queue: QueueService,
   ) {}
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -87,7 +91,11 @@ export class AuthService {
       // Send verification OTP to email
       const otp = this.generateOtp();
       await this.storeOtp(user.id, otp, 'verification');
-      await this.emailService.sendVerificationOtp(dto.email, otp);
+      await this.queue.send<SendVerificationOtpJob>(
+        QUEUE_JOBS.SEND_VERIFICATION_OTP,
+        { to: dto.email, otp },
+        { retryLimit: 3, retryDelay: 30, retryBackoff: true },
+      );
 
       return { userId: user.id };
     } catch (error) {
@@ -339,13 +347,18 @@ export class AuthService {
         );
       }
       await this.storeOtp(user.id, otp, channel);
-      await this.telegramService.sendMessage(
-        telegramPhone.phoneNumber,
-        `🔐 *Rent Room — Password Reset*\n\nYour OTP is: *${otp}*\n\nExpires in 10 minutes. Do not share this with anyone.`,
+      await this.queue.send<SendOtpTelegramJob>(
+        QUEUE_JOBS.SEND_OTP_TELEGRAM,
+        { chatId: telegramPhone.phoneNumber, otp },
+        { retryLimit: 3, retryDelay: 30, retryBackoff: true },
       );
     } else {
       await this.storeOtp(user.id, otp, channel);
-      await this.emailService.sendOtp(email, otp);
+      await this.queue.send<SendOtpEmailJob>(
+        QUEUE_JOBS.SEND_OTP_EMAIL,
+        { to: email, otp },
+        { retryLimit: 3, retryDelay: 30, retryBackoff: true },
+      );
     }
   }
 
