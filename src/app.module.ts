@@ -24,7 +24,7 @@ import { QueueModule } from './queue/queue.module';
   imports: [
     LoggerModule.forRoot({
       pinoHttp: {
-        level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+        level: 'info',
         transport:
           process.env.NODE_ENV !== 'production'
             ? // Dev: readable pretty output in terminal

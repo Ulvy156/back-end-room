@@ -19,6 +19,7 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
+import { Throttle } from '@nestjs/throttler';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
 import { UserRole } from 'prisma/generated/enums';
@@ -31,6 +32,7 @@ interface AuthenticatedRequest extends Request {
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
+  @Throttle({ default: { limit: 5, ttl: 600000 } }) // 5 per 10 min — prevents fake listing spam
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
   create(
@@ -79,6 +81,7 @@ export class PropertyController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents view count manipulation
   @Patch('/increment-view/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async incrementView(@Param('id') id: string) {
@@ -91,6 +94,7 @@ export class PropertyController {
     return this.propertyService.setPropertyToFeature(id);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents spam delete attempts
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.remove(id, req.user.id, req.user.role);

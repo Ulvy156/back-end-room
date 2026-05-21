@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete, Req } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { UserFavouriteService } from './user-favourite.service';
 import { CreateUserFavouriteDto } from './dto/create-user-favourite.dto';
@@ -12,6 +13,7 @@ interface AuthenticatedRequest extends Request {
 export class UserFavouriteController {
   constructor(private readonly userFavouriteService: UserFavouriteService) {}
 
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 per min — prevents favourite spam
   @Post()
   create(
     @Body() createUserFavouriteDto: CreateUserFavouriteDto,

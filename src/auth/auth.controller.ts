@@ -61,6 +61,7 @@ export class AuthController {
   // ─── Register ────────────────────────────────────────────────────────────────
 
   @Public()
+  @Throttle({ default: { limit: 3, ttl: 900000 } }) // 3 per 15 min — prevents OTP email spam
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
