@@ -34,11 +34,21 @@ export class PropertyService {
   async create(
     createPropertyDto: CreatePropertyDto,
     files: Express.Multer.File[],
+    requesterId: string,
   ) {
     let uploadedImgKeys: Array<{ key: string; url: string }> = [];
     try {
       if (!files.length) {
         throw new BadRequestException(this.translation.t('errors.property.image_required'));
+      }
+
+      const since = new Date();
+      since.setDate(since.getDate() - 30);
+      const recentCount = await this.prisma.property.count({
+        where: { userId: requesterId, createdAt: { gte: since } },
+      });
+      if (recentCount >= 3) {
+        throw new BadRequestException(this.translation.t('errors.property.monthly_limit'));
       }
 
       const { amenityKeys, parkings, ...propertyData } = createPropertyDto;
@@ -182,6 +192,7 @@ export class PropertyService {
         },
       },
     });
+    // set to empty if user doenst provide lat and lng
     property['distanceKm'] = '~';
     if (filter.lat && filter.lng && property.lat && property.lng) {
       property['distanceKm'] = haversineKm(
@@ -251,13 +262,13 @@ export class PropertyService {
         updatePropertyDto;
 
       const property = await this.prisma.$transaction(async (tx) => {
-        // 1️⃣ Update property main fields
+        // 1Update property main fields
         const updatedProperty = await tx.property.update({
           where: { id },
           data: updateData,
         });
 
-        // 2️⃣ Update amenities (REPLACE)
+        // Update amenities (REPLACE)
         if (amenityKeys) {
           await tx.propertyAmenity.deleteMany({
             where: { propertyId: id },
@@ -273,7 +284,7 @@ export class PropertyService {
           }
         }
 
-        // 3️⃣ Update parking (REPLACE)
+        // Update parking (REPLACE)
         if (parkings) {
           await tx.parking.deleteMany({
             where: { propertyId: id },

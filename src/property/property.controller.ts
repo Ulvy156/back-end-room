@@ -32,14 +32,16 @@ interface AuthenticatedRequest extends Request {
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
-  @Throttle({ default: { limit: 5, ttl: 600000 } }) // 5 per 10 min — prevents fake listing spam
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
+  @Throttle({ default: { limit: 2, ttl: 600000 } }) // 2 per 10 min — reflects 3-5 min upload time per property
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
   create(
     @Body() createPropertyDto: CreatePropertyDto,
     @UploadedFiles() files: Express.Multer.File[],
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.propertyService.create(createPropertyDto, files);
+    return this.propertyService.create(createPropertyDto, files, req.user.id);
   }
 
   @Get()

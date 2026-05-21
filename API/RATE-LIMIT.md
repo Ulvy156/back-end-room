@@ -31,7 +31,7 @@ Applies to every endpoint that does not have a per-route override.
 
 | Endpoint | Limit | Window | Reason |
 |---|---|---|---|
-| `POST /property` | 5 | 10 min | Prevents fake listing spam and R2 upload abuse |
+| `POST /property` | 2 | 10 min | Reflects 3–5 min upload time per property; prevents spam |
 | `PATCH /property/increment-view/:id` | 10 | 1 min | Prevents view count manipulation |
 | `DELETE /property/:id` | 10 | 1 min | Prevents spam delete attempts |
 
