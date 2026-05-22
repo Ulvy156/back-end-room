@@ -23,6 +23,7 @@ import { UserFavouriteModule } from './user-favourite/user-favourite.module';
 import { RolesGuard } from './auth/roles.guard';
 import { QueueModule } from './queue/queue.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     PropertyRulesModule,
     UserFavouriteModule,
     FeedbackModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [

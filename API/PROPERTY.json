@@ -182,10 +182,36 @@
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/property", "host": ["{{baseUrl}}"], "path": ["property"] },
-            "description": "Returns all properties (published and unpublished). Admin-only management view."
+            "url": {
+              "raw": "{{baseUrl}}/property?isPublished=true&search=modern&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["property"],
+              "query": [
+                { "key": "isPublished", "value": "true", "description": "Filter by publish status: true | false. Omit for all." },
+                { "key": "isFeatured", "value": "true", "description": "Filter featured only: true | false. Omit for all." },
+                { "key": "isAvailable", "value": "true", "description": "Filter by availability: true | false. Omit for all." },
+                { "key": "search", "value": "modern", "description": "Search by property title (case-insensitive)." },
+                { "key": "page", "value": "1", "description": "Page number. Default: 1." },
+                { "key": "limit", "value": "20", "description": "Results per page. Default: 20. Max: 100." }
+              ]
+            },
+            "description": "Admin view of all properties with filtering, search, and pagination. Includes landlord info (name, email) in each result.\n\nRole: ADMIN only.\n\nExamples:\n- All published: ?isPublished=true\n- Drafts/unpublished: ?isPublished=false\n- Featured only: ?isFeatured=true  ← powers the Featured nav section\n- Rented out: ?isAvailable=false\n- Search: ?search=modern+room\n- Combined: ?isPublished=true&search=room&page=2"
           },
-          "response": []
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+                "url": { "raw": "{{baseUrl}}/property?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["property"] }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"items\": [\n    {\n      \"id\": \"uuid\",\n      \"title\": \"Modern Room near Market\",\n      \"monthly_price\": 250,\n      \"isPublished\": true,\n      \"isAvailable\": true,\n      \"isFeatured\": false,\n      \"totalViews\": 120,\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n      \"user\": { \"id\": \"uuid\", \"name\": \"Sok Dara\", \"email\": \"dara@example.com\" },\n      \"images\": [{ \"imageKey\": \"properties/abc.webp\" }],\n      \"district\": { \"nameEn\": \"Chamkarmon\", \"nameKh\": \"ចំការមន\", \"province\": { \"nameEn\": \"Phnom Penh\", \"nameKh\": \"ភ្នំពេញ\" } },\n      \"propertyType\": { \"nameEn\": \"Room\", \"nameKh\": \"បន្ទប់\", \"icon\": \"room\" }\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 48,\n    \"totalPages\": 3\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Set Featured",

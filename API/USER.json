@@ -39,8 +39,18 @@
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/user", "host": ["{{baseUrl}}"], "path": ["user"] },
-            "description": "Returns all users. Password is never included in the response.\n\nRole: ADMIN only."
+            "url": {
+              "raw": "{{baseUrl}}/user?role=USER&search=john&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["user"],
+              "query": [
+                { "key": "role", "value": "USER", "description": "Filter by role: USER | LANDLORD | ADMIN. Omit to get all." },
+                { "key": "search", "value": "john", "description": "Search by name or email (case-insensitive)." },
+                { "key": "page", "value": "1", "description": "Page number. Default: 1." },
+                { "key": "limit", "value": "20", "description": "Results per page. Default: 20. Max: 100." }
+              ]
+            },
+            "description": "Returns paginated users with optional role filter and name/email search. Password is never included.\n\nRole: ADMIN only.\n\nExamples:\n- All users (tenants): ?role=USER\n- All landlords: ?role=LANDLORD\n- Search: ?search=john\n- Combined: ?role=USER&search=john&page=2"
           },
           "response": [
             {
@@ -50,7 +60,7 @@
               "code": 200,
               "_postman_previewlanguage": "json",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "[\n  {\n    \"id\": \"uuid\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"imgUrl\": null,\n    \"role\": \"USER\",\n    \"isVerified\": true,\n    \"isLocked\": false,\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2025-01-01T00:00:00.000Z\"\n  }\n]"
+              "body": "{\n  \"items\": [\n    {\n      \"id\": \"uuid\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"imgUrl\": null,\n      \"role\": \"USER\",\n      \"isVerified\": true,\n      \"isLocked\": false,\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2025-01-01T00:00:00.000Z\"\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 120,\n    \"totalPages\": 6\n  }\n}"
             }
           ]
         },

@@ -242,6 +242,7 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 | User | `API/USER.json` |
 | Favourites | `API/FAVOURITE.json` |
 | Feedback | `API/FEEDBACK.json` |
+| Admin | `API/ADMIN.json` |
 | Location | `API/LOCATION.json` _(create when implementing)_ |
 | Amenity | `API/AMENITY.json` _(create when implementing)_ |
 | Rate limits | `API/RATE-LIMIT.md` _(exception — markdown, not Postman)_ |

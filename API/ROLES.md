@@ -84,8 +84,10 @@ Store the role in `useAuthStore` and use it throughout the app. Do not decode th
 
 | Feature | Endpoint |
 |---|---|
+| Admin dashboard (stats + recent activity) | `GET /admin/dashboard` |
+| View landlord profile + their listings | `GET /admin/landlord/:id/properties` |
 | Feature / unfeature a property | `PATCH /property/set-feature/:id` |
-| View all properties | `GET /property` |
+| View all properties (filterable + paginated) | `GET /property?isPublished=&isFeatured=&search=` |
 | Create user manually | `POST /user` |
 | View all users | `GET /user` |
 | Get any user by ID | `GET /user/:id` |

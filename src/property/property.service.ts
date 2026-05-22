@@ -20,6 +20,7 @@ import { PropertyDetailDTO } from './dto/property-detail.dto';
 import { QueueService } from 'src/queue/queue.service';
 import { QUEUE_JOBS, IncrementPropertyViewJob } from 'src/queue/queue.jobs';
 import { TranslationService } from 'src/i18n/translation.service';
+import { FindPropertiesDto } from './dto/find-properties.dto';
 
 @Injectable()
 export class PropertyService {
@@ -102,14 +103,64 @@ export class PropertyService {
     }
   }
 
-  async findAll() {
-    return await this.prisma.property.findMany({
-      include: {
-        images: true,
-        propertyAmenities: true,
-        propertyType: true,
-      },
-    });
+  async findAll(filter: FindPropertiesDto) {
+    const {
+      isPublished,
+      isFeatured,
+      isAvailable,
+      search,
+      page = 1,
+      limit = 20,
+    } = filter;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      ...(isPublished !== undefined ? { isPublished } : {}),
+      ...(isFeatured !== undefined ? { isFeatured } : {}),
+      ...(isAvailable !== undefined ? { isAvailable } : {}),
+      ...(search
+        ? { title: { contains: search, mode: 'insensitive' as const } }
+        : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      this.prisma.property.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          monthly_price: true,
+          isPublished: true,
+          isAvailable: true,
+          isFeatured: true,
+          totalViews: true,
+          createdAt: true,
+          user: { select: { id: true, name: true, email: true } },
+          images: {
+            take: 1,
+            where: { isCover: true },
+            select: { imageKey: true },
+          },
+          district: {
+            select: {
+              nameEn: true,
+              nameKh: true,
+              province: { select: { nameEn: true, nameKh: true } },
+            },
+          },
+          propertyType: { select: { nameEn: true, nameKh: true, icon: true } },
+        },
+      }),
+      this.prisma.property.count({ where }),
+    ]);
+
+    return {
+      items,
+      meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   async findOne(filter: PropertyDetailDTO) {

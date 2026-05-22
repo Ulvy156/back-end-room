@@ -9,12 +9,14 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMyInfoDto } from './dto/update-my-info.dto';
+import { FindUsersDto } from './dto/find-users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
@@ -40,11 +42,11 @@ export class UserController {
     return this.userService.create(createUserDto, profile);
   }
 
-  // [ADMIN] List all users
+  // [ADMIN] List users — filter by role, search by name/email, paginated
   @Roles(UserRole.ADMIN)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() filter: FindUsersDto) {
+    return this.userService.findAll(filter);
   }
 
   // [ADMIN] Get any user by ID

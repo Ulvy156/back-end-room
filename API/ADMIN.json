@@ -1,0 +1,91 @@
+{
+  "info": {
+    "_postman_id": "f6a7b8c9-admin-collection-rent-room",
+    "name": "Admin",
+    "description": "Admin-only endpoints for Rent Room platform management.\n\nBase URL: {{baseUrl}}\n\nAll endpoints require ADMIN role: Authorization: Bearer {{accessToken}}\n\nNon-admin requests receive 403 Forbidden.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Get Dashboard",
+      "description": "All admin endpoints require ADMIN role. Non-admin requests receive 403."
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/admin/dashboard",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "dashboard"]
+        },
+        "description": "Returns all data needed to render the admin dashboard in a single request. All 17 database queries run in parallel.\n\nRole: ADMIN only.\n\nSections returned:\n- stats: platform-wide counts (users, landlords, properties, feedback)\n- recentRegistrations: last 5 sign-ups (excludes admins)\n- latestProperties: last 5 property listings created\n- topProperties: top 5 published properties by view count\n- recentFeedback: last 5 feedback submissions"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "dashboard"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"stats\": {\n    \"description\": \"See full response shape in ADMIN.json saved response\"\n  }}"
+        }
+      ]
+    },
+    {
+      "name": "Get Landlord Properties",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/admin/landlord/:id/properties",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "landlord", ":id", "properties"],
+          "variable": [{ "key": "id", "value": "landlord-uuid-here" }]
+        },
+        "description": "Returns a landlord's profile and all their property listings (published and unpublished). Used for the landlord detail page in the admin panel.\n\nRole: ADMIN only.\n\nErrors:\n- 404: ID does not belong to a LANDLORD account"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/landlord/:id/properties", "host": ["{{baseUrl}}"], "path": ["admin", "landlord", ":id", "properties"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"landlord\": {\n    \"id\": \"uuid\",\n    \"name\": \"Sok Dara\",\n    \"email\": \"dara@example.com\",\n    \"imgUrl\": null,\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n  },\n  \"properties\": [\n    {\n      \"id\": \"uuid\",\n      \"title\": \"Modern Room near Market\",\n      \"monthly_price\": 250,\n      \"isPublished\": true,\n      \"isAvailable\": true,\n      \"isFeatured\": false,\n      \"totalViews\": 120,\n      \"favouriteCount\": 8,\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n      \"images\": [{ \"imageKey\": \"properties/abc.webp\" }],\n      \"district\": { \"nameEn\": \"Chamkarmon\", \"nameKh\": \"ចំការមន\", \"province\": { \"nameEn\": \"Phnom Penh\", \"nameKh\": \"ភ្នំពេញ\" } }\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "_dashboard_full_response",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": { "raw": "{{baseUrl}}/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "dashboard"] }
+      },
+      "response": [
+        {
+          "name": "200 OK — full shape",
+          "originalRequest": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "dashboard"] } },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"stats\": {\n    \"users\": {\n      \"total\": 120,\n      \"locked\": 3,\n      \"unverified\": 8,\n      \"newThisMonth\": 12\n    },\n    \"landlords\": {\n      \"total\": 15,\n      \"newThisMonth\": 2\n    },\n    \"properties\": {\n      \"total\": 48,\n      \"published\": 32,\n      \"unpublished\": 10,\n      \"unavailable\": 6,\n      \"featured\": 2,\n      \"featuredMax\": 3,\n      \"newThisMonth\": 5\n    },\n    \"feedback\": {\n      \"total\": 7,\n      \"byType\": {\n        \"BUG\": 4,\n        \"SUGGESTION\": 2,\n        \"OTHER\": 1\n      }\n    }\n  },\n  \"recentRegistrations\": [\n    {\n      \"id\": \"uuid\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"role\": \"USER\",\n      \"isLocked\": false,\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n    }\n  ],\n  \"latestProperties\": [\n    {\n      \"id\": \"uuid\",\n      \"title\": \"Modern Room near Market\",\n      \"isPublished\": true,\n      \"isFeatured\": false,\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n      \"user\": { \"name\": \"Sok Dara\", \"email\": \"dara@example.com\" },\n      \"images\": [{ \"imageKey\": \"properties/abc.webp\" }]\n    }\n  ],\n  \"topProperties\": [\n    {\n      \"id\": \"uuid\",\n      \"title\": \"Modern Room near Market\",\n      \"totalViews\": 1204,\n      \"isAvailable\": true,\n      \"favouriteCount\": 48,\n      \"images\": [{ \"imageKey\": \"properties/abc.webp\" }]\n    }\n  ],\n  \"recentFeedback\": [\n    {\n      \"id\": \"uuid\",\n      \"type\": \"BUG\",\n      \"description\": \"Map is not loading on mobile devices.\",\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n      \"user\": { \"id\": \"uuid\", \"name\": \"John Doe\" }\n    }\n  ]\n}"
+        }
+      ]
+    }
+  ]
+}

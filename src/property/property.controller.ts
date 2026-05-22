@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PropertyService } from './property.service';
@@ -22,6 +23,7 @@ import { Roles } from 'src/auth/roles.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
+import { FindPropertiesDto } from './dto/find-properties.dto';
 import { UserRole } from 'prisma/generated/enums';
 
 interface AuthenticatedRequest extends Request {
@@ -44,9 +46,10 @@ export class PropertyController {
     return this.propertyService.create(createPropertyDto, files, req.user.id);
   }
 
+  // [ADMIN] All properties — filterable by status, searchable by title, paginated
   @Get()
-  findAll() {
-    return this.propertyService.findAll();
+  findAll(@Query() filter: FindPropertiesDto) {
+    return this.propertyService.findAll(filter);
   }
 
   @Public()

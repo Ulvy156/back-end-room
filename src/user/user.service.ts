@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMyInfoDto } from './dto/update-my-info.dto';
+import { FindUsersDto } from './dto/find-users.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
@@ -50,8 +51,37 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany({ select: USER_PUBLIC_FIELDS });
+  async findAll(filter: FindUsersDto) {
+    const { role, search, page = 1, limit = 20 } = filter;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      ...(role ? { role } : {}),
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: 'insensitive' as const } },
+              { email: { contains: search, mode: 'insensitive' as const } },
+            ],
+          }
+        : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: USER_PUBLIC_FIELDS,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      items,
+      meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   async findOne(id: string) {
