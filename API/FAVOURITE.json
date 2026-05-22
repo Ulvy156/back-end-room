@@ -76,7 +76,7 @@
           "code": 200,
           "_postman_previewlanguage": "json",
           "header": [{ "key": "Content-Type", "value": "application/json" }],
-          "body": "[\n  {\n    \"id\": \"favourite-uuid\",\n    \"userId\": \"user-uuid\",\n    \"propertyId\": \"property-uuid\",\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n  }\n]"
+          "body": "[\n  {\n    \"id\": \"favourite-uuid\",\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n    \"property\": {\n      \"id\": \"property-uuid\",\n      \"title\": \"Modern Room near Market\",\n      \"monthly_price\": 250,\n      \"sizeSqm\": 25,\n      \"totalViews\": 100,\n      \"bedroom\": 1,\n      \"bathroom\": 1,\n      \"isAvailable\": true,\n      \"deposit\": 250,\n      \"availableFrom\": \"2025-01-01T00:00:00.000Z\",\n      \"images\": [{ \"imageKey\": \"properties/abc.webp\" }],\n      \"district\": { \"nameEn\": \"Chamkarmon\", \"nameKh\": \"ចំការមន\", \"province\": { \"nameEn\": \"Phnom Penh\", \"nameKh\": \"ភ្នំពេញ\" } },\n      \"propertyType\": { \"nameEn\": \"Room\", \"nameKh\": \"បន្ទប់\", \"icon\": \"room\" }\n    }\n  }\n]"
         }
       ]
     },

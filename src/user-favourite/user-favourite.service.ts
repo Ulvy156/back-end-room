@@ -68,7 +68,43 @@ export class UserFavouriteService {
     if (userId !== requesterId && role !== UserRole.ADMIN)
       throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
     try {
-      return await this.prisma.favorite.findMany({ where: { userId } });
+      return await this.prisma.favorite.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          createdAt: true,
+          property: {
+            select: {
+              id: true,
+              title: true,
+              monthly_price: true,
+              sizeSqm: true,
+              totalViews: true,
+              bedroom: true,
+              bathroom: true,
+              isAvailable: true,
+              deposit: true,
+              availableFrom: true,
+              images: {
+                take: 1,
+                where: { isCover: true },
+                select: { imageKey: true },
+              },
+              district: {
+                select: {
+                  nameEn: true,
+                  nameKh: true,
+                  province: { select: { nameEn: true, nameKh: true } },
+                },
+              },
+              propertyType: {
+                select: { nameEn: true, nameKh: true, icon: true },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
     } catch (error) {
       prismaError(error);
     }
@@ -82,7 +118,11 @@ export class UserFavouriteService {
     if (userId !== requesterId && role !== UserRole.ADMIN)
       throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
     try {
-      return await this.prisma.favorite.findFirstOrThrow({ where: { userId } });
+      return await this.prisma.favorite.findFirstOrThrow({
+        where: { userId },
+        select: { id: true, createdAt: true, property: { select: { id: true } } },
+        orderBy: { createdAt: 'desc' },
+      });
     } catch (error) {
       prismaError(error);
     }

@@ -119,6 +119,10 @@ GMAIL_USER
 GMAIL_APP_PASSWORD
 FRONT_END_URL
 PORT
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+GOOGLE_CALLBACK_URL    # e.g. http://localhost:8080/auth/google/callback
+ADMIN_TELEGRAM_CHAT_ID # Telegram chat ID to receive feedback notifications
 ```
 
 ### Validation
@@ -241,6 +245,7 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 | Location | `API/LOCATION.json` _(create when implementing)_ |
 | Amenity | `API/AMENITY.json` _(create when implementing)_ |
 | Rate limits | `API/RATE-LIMIT.md` _(exception — markdown, not Postman)_ |
+| Frontend integration guide | `API/INTEGRATION.md` _(exception — markdown, not Postman)_ |
 
 **Collection structure** (follow `API/AUTH.json` as the reference):
 - `info.name` — feature name

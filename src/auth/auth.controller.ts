@@ -9,10 +9,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
+import { GoogleUser } from './google.strategy';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
@@ -25,6 +29,10 @@ import { TranslationService } from '../i18n/translation.service';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string; role: string };
+}
+
+interface GoogleAuthenticatedRequest extends Request {
+  user: GoogleUser;
 }
 
 const cookieOptions = {
@@ -40,6 +48,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly translation: TranslationService,
+    private readonly config: ConfigService,
   ) {}
 
   // ─── Login ───────────────────────────────────────────────────────────────────
@@ -189,5 +198,27 @@ export class AuthController {
       dto.currentPassword,
       dto.newPassword,
     );
+  }
+
+  // ─── Google OAuth ─────────────────────────────────────────────────────────────
+
+  // Redirects the user to Google's consent screen — no body, no response
+  @Public()
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  googleAuth() {}
+
+  // Google redirects here after the user approves — issues tokens and redirects to frontend
+  @Public()
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(
+    @Req() req: GoogleAuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    const { accessToken, refreshToken } = await this.authService.googleLogin(req.user);
+    res.cookie('refresh_token', refreshToken, cookieOptions);
+    const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
+    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
   }
 }

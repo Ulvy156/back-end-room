@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -157,11 +158,13 @@ export class AuthService {
     if (!user) return null;
 
     if (!user.isVerified) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.not_verified'));
+      // 403 so the frontend can distinguish this from wrong credentials (401)
+      throw new ForbiddenException(this.translation.t('errors.auth.not_verified'));
     }
 
     if (user.isLocked) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.locked'));
+      // 403 — identity is known but access is blocked
+      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -308,11 +311,11 @@ export class AuthService {
     }
 
     if (!phone.user.isVerified) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.not_verified'));
+      throw new ForbiddenException(this.translation.t('errors.auth.not_verified'));
     }
 
     if (phone.user.isLocked) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.locked'));
+      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
     return phone.user;
@@ -393,5 +396,39 @@ export class AuthService {
       throw new BadRequestException(this.translation.t('errors.auth.wrong_current_password'));
     const hashed = await hashingPassword(newPassword);
     await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+  }
+
+  // ─── Google OAuth ─────────────────────────────────────────────────────────────
+
+  async googleLogin(googleUser: { email: string; name: string }) {
+    let user = await this.prisma.user.findUnique({
+      where: { email: googleUser.email },
+    });
+
+    if (!user) {
+      // New user via Google — no password, account is immediately verified
+      user = await this.prisma.user.create({
+        data: {
+          email: googleUser.email,
+          name: googleUser.name,
+          // Random hash — Google users have no usable password until they set one via forgot-password
+          password: await hashingPassword(randomUUID()),
+          role: UserRole.USER,
+          isVerified: true,
+        },
+      });
+    } else if (!user.isVerified) {
+      // Existing unverified email account — Google has confirmed the email, mark as verified
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { isVerified: true },
+      });
+    }
+
+    if (user.isLocked) {
+      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+    }
+
+    return this.login({ id: user.id, role: user.role });
   }
 }
