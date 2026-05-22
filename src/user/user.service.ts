@@ -105,7 +105,7 @@ export class UserService {
   // ─── Self-service ─────────────────────────────────────────────────────────────
 
   async getMyProfile(userId: string) {
-    return this.prisma.user.findUniqueOrThrow({
+    return await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
       select: {
         ...USER_PUBLIC_FIELDS,
@@ -118,7 +118,7 @@ export class UserService {
 
   async updateMyInfo(userId: string, dto: UpdateMyInfoDto) {
     try {
-      return this.prisma.user.update({
+      return await this.prisma.user.update({
         where: { id: userId },
         data: { name: dto.name },
         select: USER_PUBLIC_FIELDS,

@@ -11,12 +11,14 @@ import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { UserFavouriteService } from './user-favourite.service';
 import { CreateUserFavouriteDto } from './dto/create-user-favourite.dto';
+import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 
 interface AuthenticatedRequest extends Request {
   user: { id: string; role: UserRole };
 }
 
+@Roles(UserRole.USER, UserRole.ADMIN)
 @Controller('user-favourite')
 export class UserFavouriteController {
   constructor(private readonly userFavouriteService: UserFavouriteService) {}

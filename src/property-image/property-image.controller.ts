@@ -13,6 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { Throttle } from '@nestjs/throttler';
+import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 import { PropertyImageService } from './property-image.service';
 
@@ -20,6 +21,7 @@ interface AuthenticatedRequest extends Request {
   user: { id: string; role: UserRole };
 }
 
+@Roles(UserRole.LANDLORD, UserRole.ADMIN)
 @Controller('property-image')
 export class PropertyImageController {
   constructor(private readonly propertyImageService: PropertyImageService) {}

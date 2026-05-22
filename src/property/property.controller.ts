@@ -73,16 +73,19 @@ export class PropertyController {
     return this.propertyService.findOne(filter);
   }
 
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Get('/my-properties')
   getMyProperties(@Req() req: AuthenticatedRequest) {
     return this.propertyService.getMyProperties(req.user.id);
   }
 
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Patch('/toggle-publish/:id')
   togglePublish(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.togglePublish(id, req.user.id, req.user.role);
   }
 
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Patch('/toggle-availability/:id')
   toggleAvailability(
     @Param('id') id: string,
@@ -95,6 +98,7 @@ export class PropertyController {
     );
   }
 
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -123,6 +127,7 @@ export class PropertyController {
     return this.propertyService.setPropertyToFeature(id);
   }
 
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents spam delete attempts
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
