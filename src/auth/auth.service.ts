@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   private get refreshExpiresInSeconds(): number {
-    return this.configService.get<number>('JWT_REFRESH_EXPIRES_IN', 604800);
+    return parseInt(this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRES_IN'), 10);
   }
 
   private generateOtp(): string {
@@ -88,6 +88,9 @@ export class AuthService {
           password: await hashingPassword(dto.password),
           role: dto.role ?? UserRole.USER,
           isVerified: false,
+          ...(dto.phone
+            ? { phones: { create: { phoneNumber: dto.phone, type: PhoneNumberType.PHONE } } }
+            : {}),
         },
       });
 
@@ -151,10 +154,17 @@ export class AuthService {
 
   // ─── Login ──────────────────────────────────────────────────────────────────
 
-  async validateUser(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async validateUser(identifier: string, password: string) {
+    let user = await (identifier.includes('@')
+      ? this.prisma.user.findUnique({ where: { email: identifier } })
+      : this.prisma.phone
+          .findFirst({
+            where: { phoneNumber: identifier, type: PhoneNumberType.PHONE },
+            include: { user: true },
+          })
+          .then((p) => p?.user ?? null));
 
-    // same return path as wrong password — prevents email enumeration
+    // same return path as wrong password — prevents enumeration
     if (!user) return null;
 
     if (!user.isVerified) {
@@ -297,28 +307,41 @@ export class AuthService {
       throw new UnauthorizedException(this.translation.t('errors.auth.telegram_expired'));
     }
 
-    // 3. Look up user by their Telegram ID stored in the Phone table
+    // 3. Look up or auto-create user via Telegram ID
     const phone = await this.prisma.phone.findFirst({
-      where: {
-        phoneNumber: String(data.id),
-        type: PhoneNumberType.TELEGRAM,
-      },
+      where: { phoneNumber: String(data.id), type: PhoneNumberType.TELEGRAM },
       include: { user: true },
     });
 
+    let isNewUser = false;
+    let user: Awaited<ReturnType<typeof this.prisma.user.create>>;
+
     if (!phone) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.no_telegram_linked'));
+      // First time — auto-register, Telegram has already verified their identity
+      isNewUser = true;
+      const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+      user = await this.prisma.user.create({
+        data: {
+          name,
+          // Synthetic email — Telegram users have no email until they set one
+          email: `tg_${data.id}@telegram.placeholder`,
+          password: await hashingPassword(randomUUID()),
+          role: UserRole.USER,
+          isVerified: true,
+          phones: {
+            create: { phoneNumber: String(data.id), type: PhoneNumberType.TELEGRAM },
+          },
+        },
+      });
+    } else {
+      user = phone.user;
     }
 
-    if (!phone.user.isVerified) {
-      throw new ForbiddenException(this.translation.t('errors.auth.not_verified'));
-    }
-
-    if (phone.user.isLocked) {
+    if (user.isLocked) {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
-    return phone.user;
+    return { user, isNewUser };
   }
 
   // ─── Password reset ──────────────────────────────────────────────────────────
@@ -387,6 +410,15 @@ export class AuthService {
     ]);
   }
 
+  // ─── Select role ─────────────────────────────────────────────────────────────
+
+  async selectRole(userId: string, role: UserRole) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+    });
+  }
+
   // ─── Change password ─────────────────────────────────────────────────────────
 
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
@@ -401,12 +433,13 @@ export class AuthService {
   // ─── Google OAuth ─────────────────────────────────────────────────────────────
 
   async googleLogin(googleUser: { email: string; name: string }) {
+    let isNewUser = false;
     let user = await this.prisma.user.findUnique({
       where: { email: googleUser.email },
     });
 
     if (!user) {
-      // New user via Google — no password, account is immediately verified
+      isNewUser = true;
       user = await this.prisma.user.create({
         data: {
           email: googleUser.email,
@@ -429,6 +462,7 @@ export class AuthService {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
-    return this.login({ id: user.id, role: user.role });
+    const tokens = await this.login({ id: user.id, role: user.role });
+    return { ...tokens, isNewUser };
   }
 }

@@ -24,6 +24,7 @@ import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { SelectRoleDto } from './dto/select-role.dto';
 import { Throttle } from '@nestjs/throttler';
 import { TranslationService } from '../i18n/translation.service';
 
@@ -61,7 +62,7 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authService.validateUser(dto.email, dto.password);
+    const user = await this.authService.validateUser(dto.identifier, dto.password);
     if (!user)
       throw new UnauthorizedException(
         this.translation.t('errors.auth.invalid_credentials'),
@@ -152,7 +153,7 @@ export class AuthController {
     @Body() dto: TelegramLoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authService.telegramLogin(dto);
+    const { user, isNewUser } = await this.authService.telegramLogin(dto);
 
     const { accessToken, refreshToken } = await this.authService.login({
       id: user.id,
@@ -160,7 +161,7 @@ export class AuthController {
     });
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
-    return { accessToken, user_id: user.id };
+    return { accessToken, user_id: user.id, is_new_user: isNewUser };
   }
 
   // ─── Password reset ───────────────────────────────────────────────────────────
@@ -194,10 +195,22 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
   ) {
     await this.authService.changePassword(
-      req.user.id!,
+      req.user!.id,
       dto.currentPassword,
       dto.newPassword,
     );
+  }
+
+  // ─── Select role ─────────────────────────────────────────────────────────────
+
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Patch('select-role')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async selectRole(
+    @Body() dto: SelectRoleDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    await this.authService.selectRole(req.user!.id, dto.role);
   }
 
   // ─── Google OAuth ─────────────────────────────────────────────────────────────
@@ -216,9 +229,9 @@ export class AuthController {
     @Req() req: GoogleAuthenticatedRequest,
     @Res() res: Response,
   ) {
-    const { accessToken, refreshToken } = await this.authService.googleLogin(req.user);
+    const { accessToken, refreshToken, isNewUser } = await this.authService.googleLogin(req.user);
     res.cookie('refresh_token', refreshToken, cookieOptions);
     const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
+    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&is_new_user=${isNewUser}`);
   }
 }

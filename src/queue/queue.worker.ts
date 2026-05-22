@@ -26,6 +26,7 @@ export class QueueWorker implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    await this.queue.ready;
     await this.registerWorkers();
     await this.scheduleRecurringJobs();
   }

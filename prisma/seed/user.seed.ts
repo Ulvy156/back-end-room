@@ -21,10 +21,13 @@ export async function seedUser(prisma: PrismaClient) {
     },
   ];
 
-  await prisma.user.createMany({
-    data: users,
-    skipDuplicates: true,
-  });
+  for (const user of users) { 
+    await prisma.user.upsert({
+      where: { email: user.email },
+      create: user,
+      update: { password: user.password, role: user.role, isVerified: user.isVerified },
+    });
+  }
 
   console.log('✅ Admin & user seed: ', users.length);
 }

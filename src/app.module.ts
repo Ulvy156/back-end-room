@@ -2,7 +2,7 @@ import * as path from 'path';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
-import { I18nModule, HeaderResolver } from 'nestjs-i18n';
+import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
 import { TranslationModule } from './i18n/translation.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -73,7 +73,7 @@ import { AdminModule } from './admin/admin.module';
         path: path.join(__dirname, '/i18n/'),
         watch: process.env.NODE_ENV !== 'production',
       },
-      resolvers: [{ use: HeaderResolver, options: ['accept-language'] }],
+      resolvers: [AcceptLanguageResolver],
     }),
     TranslationModule,
     AppCacheModule,

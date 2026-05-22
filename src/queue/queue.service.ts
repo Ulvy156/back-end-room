@@ -12,13 +12,20 @@ import type {
   WorkHandler,
   WorkOptions,
 } from 'pg-boss';
+import { QUEUE_JOBS } from './queue.jobs';
 
 @Injectable()
 export class QueueService implements OnModuleInit, OnModuleDestroy {
   private boss!: PgBossClass;
   private readonly logger = new Logger(QueueService.name);
 
-  constructor(private readonly config: ConfigService) {}
+  // Resolves once boss.start() completes — awaited by QueueWorker before registering handlers.
+  readonly ready: Promise<void>;
+  private markReady!: () => void;
+
+  constructor(private readonly config: ConfigService) {
+    this.ready = new Promise((resolve) => { this.markReady = resolve; });
+  }
 
   // pg-boss v12 is pure ESM so it must be loaded with dynamic import at runtime.
   // Static `import PgBoss from 'pg-boss'` would fail because this project compiles to CommonJS.
@@ -30,6 +37,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     // Surface pg-boss internal errors through NestJS logger instead of crashing the process.
     this.boss.on('error', (err) => this.logger.error('pg-boss error', err));
     await this.boss.start();
+    // pg-boss v12 requires queues to exist before work() or schedule() can use them.
+    await Promise.all(Object.values(QUEUE_JOBS).map((name) => this.boss.createQueue(name)));
+    this.markReady();
     this.logger.log('pg-boss started');
   }
 
