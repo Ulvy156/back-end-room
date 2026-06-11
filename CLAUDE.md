@@ -59,7 +59,7 @@ Server starts on `PORT` env variable (default `8080`).
 
 | Module | Responsibility |
 |---|---|
-| `auth` | Login (email + Telegram), register, OTP verify, refresh, logout, forgot/reset password |
+| `auth` | Login (email/phone, Telegram, Google), register, OTP verify, refresh, logout, forgot/reset password, role selection |
 | `user` | User CRUD, profile image upload via R2 |
 | `property` | Property CRUD, browse/filter with pagination, homepage data, related properties, view tracking |
 | `property-image` | Add/remove/reorder images per property |
@@ -69,10 +69,13 @@ Server starts on `PORT` env variable (default `8080`).
 | `amenity` | Reference data — amenity definitions |
 | `location` | Province/district lookup and search suggestions |
 | `user-favourite` | Save and unsave favourite properties per user |
+| `feedback` | Users submit bug reports/suggestions (`POST /feedback`); admins list all feedback (`GET /feedback`). New submissions notify the admin via Telegram (async) |
+| `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings |
 | `R2` | Cloudflare R2 via AWS S3 SDK. Images are resized (max 2400×3200) and converted to WebP (quality 82) using `sharp` before upload. |
 | `cache` | In-memory cache wrapper (NestJS cache-manager). Keys defined in `src/cache/cache.key.ts`. Property mutations clear relevant homepage cache keys. |
 | `queue` | Background jobs via pg-boss (PostgreSQL-backed). `QueueService` manages lifecycle and exposes `send()`, `work()`, `schedule()`. `QueueWorker` registers all handlers on startup. Job names and payload types live in `src/queue/queue.jobs.ts`. |
 | `notification` | `EmailService` (nodemailer/Gmail) and `TelegramService` (grammy) — called only by `QueueWorker`. |
+| `i18n` | Global `TranslationService` wrapping `nestjs-i18n`; locale files in `src/i18n/{en,km}/`. Locale resolved from `Accept-Language` header. |
 | `prisma` | Global `PrismaService`; standalone `PrismaClient` in `src/prisma/prisma.client.ts` for seed scripts. |
 | `config` | Global `ConfigModule`, CORS config, throttle config. |
 
@@ -100,6 +103,7 @@ pg-boss v12 is pure ESM, so it is loaded with `await import('pg-boss')` inside `
 | `send-otp-email` | `POST /auth/forgot-password` (email) | 3×, 30s exponential backoff |
 | `send-otp-telegram` | `POST /auth/forgot-password` (telegram) | 3×, 30s exponential backoff |
 | `increment-property-view` | `PATCH /property/increment-view/:id` | default |
+| `send-feedback-notification` | `POST /feedback` | default |
 | `purge-expired-tokens` | Cron `0 2 * * *` (02:00 daily) | — |
 
 ### Key environment variables
@@ -107,6 +111,7 @@ pg-boss v12 is pure ESM, so it is loaded with `await import('pg-boss')` inside `
 ```
 DATABASE_URL
 JWT_SECRET
+JWT_EXPIRES_IN           # access token lifetime, seconds (e.g. 900 for 15 min)
 JWT_REFRESH_SECRET
 JWT_REFRESH_EXPIRES_IN   # seconds, default 604800
 R2_BUCKET
@@ -175,7 +180,9 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 |---|---|---|
 | Email + Telegram OTP registration and verification | `auth` | Done |
 | JWT access + refresh token auth (HttpOnly cookie) | `auth` | Done |
-| Telegram widget login | `auth` | Done |
+| Telegram widget login (auto-registers new users) | `auth` | Done |
+| Google OAuth login (auto-registers new users) | `auth` | Done |
+| Post-OAuth role selection for new users | `auth` | Done |
 | Forgot / reset password via OTP (email or Telegram) | `auth` | Done |
 | Role-based access control (USER / LANDLORD / ADMIN) | `auth` | Done |
 | User profile management and avatar upload | `user` | Done |
@@ -188,6 +195,8 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Property view count (async via pg-boss) | `property`, `queue` | Done |
 | Save / unsave favourite properties | `user-favourite` | Done |
 | Province and district location lookup | `location` | Done |
+| Bug report / suggestion feedback with admin Telegram alert | `feedback`, `queue` | Done |
+| Admin dashboard and landlord property overview | `admin` | Done |
 | Async OTP delivery via email and Telegram | `queue`, `notification` | Done |
 | Nightly cleanup of expired tokens | `queue` | Done |
 
@@ -213,8 +222,13 @@ Refresh tokens are stored in the `RefreshToken` table keyed by a UUID `jti`. Log
 
 **Login flows**
 
-- Email: `POST /auth/login` — validates credentials, checks `isVerified` and `isLocked`, issues both tokens.
-- Telegram: `POST /auth/telegram-login` — verifies the HMAC-SHA256 hash from the Telegram widget, rejects `auth_date` older than 24 hours, looks up the user via `Phone` table (`type = TELEGRAM`), issues both tokens.
+- Email: `POST /auth/login` — validates credentials (email or phone number + password), checks `isVerified` and `isLocked`, issues both tokens.
+- Telegram: `POST /auth/telegram-login` — verifies the HMAC-SHA256 hash from the Telegram widget, rejects `auth_date` older than 24 hours, looks up the user via `Phone` table (`type = TELEGRAM`). If no match, auto-registers a new `USER`-role account (synthetic placeholder email, pre-verified). Issues both tokens; response includes `is_new_user`.
+- Google: `GET /auth/google` redirects to Google's consent screen; `GET /auth/google/callback` looks up the user by email, auto-registers a new `USER`-role account if none exists (or marks an existing unverified account as verified), issues both tokens, and redirects to `${FRONT_END_URL}/auth/callback?token=<accessToken>&is_new_user=<bool>` (refresh token set as cookie).
+
+**Role selection**
+
+`PATCH /auth/select-role` — authenticated; lets a user (typically a new Telegram/Google sign-up, defaulted to `USER`) choose `USER` or `LANDLORD`. See `select-role.dto.ts`.
 
 **Token refresh**
 
