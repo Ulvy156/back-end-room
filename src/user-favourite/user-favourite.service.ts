@@ -24,9 +24,14 @@ export class UserFavouriteService {
     const favourite = await this.prisma.favorite.findUnique({
       where: { id: favouriteId },
     });
-    if (!favourite) throw new NotFoundException(this.translation.t('errors.favourite.not_found'));
+    if (!favourite)
+      throw new NotFoundException(
+        this.translation.t('errors.favourite.not_found'),
+      );
     if (favourite.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.favourite.forbidden'),
+      );
     return favourite;
   }
 
@@ -66,7 +71,9 @@ export class UserFavouriteService {
     role: UserRole,
   ) {
     if (userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.favourite.forbidden'),
+      );
     try {
       return await this.prisma.favorite.findMany({
         where: { userId },
@@ -116,11 +123,17 @@ export class UserFavouriteService {
     role: UserRole,
   ) {
     if (userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.favourite.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.favourite.forbidden'),
+      );
     try {
       return await this.prisma.favorite.findFirstOrThrow({
         where: { userId },
-        select: { id: true, createdAt: true, property: { select: { id: true } } },
+        select: {
+          id: true,
+          createdAt: true,
+          property: { select: { id: true } },
+        },
         orderBy: { createdAt: 'desc' },
       });
     } catch (error) {

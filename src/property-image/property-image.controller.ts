@@ -35,20 +35,35 @@ export class PropertyImageController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.propertyImageService.upload(propertyId, file, req.user.id, req.user.role);
+    return this.propertyImageService.upload(
+      propertyId,
+      file,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   // [LANDLORD | ADMIN] Delete an image by its ID
   @Delete(':imageId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('imageId') imageId: string, @Req() req: AuthenticatedRequest) {
+  async remove(
+    @Param('imageId') imageId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     await this.propertyImageService.remove(imageId, req.user.id, req.user.role);
   }
 
   // [LANDLORD | ADMIN] Set an image as the cover photo — unsets all other covers for the property
   @Patch(':imageId/set-cover')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async setCover(@Param('imageId') imageId: string, @Req() req: AuthenticatedRequest) {
-    await this.propertyImageService.setCover(imageId, req.user.id, req.user.role);
+  async setCover(
+    @Param('imageId') imageId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    await this.propertyImageService.setCover(
+      imageId,
+      req.user.id,
+      req.user.role,
+    );
   }
 }

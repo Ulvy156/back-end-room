@@ -5,5 +5,6 @@ import { PropertyTypeController } from './property-type.controller';
 @Module({
   controllers: [PropertyTypeController],
   providers: [PropertyTypeService],
+  exports: [PropertyTypeService],
 })
 export class PropertyTypeModule {}

@@ -5,5 +5,6 @@ import { FeedbackController } from './feedback.controller';
 @Module({
   controllers: [FeedbackController],
   providers: [FeedbackService],
+  exports: [FeedbackService],
 })
 export class FeedbackModule {}

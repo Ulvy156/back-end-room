@@ -59,6 +59,7 @@ model User {
   feedbacks          Feedback[]
   refreshTokens      RefreshToken[]
   passwordResetToken PasswordResetToken?
+  auditLogs          AuditLog[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -420,4 +421,28 @@ model Feedback {
 
   @@index([userId])
   @@map("feedbacks")
+}
+
+// ==============================
+// AUDIT LOG
+// ==============================
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?  @map("user_id")
+  action       String
+  route        String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  statusCode   Int      @map("status_code")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([resourceType])
+  @@index([action])
+  @@map("audit_logs")
 }

@@ -5,5 +5,6 @@ import { AmenityController } from './amenity.controller';
 @Module({
   controllers: [AmenityController],
   providers: [AmenityService],
+  exports: [AmenityService],
 })
 export class AmenityModule {}

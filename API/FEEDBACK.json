@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "e5f6a7b8-feedback-collection-rent-room",
     "name": "Feedback",
-    "description": "User feedback and bug report endpoints for Rent Room.\n\nBase URL: {{baseUrl}}\n\nSubmitting feedback requires any valid JWT.\nViewing feedback requires ADMIN role.\n\nWhen feedback is submitted, the admin receives a Telegram notification.",
+    "description": "User feedback and bug report endpoints for Rent Room.\n\nBase URL: {{baseUrl}}\n\nSubmitting feedback requires any valid JWT.\nViewing feedback has moved to admin endpoints (see ADMIN.json — GET /admin/feedback).\n\nWhen feedback is submitted, the admin receives a Telegram notification.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -40,26 +40,6 @@
           "_postman_previewlanguage": "json",
           "header": [{ "key": "Content-Type", "value": "application/json" }],
           "body": "{\n  \"message\": \"Feedback submitted. Thank you!\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "Get All Feedback",
-      "request": {
-        "method": "GET",
-        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-        "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] },
-        "description": "Returns all submitted feedback ordered by newest first. Includes the submitting user's id, name, and email.\n\nRole: ADMIN only."
-      },
-      "response": [
-        {
-          "name": "200 OK",
-          "originalRequest": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] } },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [{ "key": "Content-Type", "value": "application/json" }],
-          "body": "[\n  {\n    \"id\": \"uuid\",\n    \"type\": \"BUG\",\n    \"description\": \"The map is not loading on mobile devices.\",\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\",\n    \"user\": {\n      \"id\": \"user-uuid\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\"\n    }\n  }\n]"
         }
       ]
     }

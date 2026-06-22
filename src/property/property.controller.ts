@@ -21,6 +21,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
 import { Throttle } from '@nestjs/throttler';
+import { SkipAudit } from '../audit-log/skip-audit.decorator';
 import { BrowsePropertyDto } from './dto/browser-property.dto';
 import { PropertyDetailDTO } from './dto/property-detail.dto';
 import { FindPropertiesDto } from './dto/find-properties.dto';
@@ -116,6 +117,7 @@ export class PropertyController {
     );
   }
 
+  @SkipAudit()
   @Public()
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents view count manipulation
   @Patch('/increment-view/:id')

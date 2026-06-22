@@ -40,7 +40,9 @@ export class PropertyService {
     let uploadedImgKeys: Array<{ key: string; url: string }> = [];
     try {
       if (!files.length) {
-        throw new BadRequestException(this.translation.t('errors.property.image_required'));
+        throw new BadRequestException(
+          this.translation.t('errors.property.image_required'),
+        );
       }
 
       const since = new Date();
@@ -49,7 +51,9 @@ export class PropertyService {
         where: { userId: requesterId, createdAt: { gte: since } },
       });
       if (recentCount >= 3) {
-        throw new BadRequestException(this.translation.t('errors.property.monthly_limit'));
+        throw new BadRequestException(
+          this.translation.t('errors.property.monthly_limit'),
+        );
       }
 
       const { amenityKeys, parkings, ...propertyData } = createPropertyDto;
@@ -285,9 +289,14 @@ export class PropertyService {
 
   private async assertOwner(id: string, requesterId: string, role: UserRole) {
     const property = await this.prisma.property.findUnique({ where: { id } });
-    if (!property) throw new NotFoundException(this.translation.t('errors.property.not_found'));
+    if (!property)
+      throw new NotFoundException(
+        this.translation.t('errors.property.not_found'),
+      );
     if (property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.property.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.property.forbidden'),
+      );
     return property;
   }
 
@@ -309,8 +318,7 @@ export class PropertyService {
     try {
       await this.assertOwner(id, requesterId, role);
 
-      const { userId, amenityKeys, parkings, ...updateData } =
-        updatePropertyDto;
+      const { amenityKeys, parkings, ...updateData } = updatePropertyDto;
 
       const property = await this.prisma.$transaction(async (tx) => {
         // 1Update property main fields
@@ -455,7 +463,9 @@ export class PropertyService {
         });
 
         if (featuredCount >= 3) {
-          throw new BadRequestException(this.translation.t('errors.property.feature_limit'));
+          throw new BadRequestException(
+            this.translation.t('errors.property.feature_limit'),
+          );
         }
       }
 

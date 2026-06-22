@@ -10,6 +10,7 @@ import {
   SendOtpEmailJob,
   SendOtpTelegramJob,
   SendVerificationOtpJob,
+  WriteAuditLogJob,
 } from './queue.jobs';
 import { QueueService } from './queue.service';
 
@@ -77,12 +78,31 @@ export class QueueWorker implements OnModuleInit {
         const adminChatId = this.config.getOrThrow<string>(
           'ADMIN_TELEGRAM_CHAT_ID',
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const { type, userName, description } = job.data;
         await this.telegram.sendMessage(
           adminChatId,
           `📬 *New Feedback — ${String(type)}*\n\nFrom: ${String(userName)}\n\n${String(description)}`,
         );
+      },
+    );
+
+    await this.queue.work<WriteAuditLogJob>(
+      QUEUE_JOBS.WRITE_AUDIT_LOG,
+      async (jobs) => {
+        const job = jobs[0];
+        await this.prisma.auditLog.create({
+          data: {
+            userId: job.data.userId,
+            action: job.data.action,
+            route: job.data.route,
+            resourceType: job.data.resourceType,
+            resourceId: job.data.resourceId,
+            statusCode: job.data.statusCode,
+            ipAddress: job.data.ipAddress,
+            userAgent: job.data.userAgent,
+          },
+        });
       },
     );
 

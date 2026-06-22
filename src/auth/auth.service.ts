@@ -57,7 +57,10 @@ export class AuthService {
   }
 
   private get refreshExpiresInSeconds(): number {
-    return parseInt(this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRES_IN'), 10);
+    return parseInt(
+      this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRES_IN'),
+      10,
+    );
   }
 
   private generateOtp(): string {
@@ -89,7 +92,14 @@ export class AuthService {
           role: dto.role ?? UserRole.USER,
           isVerified: false,
           ...(dto.phone
-            ? { phones: { create: { phoneNumber: dto.phone, type: PhoneNumberType.PHONE } } }
+            ? {
+                phones: {
+                  create: {
+                    phoneNumber: dto.phone,
+                    type: PhoneNumberType.PHONE,
+                  },
+                },
+              }
             : {}),
         },
       });
@@ -114,10 +124,15 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    if (!user) throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+    if (!user)
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
 
     if (user.isVerified) {
-      throw new BadRequestException(this.translation.t('errors.auth.already_verified'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.already_verified'),
+      );
     }
 
     const tokenRecord = await this.prisma.passwordResetToken.findUnique({
@@ -129,11 +144,15 @@ export class AuthService {
       tokenRecord.channel !== 'verification' ||
       tokenRecord.expiresAt < new Date()
     ) {
-      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
     }
 
     if (this.hashOtp(dto.otp) !== tokenRecord.otp) {
-      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
     }
 
     await this.prisma.$transaction([
@@ -155,7 +174,7 @@ export class AuthService {
   // ─── Login ──────────────────────────────────────────────────────────────────
 
   async validateUser(identifier: string, password: string) {
-    let user = await (identifier.includes('@')
+    const user = await (identifier.includes('@')
       ? this.prisma.user.findUnique({ where: { email: identifier } })
       : this.prisma.phone
           .findFirst({
@@ -169,7 +188,9 @@ export class AuthService {
 
     if (!user.isVerified) {
       // 403 so the frontend can distinguish this from wrong credentials (401)
-      throw new ForbiddenException(this.translation.t('errors.auth.not_verified'));
+      throw new ForbiddenException(
+        this.translation.t('errors.auth.not_verified'),
+      );
     }
 
     if (user.isLocked) {
@@ -213,10 +234,15 @@ export class AuthService {
         secret: this.refreshSecret,
       });
     } catch {
-      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.invalid_refresh_token'),
+      );
     }
 
-    if (!payload.jti) throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
+    if (!payload.jti)
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.invalid_refresh_token'),
+      );
 
     const stored = await this.prisma.refreshToken.findUnique({
       where: { jti: payload.jti },
@@ -227,7 +253,9 @@ export class AuthService {
       stored.userId !== payload.sub ||
       stored.expiresAt < new Date()
     ) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_refresh_token'));
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.invalid_refresh_token'),
+      );
     }
 
     const newJti = randomUUID();
@@ -297,14 +325,18 @@ export class AuthService {
   async telegramLogin(data: TelegramLoginDto) {
     // 1. Verify Telegram signature
     if (!this.verifyTelegramHash(data)) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.invalid_telegram'));
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.invalid_telegram'),
+      );
     }
 
     // 2. Reject stale auth_date (must be within 24 hours)
     const authDate = new Date(data.auth_date * 1000);
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     if (authDate < oneDayAgo) {
-      throw new UnauthorizedException(this.translation.t('errors.auth.telegram_expired'));
+      throw new UnauthorizedException(
+        this.translation.t('errors.auth.telegram_expired'),
+      );
     }
 
     // 3. Look up or auto-create user via Telegram ID
@@ -329,7 +361,10 @@ export class AuthService {
           role: UserRole.USER,
           isVerified: true,
           phones: {
-            create: { phoneNumber: String(data.id), type: PhoneNumberType.TELEGRAM },
+            create: {
+              phoneNumber: String(data.id),
+              type: PhoneNumberType.TELEGRAM,
+            },
           },
         },
       });
@@ -362,7 +397,9 @@ export class AuthService {
         (p) => p.type === PhoneNumberType.TELEGRAM,
       );
       if (!telegramPhone) {
-        throw new BadRequestException(this.translation.t('errors.auth.no_telegram_on_user'));
+        throw new BadRequestException(
+          this.translation.t('errors.auth.no_telegram_on_user'),
+        );
       }
       await this.storeOtp(user.id, otp, channel);
       await this.queue.send<SendOtpTelegramJob>(
@@ -383,18 +420,25 @@ export class AuthService {
   async resetPassword(email: string, otp: string, newPassword: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
-    if (!user) throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+    if (!user)
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
 
     const tokenRecord = await this.prisma.passwordResetToken.findUnique({
       where: { userId: user.id },
     });
 
     if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
-      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
     }
 
     if (this.hashOtp(otp) !== tokenRecord.otp) {
-      throw new BadRequestException(this.translation.t('errors.auth.invalid_otp'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.invalid_otp'),
+      );
     }
 
     const hashed = await hashingPassword(newPassword);
@@ -421,13 +465,24 @@ export class AuthService {
 
   // ─── Change password ─────────────────────────────────────────────────────────
 
-  async changePassword(userId: string, currentPassword: string, newPassword: string) {
-    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
     const isValid = await bcrypt.compare(currentPassword, user.password);
     if (!isValid)
-      throw new BadRequestException(this.translation.t('errors.auth.wrong_current_password'));
+      throw new BadRequestException(
+        this.translation.t('errors.auth.wrong_current_password'),
+      );
     const hashed = await hashingPassword(newPassword);
-    await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed },
+    });
   }
 
   // ─── Google OAuth ─────────────────────────────────────────────────────────────

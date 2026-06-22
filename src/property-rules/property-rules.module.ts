@@ -5,5 +5,6 @@ import { PropertyRulesController } from './property-rules.controller';
 @Module({
   controllers: [PropertyRulesController],
   providers: [PropertyRulesService],
+  exports: [PropertyRulesService],
 })
 export class PropertyRulesModule {}

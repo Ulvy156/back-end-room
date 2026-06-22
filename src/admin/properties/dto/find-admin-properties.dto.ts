@@ -3,12 +3,13 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   Min,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
-export class FindPropertiesDto {
+export class FindAdminPropertiesDto {
   @IsOptional()
   @Transform(({ value }) =>
     value === 'true' ? true : value === 'false' ? false : undefined,
@@ -33,6 +34,10 @@ export class FindPropertiesDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsUUID()
+  landlordId?: string;
 
   @IsOptional()
   @Type(() => Number)

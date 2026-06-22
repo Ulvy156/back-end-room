@@ -5,6 +5,7 @@ export const QUEUE_JOBS = {
   INCREMENT_PROPERTY_VIEW: 'increment-property-view',
   PURGE_EXPIRED_TOKENS: 'purge-expired-tokens',
   SEND_FEEDBACK_NOTIFICATION: 'send-feedback-notification',
+  WRITE_AUDIT_LOG: 'write-audit-log',
 } as const;
 
 export interface SendVerificationOtpJob {
@@ -30,4 +31,15 @@ export interface SendFeedbackNotificationJob {
   type: string;
   description: string;
   userName: string;
+}
+
+export interface WriteAuditLogJob {
+  userId: string | null;
+  action: string;
+  route: string;
+  resourceType: string;
+  resourceId: string | null;
+  statusCode: number;
+  ipAddress: string | null;
+  userAgent: string | null;
 }

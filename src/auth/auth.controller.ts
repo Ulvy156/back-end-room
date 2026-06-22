@@ -27,6 +27,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { SelectRoleDto } from './dto/select-role.dto';
 import { Throttle } from '@nestjs/throttler';
 import { TranslationService } from '../i18n/translation.service';
+import { SkipAudit } from '../audit-log/skip-audit.decorator';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string; role: string };
@@ -62,7 +63,10 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authService.validateUser(dto.identifier, dto.password);
+    const user = await this.authService.validateUser(
+      dto.identifier,
+      dto.password,
+    );
     if (!user)
       throw new UnauthorizedException(
         this.translation.t('errors.auth.invalid_credentials'),
@@ -108,6 +112,7 @@ export class AuthController {
 
   // ─── Token management ────────────────────────────────────────────────────────
 
+  @SkipAudit()
   @Public()
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
@@ -127,6 +132,7 @@ export class AuthController {
     return { accessToken: tokens.accessToken };
   }
 
+  @SkipAudit()
   @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -229,9 +235,12 @@ export class AuthController {
     @Req() req: GoogleAuthenticatedRequest,
     @Res() res: Response,
   ) {
-    const { accessToken, refreshToken, isNewUser } = await this.authService.googleLogin(req.user);
+    const { accessToken, refreshToken, isNewUser } =
+      await this.authService.googleLogin(req.user);
     res.cookie('refresh_token', refreshToken, cookieOptions);
     const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&is_new_user=${isNewUser}`);
+    res.redirect(
+      `${frontendUrl}/auth/callback?token=${accessToken}&is_new_user=${isNewUser}`,
+    );
   }
 }

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
 import { TranslationModule } from './i18n/translation.module';
@@ -20,10 +20,13 @@ import { LocationModule } from './location/location.module';
 import { PropertyAmenityModule } from './property-amenity/property-amenity.module';
 import { PropertyRulesModule } from './property-rules/property-rules.module';
 import { UserFavouriteModule } from './user-favourite/user-favourite.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
 import { QueueModule } from './queue/queue.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AdminModule } from './admin/admin.module';
+import { AuditLogModule } from './audit-log/audit-log.module';
+import { AuditInterceptor } from './audit-log/audit.interceptor';
 
 @Module({
   imports: [
@@ -92,12 +95,15 @@ import { AdminModule } from './admin/admin.module';
     UserFavouriteModule,
     FeedbackModule,
     AdminModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
 })
 export class AppModule {}

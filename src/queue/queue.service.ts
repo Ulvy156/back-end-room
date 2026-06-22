@@ -24,7 +24,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   private markReady!: () => void;
 
   constructor(private readonly config: ConfigService) {
-    this.ready = new Promise((resolve) => { this.markReady = resolve; });
+    this.ready = new Promise((resolve) => {
+      this.markReady = resolve;
+    });
   }
 
   // pg-boss v12 is pure ESM so it must be loaded with dynamic import at runtime.
@@ -38,7 +40,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     this.boss.on('error', (err) => this.logger.error('pg-boss error', err));
     await this.boss.start();
     // pg-boss v12 requires queues to exist before work() or schedule() can use them.
-    await Promise.all(Object.values(QUEUE_JOBS).map((name) => this.boss.createQueue(name)));
+    await Promise.all(
+      Object.values(QUEUE_JOBS).map((name) => this.boss.createQueue(name)),
+    );
     this.markReady();
     this.logger.log('pg-boss started');
   }

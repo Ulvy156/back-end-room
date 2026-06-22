@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserRole } from 'prisma/generated/enums';
 
 @Injectable()
-export class AdminService {
+export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getDashboard() {
@@ -27,20 +27,26 @@ export class AdminService {
 
       feedbackByType,
 
+      totalViewsAgg,
+      totalFavourites,
+      totalReports,
+
       recentRegistrations,
       latestProperties,
       topProperties,
       recentFeedback,
     ] = await Promise.all([
-      // ── User stats ──────────────────────────────────────────────────────────
       this.prisma.user.count({ where: { role: UserRole.USER } }),
       this.prisma.user.count({ where: { role: UserRole.LANDLORD } }),
       this.prisma.user.count({ where: { isLocked: true } }),
       this.prisma.user.count({ where: { isVerified: false } }),
-      this.prisma.user.count({ where: { role: UserRole.USER, createdAt: { gte: since } } }),
-      this.prisma.user.count({ where: { role: UserRole.LANDLORD, createdAt: { gte: since } } }),
+      this.prisma.user.count({
+        where: { role: UserRole.USER, createdAt: { gte: since } },
+      }),
+      this.prisma.user.count({
+        where: { role: UserRole.LANDLORD, createdAt: { gte: since } },
+      }),
 
-      // ── Property stats ───────────────────────────────────────────────────────
       this.prisma.property.count(),
       this.prisma.property.count({ where: { isPublished: true } }),
       this.prisma.property.count({ where: { isPublished: false } }),
@@ -48,13 +54,15 @@ export class AdminService {
       this.prisma.property.count({ where: { isFeatured: true } }),
       this.prisma.property.count({ where: { createdAt: { gte: since } } }),
 
-      // ── Feedback breakdown ───────────────────────────────────────────────────
       this.prisma.feedback.groupBy({
         by: ['type'],
         _count: { id: true },
       }),
 
-      // ── Recent registrations (last 5, excluding admins) ──────────────────────
+      this.prisma.property.aggregate({ _sum: { totalViews: true } }),
+      this.prisma.favorite.count(),
+      this.prisma.propertyReport.count(),
+
       this.prisma.user.findMany({
         where: { role: { not: UserRole.ADMIN } },
         orderBy: { createdAt: 'desc' },
@@ -69,7 +77,6 @@ export class AdminService {
         },
       }),
 
-      // ── Latest property listings (last 5) ───────────────────────────────────
       this.prisma.property.findMany({
         orderBy: { createdAt: 'desc' },
         take: 5,
@@ -88,7 +95,6 @@ export class AdminService {
         },
       }),
 
-      // ── Top 5 properties by views ────────────────────────────────────────────
       this.prisma.property.findMany({
         where: { isPublished: true },
         orderBy: { totalViews: 'desc' },
@@ -107,7 +113,6 @@ export class AdminService {
         },
       }),
 
-      // ── Recent feedback (last 5) ─────────────────────────────────────────────
       this.prisma.feedback.findMany({
         orderBy: { createdAt: 'desc' },
         take: 5,
@@ -121,7 +126,6 @@ export class AdminService {
       }),
     ]);
 
-    // Reshape feedback breakdown into { BUG: n, SUGGESTION: n, OTHER: n }
     const feedbackTotals = feedbackByType.reduce(
       (acc, row) => {
         acc[row.type] = row._count.id;
@@ -155,6 +159,11 @@ export class AdminService {
           total: feedbackByType.reduce((sum, r) => sum + r._count.id, 0),
           byType: feedbackTotals,
         },
+        engagement: {
+          totalViews: totalViewsAgg._sum.totalViews ?? 0,
+          totalFavourites,
+          totalReports,
+        },
       },
       recentRegistrations,
       latestProperties,
@@ -164,52 +173,6 @@ export class AdminService {
         _count: undefined,
       })),
       recentFeedback,
-    };
-  }
-
-  async getLandlordProperties(landlordId: string) {
-    const landlord = await this.prisma.user.findFirst({
-      where: { id: landlordId, role: UserRole.LANDLORD },
-      select: { id: true, name: true, email: true, imgUrl: true, createdAt: true },
-    });
-
-    if (!landlord) throw new NotFoundException('Landlord not found');
-
-    const properties = await this.prisma.property.findMany({
-      where: { userId: landlordId },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        title: true,
-        monthly_price: true,
-        isPublished: true,
-        isAvailable: true,
-        isFeatured: true,
-        totalViews: true,
-        createdAt: true,
-        images: {
-          take: 1,
-          where: { isCover: true },
-          select: { imageKey: true },
-        },
-        district: {
-          select: {
-            nameEn: true,
-            nameKh: true,
-            province: { select: { nameEn: true, nameKh: true } },
-          },
-        },
-        _count: { select: { favorites: true } },
-      },
-    });
-
-    return {
-      landlord,
-      properties: properties.map((p) => ({
-        ...p,
-        favouriteCount: p._count.favorites,
-        _count: undefined,
-      })),
     };
   }
 }

@@ -37,14 +37,19 @@ export class R2Service {
   }
 
   private validateFile(file: Express.Multer.File) {
-    if (!file) throw new BadRequestException(this.translation.t('errors.file.required'));
+    if (!file)
+      throw new BadRequestException(this.translation.t('errors.file.required'));
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype as any)) {
-      throw new BadRequestException(this.translation.t('errors.file.invalid_type'));
+      throw new BadRequestException(
+        this.translation.t('errors.file.invalid_type'),
+      );
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
-      throw new BadRequestException(this.translation.t('errors.file.too_large'));
+      throw new BadRequestException(
+        this.translation.t('errors.file.too_large'),
+      );
     }
   }
 

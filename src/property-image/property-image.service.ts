@@ -18,23 +18,44 @@ export class PropertyImageService {
   ) {}
 
   // Fetches the image and verifies the requester owns the parent property.
-  private async assertImageOwner(imageId: string, requesterId: string, role: UserRole) {
+  private async assertImageOwner(
+    imageId: string,
+    requesterId: string,
+    role: UserRole,
+  ) {
     const image = await this.prisma.propertyImage.findUnique({
       where: { id: imageId },
       include: { property: { select: { userId: true } } },
     });
-    if (!image) throw new NotFoundException(this.translation.t('errors.property_image.not_found'));
+    if (!image)
+      throw new NotFoundException(
+        this.translation.t('errors.property_image.not_found'),
+      );
     if (image.property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.property_image.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.property_image.forbidden'),
+      );
     return image;
   }
 
   // [LANDLORD | ADMIN] Upload a new image to an existing property
-  async upload(propertyId: string, file: Express.Multer.File, requesterId: string, role: UserRole) {
-    const property = await this.prisma.property.findUnique({ where: { id: propertyId } });
-    if (!property) throw new NotFoundException(this.translation.t('errors.property.not_found'));
+  async upload(
+    propertyId: string,
+    file: Express.Multer.File,
+    requesterId: string,
+    role: UserRole,
+  ) {
+    const property = await this.prisma.property.findUnique({
+      where: { id: propertyId },
+    });
+    if (!property)
+      throw new NotFoundException(
+        this.translation.t('errors.property.not_found'),
+      );
     if (property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(this.translation.t('errors.property_image.forbidden'));
+      throw new ForbiddenException(
+        this.translation.t('errors.property_image.forbidden'),
+      );
 
     try {
       const { key } = await this.r2Service.uploadSingleFile(file, 'properties');
