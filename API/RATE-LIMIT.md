@@ -35,6 +35,12 @@ Applies to every endpoint that does not have a per-route override.
 | `PATCH /property/increment-view/:id` | 10 | 1 min | Prevents view count manipulation |
 | `DELETE /property/:id` | 10 | 1 min | Prevents spam delete attempts |
 
+### Property Report
+
+| Endpoint | Limit | Window | Reason |
+|---|---|---|---|
+| `POST /property-report/:propertyId` | 5 | 1 hour | Prevents report spam |
+
 ### User Favourite
 
 | Endpoint | Limit | Window | Reason |

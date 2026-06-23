@@ -1,0 +1,140 @@
+{
+  "info": {
+    "_postman_id": "f6a7b8c9-property-report-collection-rent-room",
+    "name": "Property Report",
+    "description": "Property report endpoints for Rent Room.\n\nBase URL: {{baseUrl}}\n\nUsers can report listings that violate rules. Admins can view and manage all reports.\n\nAll endpoints require a valid JWT: Authorization: Bearer {{accessToken}}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "propertyId", "value": "", "type": "string" },
+    { "key": "reportId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Report a Property",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/property-report/{{propertyId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["property-report", "{{propertyId}}"]
+        },
+        "description": "Report a property listing. One report per user per property.\n\nRate limit: 5 per hour.\n\ndescription: string, required, max 1000 characters. HTML is sanitized.\n\nErrors:\n- 400: Cannot report your own property\n- 400: You have already reported this property\n- 404: Property not found\n- 429: Rate limit exceeded"
+      },
+      "response": [
+        {
+          "name": "201 Created",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/property-report/{{propertyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["property-report", "{{propertyId}}"]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\",\n  \"createdAt\": \"2026-06-23T08:00:00.000Z\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "[ADMIN] List All Reports",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/property-report?page=1&limit=10&propertyId={{propertyId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["property-report"],
+          "query": [
+            { "key": "page", "value": "1", "description": "Page number. Default: 1." },
+            { "key": "limit", "value": "10", "description": "Results per page. Default: 10." },
+            { "key": "propertyId", "value": "{{propertyId}}", "description": "Optional. Filter reports by property ID." }
+          ]
+        },
+        "description": "List all property reports. Optionally filter by propertyId.\n\nRole: ADMIN only.\n\nErrors:\n- 403: Not an admin"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/property-report?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["property-report"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": 1,\n      \"description\": \"This listing contains misleading photos and fake pricing.\",\n      \"createdAt\": \"2026-06-23T08:00:00.000Z\",\n      \"user\": {\n        \"id\": \"uuid\",\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\"\n      },\n      \"property\": {\n        \"id\": \"uuid\",\n        \"title\": \"Cozy Room in BKK1\",\n        \"userId\": \"uuid\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 1,\n    \"totalPages\": 1\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete Report",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/property-report/{{reportId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["property-report", "{{reportId}}"]
+        },
+        "description": "Delete a property report. The report owner or an admin can delete.\n\nErrors:\n- 404: Report not found (or not owned by requester and not admin)"
+      },
+      "response": [
+        {
+          "name": "204 No Content",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/property-report/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["property-report", "1"]
+            }
+          },
+          "status": "No Content",
+          "code": 204,
+          "_postman_previewlanguage": "text",
+          "header": [],
+          "body": ""
+        }
+      ]
+    }
+  ]
+}

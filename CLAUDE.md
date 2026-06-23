@@ -69,6 +69,7 @@ Server starts on `PORT` env variable (default `8080`).
 | `amenity` | Reference data — amenity definitions |
 | `location` | Province/district lookup and search suggestions |
 | `user-favourite` | Save and unsave favourite properties per user |
+| `property-report` | Users report property listings (`POST /property-report/:propertyId`); admins list/filter all reports (`GET /property-report`); owner or admin can delete (`DELETE /property-report/:id`). One report per user per property, self-report blocked. |
 | `feedback` | Users submit bug reports/suggestions (`POST /feedback`); admins list all feedback (`GET /feedback`). New submissions notify the admin via Telegram (async) |
 | `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings |
 | `landlord` | Landlord dashboard (summary stats, property performance table, recent favourites activity, top properties) |
@@ -201,6 +202,7 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Landlord dashboard (stats, performance table, activity, top properties) | `landlord` | Done |
 | Public landlord profile (info, contact, published properties) | `landlord` | Done |
 | Async OTP delivery via email and Telegram | `queue`, `notification` | Done |
+| Property report (flag listings, admin review, owner/admin delete) | `property-report` | Done |
 | Nightly cleanup of expired tokens | `queue` | Done |
 
 ---
@@ -261,6 +263,7 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 | Feedback | `API/FEEDBACK.json` |
 | Admin | `API/ADMIN.json` |
 | Landlord | `API/LANDLORD.json` |
+| Property Report | `API/PROPERTY-REPORT.json` |
 | Location | `API/LOCATION.json` _(create when implementing)_ |
 | Amenity | `API/AMENITY.json` _(create when implementing)_ |
 | Rate limits | `API/RATE-LIMIT.md` _(exception — markdown, not Postman)_ |
