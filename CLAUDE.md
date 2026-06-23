@@ -71,6 +71,7 @@ Server starts on `PORT` env variable (default `8080`).
 | `user-favourite` | Save and unsave favourite properties per user |
 | `feedback` | Users submit bug reports/suggestions (`POST /feedback`); admins list all feedback (`GET /feedback`). New submissions notify the admin via Telegram (async) |
 | `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings |
+| `landlord` | Landlord dashboard (summary stats, property performance table, recent favourites activity, top properties) |
 | `R2` | Cloudflare R2 via AWS S3 SDK. Images are resized (max 2400×3200) and converted to WebP (quality 82) using `sharp` before upload. |
 | `cache` | In-memory cache wrapper (NestJS cache-manager). Keys defined in `src/cache/cache.key.ts`. Property mutations clear relevant homepage cache keys. |
 | `queue` | Background jobs via pg-boss (PostgreSQL-backed). `QueueService` manages lifecycle and exposes `send()`, `work()`, `schedule()`. `QueueWorker` registers all handlers on startup. Job names and payload types live in `src/queue/queue.jobs.ts`. |
@@ -186,7 +187,7 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Forgot / reset password via OTP (email or Telegram) | `auth` | Done |
 | Role-based access control (USER / LANDLORD / ADMIN) | `auth` | Done |
 | User profile management and avatar upload | `user` | Done |
-| Property listing CRUD with image upload | `property`, `property-image` | Done |
+| Property listing CRUD with image upload and duplication | `property`, `property-image` | Done |
 | Property amenities and house rules | `property-amenity`, `property-rules` | Done |
 | Browse and filter properties (price, location, type, bedroom, etc.) | `property` | Done |
 | Geo-based filtering and distance calculation (haversine) | `property` | Done |
@@ -197,6 +198,8 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Province and district location lookup | `location` | Done |
 | Bug report / suggestion feedback with admin Telegram alert | `feedback`, `queue` | Done |
 | Admin dashboard and landlord property overview | `admin` | Done |
+| Landlord dashboard (stats, performance table, activity, top properties) | `landlord` | Done |
+| Public landlord profile (info, contact, published properties) | `landlord` | Done |
 | Async OTP delivery via email and Telegram | `queue`, `notification` | Done |
 | Nightly cleanup of expired tokens | `queue` | Done |
 
@@ -257,6 +260,7 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 | Favourites | `API/FAVOURITE.json` |
 | Feedback | `API/FEEDBACK.json` |
 | Admin | `API/ADMIN.json` |
+| Landlord | `API/LANDLORD.json` |
 | Location | `API/LOCATION.json` _(create when implementing)_ |
 | Amenity | `API/AMENITY.json` _(create when implementing)_ |
 | Rate limits | `API/RATE-LIMIT.md` _(exception — markdown, not Postman)_ |

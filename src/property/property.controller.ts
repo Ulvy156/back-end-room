@@ -84,6 +84,13 @@ export class PropertyController {
   }
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
+  @Throttle({ default: { limit: 2, ttl: 600000 } })
+  @Post(':id/duplicate')
+  duplicate(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.propertyService.duplicate(id, req.user.id, req.user.role);
+  }
+
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Patch('/toggle-publish/:id')
   togglePublish(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.togglePublish(id, req.user.id, req.user.role);

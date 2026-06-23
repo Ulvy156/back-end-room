@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRole } from 'prisma/generated/enums';
+import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -178,6 +178,9 @@ export class PropertyService {
           select: {
             imgUrl: true,
             role: true,
+            showPhone: true,
+            showTelegram: true,
+            showEmail: true,
             phones: {
               select: {
                 phoneNumber: true,
@@ -279,6 +282,18 @@ export class PropertyService {
     }));
 
     const { propertyAmenities, ...rest } = property;
+
+    const { showPhone, showTelegram, showEmail, phones, email, ...userRest } =
+      rest.user;
+    rest.user = {
+      ...userRest,
+      email: showEmail ? email : null,
+      phones: phones.filter(
+        (p) =>
+          (p.type === PhoneNumberType.PHONE && showPhone) ||
+          (p.type === PhoneNumberType.TELEGRAM && showTelegram),
+      ),
+    } as typeof rest.user;
 
     return {
       ...rest,
@@ -438,6 +453,83 @@ export class PropertyService {
     }
 
     await this.prisma.property.delete({ where: { id } });
+  }
+
+  async duplicate(id: string, requesterId: string, role: UserRole) {
+    await this.assertOwner(id, requesterId, role);
+
+    const since = new Date();
+    since.setDate(since.getDate() - 30);
+    const recentCount = await this.prisma.property.count({
+      where: { userId: requesterId, createdAt: { gte: since } },
+    });
+    if (recentCount >= 3) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.monthly_limit'),
+      );
+    }
+
+    const source = await this.prisma.property.findUniqueOrThrow({
+      where: { id },
+      include: {
+        propertyAmenities: true,
+        propertyRuleValue: true,
+        parkings: true,
+      },
+    });
+
+    try {
+      const copy = await this.prisma.property.create({
+        data: {
+          userId: requesterId,
+          districtId: source.districtId,
+          address: source.address,
+          locationUrl: source.locationUrl,
+          lat: source.lat,
+          lng: source.lng,
+          nearby_location: source.nearby_location,
+          title: `${source.title} (copy)`,
+          description: source.description,
+          monthly_price: source.monthly_price,
+          deposit: source.deposit,
+          bedroom: source.bedroom,
+          bathroom: source.bathroom,
+          floor: source.floor,
+          totalFloors: source.totalFloors,
+          availableFrom: source.availableFrom,
+          propertyTypeId: source.propertyTypeId,
+          sizeSqm: source.sizeSqm,
+          furnished: source.furnished,
+          minimumStayLength: source.minimumStayLength,
+          isPublished: false,
+          propertyAmenities: {
+            create: source.propertyAmenities.map((a) => ({
+              amenity: { connect: { id: a.amenityId } },
+            })),
+          },
+          propertyRuleValue: {
+            create: source.propertyRuleValue.map((r) => ({
+              rule: { connect: { id: r.propertyRuleId } },
+            })),
+          },
+          parkings: source.parkings.length
+            ? {
+                create: source.parkings.map((p) => ({
+                  type: p.type,
+                  slots: p.slots,
+                  isFree: p.isFree,
+                  price: p.price,
+                  note: p.note,
+                })),
+              }
+            : undefined,
+        },
+      });
+
+      return copy;
+    } catch (error) {
+      prismaError(error);
+    }
   }
 
   async incrementView(id: string): Promise<void> {

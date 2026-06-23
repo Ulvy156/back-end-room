@@ -192,6 +192,86 @@
           "response": []
         },
         {
+          "name": "Update Contact Visibility",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"showPhone\": true,\n  \"showTelegram\": true,\n  \"showEmail\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/user/me/contact-visibility", "host": ["{{baseUrl}}"], "path": ["user", "me", "contact-visibility"] },
+            "description": "Toggle which contact methods are visible on the public landlord profile and property detail pages.\n\nAll fields are optional — only send the ones you want to change.\n\nDefaults are all true (visible). Changes take effect immediately on public-facing endpoints.\n\nFields:\n- showPhone: show/hide phone numbers (type PHONE)\n- showTelegram: show/hide Telegram contact (type TELEGRAM)\n- showEmail: show/hide email address"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"showPhone\": true,\n  \"showTelegram\": true,\n  \"showEmail\": false\n}" },
+                "url": { "raw": "{{baseUrl}}/user/me/contact-visibility", "host": ["{{baseUrl}}"], "path": ["user", "me", "contact-visibility"] }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"showPhone\": true,\n  \"showTelegram\": true,\n  \"showEmail\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Phone Number",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+85512345678\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/user/me/phones", "host": ["{{baseUrl}}"], "path": ["user", "me", "phones"] },
+            "description": "Add a phone number to the landlord's profile. Maximum 3 phone numbers (excluding Telegram).\n\nRole: LANDLORD or ADMIN only.\n\nThe phone number must be unique across all users. Duplicate numbers return 409 Conflict."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"phoneNumber\": \"+85512345678\"\n}" },
+                "url": { "raw": "{{baseUrl}}/user/me/phones", "host": ["{{baseUrl}}"], "path": ["user", "me", "phones"] }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 5,\n  \"phoneNumber\": \"+85512345678\",\n  \"type\": \"PHONE\",\n  \"createdAt\": \"2026-06-22T12:00:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Phone Number",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/user/me/phones/5", "host": ["{{baseUrl}}"], "path": ["user", "me", "phones", "5"] },
+            "description": "Remove a phone number by its ID. Only the owner can delete their own phone numbers.\n\nRole: LANDLORD or ADMIN only.\n\nReturns 204 No Content on success. Returns 404 if the phone ID doesn't exist or belongs to another user."
+          },
+          "response": []
+        },
+        {
           "name": "Change Password",
           "request": {
             "method": "PATCH",

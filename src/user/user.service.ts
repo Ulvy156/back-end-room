@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMyInfoDto } from './dto/update-my-info.dto';
+import { UpdateContactVisibilityDto } from './dto/update-contact-visibility.dto';
+import { AddPhoneDto } from './dto/add-phone.dto';
 import { FindUsersDto } from './dto/find-users.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PhoneNumberType } from 'prisma/generated/enums';
 import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
@@ -139,6 +142,9 @@ export class UserService {
       where: { id: userId },
       select: {
         ...USER_PUBLIC_FIELDS,
+        showPhone: true,
+        showTelegram: true,
+        showEmail: true,
         phones: {
           select: { phoneNumber: true, type: true },
         },
@@ -156,6 +162,55 @@ export class UserService {
     } catch (error) {
       prismaError(error);
     }
+  }
+
+  async updateContactVisibility(
+    userId: string,
+    dto: UpdateContactVisibilityDto,
+  ) {
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: dto,
+        select: { showPhone: true, showTelegram: true, showEmail: true },
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async addPhone(userId: string, dto: AddPhoneDto) {
+    const phoneCount = await this.prisma.phone.count({
+      where: { userId, type: PhoneNumberType.PHONE },
+    });
+    if (phoneCount >= 3) {
+      throw new BadRequestException(
+        'Maximum 3 phone numbers allowed',
+      );
+    }
+
+    try {
+      return await this.prisma.phone.create({
+        data: {
+          phoneNumber: dto.phoneNumber,
+          type: PhoneNumberType.PHONE,
+          userId,
+        },
+        select: { id: true, phoneNumber: true, type: true, createdAt: true },
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async removePhone(userId: string, phoneId: number) {
+    const phone = await this.prisma.phone.findUnique({
+      where: { id: phoneId },
+    });
+    if (!phone || phone.userId !== userId) {
+      throw new NotFoundException('Phone not found');
+    }
+    await this.prisma.phone.delete({ where: { id: phoneId } });
   }
 
   async updateProfileByUserId(userId: string, profile: Express.Multer.File) {

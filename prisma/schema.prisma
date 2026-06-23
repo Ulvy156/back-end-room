@@ -52,6 +52,10 @@ model User {
   isLocked   Boolean  @default(false)
   role       UserRole @default(USER)
 
+  showPhone    Boolean @default(true) @map("show_phone")
+  showTelegram Boolean @default(true) @map("show_telegram")
+  showEmail    Boolean @default(true) @map("show_email")
+
   properties         Property[]
   favorites          Favorite[]
   phones             Phone[]

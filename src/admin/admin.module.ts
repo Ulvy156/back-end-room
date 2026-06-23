@@ -15,7 +15,12 @@ import { FeedbackModule } from 'src/feedback/feedback.module';
 import { AdminFeedbackController } from './feedback/feedback.controller';
 
 @Module({
-  imports: [PropertyTypeModule, AmenityModule, PropertyRulesModule, FeedbackModule],
+  imports: [
+    PropertyTypeModule,
+    AmenityModule,
+    PropertyRulesModule,
+    FeedbackModule,
+  ],
   controllers: [
     DashboardController,
     AdminPropertiesController,

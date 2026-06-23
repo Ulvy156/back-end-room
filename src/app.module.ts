@@ -25,6 +25,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { QueueModule } from './queue/queue.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AdminModule } from './admin/admin.module';
+import { LandlordModule } from './landlord/landlord.module';
 import { AuditLogModule } from './audit-log/audit-log.module';
 import { AuditInterceptor } from './audit-log/audit.interceptor';
 
@@ -95,6 +96,7 @@ import { AuditInterceptor } from './audit-log/audit.interceptor';
     UserFavouriteModule,
     FeedbackModule,
     AdminModule,
+    LandlordModule,
     AuditLogModule,
   ],
   controllers: [AppController],

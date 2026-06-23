@@ -171,6 +171,30 @@
             "description": "Deletes the property and removes all associated images from R2.\n\nOwnership required. Rate limit: 10 per minute."
           },
           "response": []
+        },
+        {
+          "name": "Duplicate Property",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/property/{{propertyId}}/duplicate", "host": ["{{baseUrl}}"], "path": ["property", "{{propertyId}}", "duplicate"] },
+            "description": "Creates an unpublished copy of the property with the same settings (title, description, price, location, amenities, house rules, parking). Does NOT copy images — landlord must upload new ones.\n\nTitle is appended with '(copy)'. The copy is set to isPublished: false.\n\nOwnership required. Subject to the 3-property-per-month limit. Rate limit: 2 per 10 minutes."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+                "url": { "raw": "{{baseUrl}}/property/{{propertyId}}/duplicate", "host": ["{{baseUrl}}"], "path": ["property", "{{propertyId}}", "duplicate"] }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": \"new-uuid\",\n  \"title\": \"Cozy Room in BKK1 (copy)\",\n  \"isPublished\": false,\n  \"monthly_price\": 250,\n  \"createdAt\": \"2026-06-22T12:00:00.000Z\"\n}"
+            }
+          ]
         }
       ]
     },
