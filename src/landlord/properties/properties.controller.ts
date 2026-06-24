@@ -26,10 +26,7 @@ export class LandlordPropertiesController {
   }
 
   @Get(':id')
-  getPropertyDetail(
-    @Param('id') id: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  getPropertyDetail(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertiesService.getPropertyDetail(
       id,
       req.user.id,

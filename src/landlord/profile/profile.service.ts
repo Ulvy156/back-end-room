@@ -45,6 +45,8 @@ export class LandlordProfileService {
           bathroom: true,
           bedroom: true,
           isAvailable: true,
+          openTime: true,
+          closeTime: true,
           images: {
             take: 1,
             where: { isCover: true },

@@ -22,7 +22,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}",
+          "raw": "{\n  \"reportTypeId\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}",
           "options": { "raw": { "language": "json" } }
         },
         "url": {
@@ -30,7 +30,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["property-report", "{{propertyId}}"]
         },
-        "description": "Report a property listing. One report per user per property.\n\nRate limit: 5 per hour.\n\ndescription: string, required, max 1000 characters. HTML is sanitized.\n\nErrors:\n- 400: Cannot report your own property\n- 400: You have already reported this property\n- 404: Property not found\n- 429: Rate limit exceeded"
+        "description": "Report a property listing. One report per user per property.\n\nRate limit: 5 per hour.\n\nreportTypeId: number, required. Get available types from GET /report-type.\ndescription: string, required, max 1000 characters. HTML is sanitized.\n\nErrors:\n- 400: Cannot report your own property\n- 400: You have already reported this property\n- 400: Validation error (missing reportTypeId)\n- 404: Property not found\n- 429: Rate limit exceeded"
       },
       "response": [
         {
@@ -43,7 +43,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}"
+              "raw": "{\n  \"reportTypeId\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/property-report/{{propertyId}}",
@@ -55,7 +55,7 @@
           "code": 201,
           "_postman_previewlanguage": "json",
           "header": [{ "key": "Content-Type", "value": "application/json" }],
-          "body": "{\n  \"id\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\",\n  \"createdAt\": \"2026-06-23T08:00:00.000Z\"\n}"
+          "body": "{\n  \"id\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\",\n  \"createdAt\": \"2026-06-23T08:00:00.000Z\",\n  \"reportType\": {\n    \"id\": 1,\n    \"nameEn\": \"Scam / Fake Listing\",\n    \"nameKh\": \"បោកប្រាស់ / បញ្ជីក្លែងក្លាយ\",\n    \"icon\": \"alert-triangle\"\n  }\n}"
         }
       ]
     },
@@ -73,10 +73,11 @@
           "query": [
             { "key": "page", "value": "1", "description": "Page number. Default: 1." },
             { "key": "limit", "value": "10", "description": "Results per page. Default: 10." },
-            { "key": "propertyId", "value": "{{propertyId}}", "description": "Optional. Filter reports by property ID." }
+            { "key": "propertyId", "value": "{{propertyId}}", "description": "Optional. Filter reports by property ID." },
+            { "key": "reportTypeId", "value": "", "disabled": true, "description": "Optional. Filter reports by report type ID (e.g. 1=scam, 2=inappropriate)." }
           ]
         },
-        "description": "List all property reports. Optionally filter by propertyId.\n\nRole: ADMIN only.\n\nErrors:\n- 403: Not an admin"
+        "description": "List all property reports. Optionally filter by propertyId and/or reportTypeId.\n\nRole: ADMIN only.\n\nErrors:\n- 403: Not an admin"
       },
       "response": [
         {
@@ -98,7 +99,7 @@
           "code": 200,
           "_postman_previewlanguage": "json",
           "header": [{ "key": "Content-Type", "value": "application/json" }],
-          "body": "{\n  \"items\": [\n    {\n      \"id\": 1,\n      \"description\": \"This listing contains misleading photos and fake pricing.\",\n      \"createdAt\": \"2026-06-23T08:00:00.000Z\",\n      \"user\": {\n        \"id\": \"uuid\",\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\"\n      },\n      \"property\": {\n        \"id\": \"uuid\",\n        \"title\": \"Cozy Room in BKK1\",\n        \"userId\": \"uuid\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 1,\n    \"totalPages\": 1\n  }\n}"
+          "body": "{\n  \"items\": [\n    {\n      \"id\": 1,\n      \"description\": \"This listing contains misleading photos and fake pricing.\",\n      \"createdAt\": \"2026-06-23T08:00:00.000Z\",\n      \"reportType\": {\n        \"id\": 1,\n        \"nameEn\": \"Scam / Fake Listing\",\n        \"nameKh\": \"បោកប្រាស់ / បញ្ជីក្លែងក្លាយ\",\n        \"icon\": \"alert-triangle\"\n      },\n      \"user\": {\n        \"id\": \"uuid\",\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\"\n      },\n      \"property\": {\n        \"id\": \"uuid\",\n        \"title\": \"Cozy Room in BKK1\",\n        \"userId\": \"uuid\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 1,\n    \"totalPages\": 1\n  }\n}"
         }
       ]
     },

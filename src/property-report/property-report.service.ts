@@ -40,9 +40,15 @@ export class PropertyReportService {
         data: {
           propertyId,
           userId,
+          reportTypeId: dto.reportTypeId,
           description: sanitizeRichText(dto.description),
         },
-        select: { id: true, description: true, createdAt: true },
+        select: {
+          id: true,
+          description: true,
+          createdAt: true,
+          reportType: { select: { id: true, nameEn: true, nameKh: true, icon: true } },
+        },
       });
       return report;
     } catch (error) {
@@ -51,10 +57,13 @@ export class PropertyReportService {
   }
 
   async findAll(dto: FindPropertyReportsDto) {
-    const { page = 1, limit = 10, propertyId } = dto;
+    const { page = 1, limit = 10, propertyId, reportTypeId } = dto;
     const skip = (page - 1) * limit;
 
-    const where = propertyId ? { propertyId } : {};
+    const where = {
+      ...(propertyId && { propertyId }),
+      ...(reportTypeId && { reportTypeId }),
+    };
 
     const [items, total] = await Promise.all([
       this.prisma.propertyReport.findMany({
@@ -66,6 +75,7 @@ export class PropertyReportService {
           id: true,
           description: true,
           createdAt: true,
+          reportType: { select: { id: true, nameEn: true, nameKh: true, icon: true } },
           user: { select: { id: true, name: true, email: true } },
           property: {
             select: { id: true, title: true, userId: true },

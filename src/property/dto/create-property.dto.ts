@@ -95,6 +95,20 @@ export class CreatePropertyDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/^\d{1,2}:\d{2}\s?(AM|PM|am|pm)?$/, {
+    message: 'openTime must be in HH:mm or HH:mm AM/PM format',
+  })
+  openTime?: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{1,2}:\d{2}\s?(AM|PM|am|pm)?$/, {
+    message: 'closeTime must be in HH:mm or HH:mm AM/PM format',
+  })
+  closeTime?: string;
+
+  @IsOptional()
+  @IsString()
   @IsNotEmpty()
   folderType?: string;
 
@@ -104,6 +118,14 @@ export class CreatePropertyDto {
     Array.isArray(value) ? value.map(Number) : [Number(value)],
   )
   amenityKeys: number[];
+
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @Transform(({ value }) =>
+    Array.isArray(value) ? value.map(Number) : [Number(value)],
+  )
+  ruleKeys?: number[];
 
   @IsOptional()
   @Transform(

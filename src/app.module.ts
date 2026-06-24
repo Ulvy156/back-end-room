@@ -29,6 +29,7 @@ import { LandlordModule } from './landlord/landlord.module';
 import { AuditLogModule } from './audit-log/audit-log.module';
 import { AuditInterceptor } from './audit-log/audit.interceptor';
 import { PropertyReportModule } from './property-report/property-report.module';
+import { ReportTypeModule } from './report-type/report-type.module';
 
 @Module({
   imports: [
@@ -100,6 +101,7 @@ import { PropertyReportModule } from './property-report/property-report.module';
     LandlordModule,
     AuditLogModule,
     PropertyReportModule,
+    ReportTypeModule,
   ],
   controllers: [AppController],
   providers: [

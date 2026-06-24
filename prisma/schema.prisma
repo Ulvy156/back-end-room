@@ -203,6 +203,9 @@ model Property {
   isPublished    Boolean @default(true) @map("is_published")
   minimumStayLength Int @default(1) @map("minimum_stay_length")
 
+  openTime  String? @map("open_time")
+  closeTime String? @map("close_time")
+
   user         User         @relation(fields: [userId], references: [id])
   district     District     @relation(fields: [districtId], references: [id])
   propertyType PropertyType @relation(fields: [propertyTypeId], references: [id])
@@ -330,23 +333,41 @@ model PropertyRuleValue {
 }
 
 // ==============================
+// REPORT TYPE
+// ==============================
+model ReportType {
+  id     Int    @id @default(autoincrement())
+  code   String @unique
+  nameEn String @unique @map("name_en")
+  nameKh String @unique @map("name_kh")
+  icon   String
+
+  reports PropertyReport[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("report_types")
+}
+
+// ==============================
 // PROPERTY REPORT
 // ==============================
 model PropertyReport {
-  id          Int    @id @default(autoincrement())
-  propertyId  String @map("property_id")
-  userId      String @map("user_id")
-  description String
+  id           Int    @id @default(autoincrement())
+  propertyId   String @map("property_id")
+  userId       String @map("user_id")
+  reportTypeId Int    @map("report_type_id")
+  description  String
 
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reportType ReportType @relation(fields: [reportTypeId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([propertyId, userId])
 
   @@map("property_reports")
-
 }
 
 // ==============================

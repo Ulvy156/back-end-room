@@ -106,7 +106,9 @@
                 { "key": "lat", "value": "11.5564", "type": "text" },
                 { "key": "lng", "value": "104.9282", "type": "text" },
                 { "key": "folderType", "value": "properties", "type": "text" },
-                { "key": "userId", "value": "", "type": "text", "description": "Landlord user ID" }
+                { "key": "userId", "value": "", "type": "text", "description": "Landlord user ID" },
+                { "key": "openTime", "value": "06:00", "type": "text", "disabled": true, "description": "Optional. Property open time in HH:mm format." },
+                { "key": "closeTime", "value": "22:00", "type": "text", "disabled": true, "description": "Optional. Property close time in HH:mm format." }
               ]
             },
             "url": { "raw": "{{baseUrl}}/property", "host": ["{{baseUrl}}"], "path": ["property"] },
@@ -134,7 +136,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated Title\",\n  \"monthly_price\": 280,\n  \"amenityKeys\": [1, 3]\n}",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"monthly_price\": 280,\n  \"amenityKeys\": [1, 3],\n  \"openTime\": \"06:00\",\n  \"closeTime\": \"22:00\"\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": { "raw": "{{baseUrl}}/property/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["property", "{{propertyId}}"] },

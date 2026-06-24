@@ -43,6 +43,8 @@ export class LandlordPropertiesService {
           isAvailable: true,
           isFeatured: true,
           totalViews: true,
+          openTime: true,
+          closeTime: true,
           createdAt: true,
           images: {
             take: 1,
@@ -59,7 +61,14 @@ export class LandlordPropertiesService {
           propertyType: { select: { nameEn: true, nameKh: true, icon: true } },
           propertyReport: {
             orderBy: { createdAt: 'desc' as const },
-            select: { id: true, description: true, createdAt: true },
+            select: {
+              id: true,
+              description: true,
+              createdAt: true,
+              reportType: {
+                select: { nameEn: true, nameKh: true, icon: true },
+              },
+            },
           },
           _count: { select: { favorites: true, propertyReport: true } },
         },
@@ -88,7 +97,7 @@ export class LandlordPropertiesService {
     const property = await this.prisma.property.findUniqueOrThrow({
       where: { id: propertyId },
       include: {
-        images: { select: { imageKey: true, isCover: true } },
+        images: { select: { id: true, imageKey: true, isCover: true } },
         propertyType: { select: { nameEn: true, nameKh: true, icon: true } },
         propertyAmenities: {
           select: {
@@ -104,11 +113,20 @@ export class LandlordPropertiesService {
         },
         propertyRuleValue: {
           select: {
-            rule: { select: { id: true, nameEn: true, nameKh: true, icon: true } },
+            rule: {
+              select: { id: true, nameEn: true, nameKh: true, icon: true },
+            },
           },
         },
         parkings: {
-          select: { id: true, type: true, slots: true, isFree: true, price: true, note: true },
+          select: {
+            id: true,
+            type: true,
+            slots: true,
+            isFree: true,
+            price: true,
+            note: true,
+          },
         },
         propertyReport: {
           orderBy: { createdAt: 'desc' },

@@ -7,4 +7,5 @@ export enum CACHE_KEYS {
   LOCATION_SUGGESTIONS = 'location_suggestions',
   AMENITIES = 'amenities',
   PROPERTY_RULES = 'property_rules',
+  REPORT_TYPES = 'report_types',
 }

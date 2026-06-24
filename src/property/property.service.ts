@@ -56,7 +56,7 @@ export class PropertyService {
         );
       }
 
-      const { amenityKeys, parkings, ...propertyData } = createPropertyDto;
+      const { amenityKeys, ruleKeys, parkings, ...propertyData } = createPropertyDto;
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
         createPropertyDto.folderType,
@@ -78,6 +78,13 @@ export class PropertyService {
               },
             })),
           },
+          propertyRuleValue: ruleKeys?.length
+            ? {
+                create: ruleKeys.map((ruleId) => ({
+                  rule: { connect: { id: ruleId } },
+                })),
+              }
+            : undefined,
           parkings: parkings?.length
             ? {
                 create: parkings.map((p) => ({
@@ -333,10 +340,9 @@ export class PropertyService {
     try {
       await this.assertOwner(id, requesterId, role);
 
-      const { amenityKeys, parkings, ...updateData } = updatePropertyDto;
+      const { amenityKeys, ruleKeys, parkings, ...updateData } = updatePropertyDto;
 
       const property = await this.prisma.$transaction(async (tx) => {
-        // 1Update property main fields
         const updatedProperty = await tx.property.update({
           where: { id },
           data: updateData,
@@ -353,6 +359,22 @@ export class PropertyService {
               data: amenityKeys.map((amenityId) => ({
                 propertyId: id,
                 amenityId,
+              })),
+            });
+          }
+        }
+
+        // Update rules (REPLACE)
+        if (ruleKeys) {
+          await tx.propertyRuleValue.deleteMany({
+            where: { propertyId: id },
+          });
+
+          if (ruleKeys.length) {
+            await tx.propertyRuleValue.createMany({
+              data: ruleKeys.map((propertyRuleId) => ({
+                propertyId: id,
+                propertyRuleId,
               })),
             });
           }
@@ -501,6 +523,8 @@ export class PropertyService {
           sizeSqm: source.sizeSqm,
           furnished: source.furnished,
           minimumStayLength: source.minimumStayLength,
+          openTime: source.openTime,
+          closeTime: source.closeTime,
           isPublished: false,
           propertyAmenities: {
             create: source.propertyAmenities.map((a) => ({
@@ -615,6 +639,8 @@ export class PropertyService {
         bathroom: true,
         bedroom: true,
         isAvailable: true,
+        openTime: true,
+        closeTime: true,
         images: {
           take: 1,
           where: { isCover: true },
@@ -672,6 +698,8 @@ export class PropertyService {
         bathroom: true,
         bedroom: true,
         isAvailable: true,
+        openTime: true,
+        closeTime: true,
         images: {
           take: 1,
           where: { isCover: true },
@@ -829,6 +857,8 @@ export class PropertyService {
           bathroom: true,
           bedroom: true,
           isAvailable: true,
+          openTime: true,
+          closeTime: true,
           deposit: true,
           availableFrom: true,
           lat: true,
@@ -946,6 +976,8 @@ export class PropertyService {
         bathroom: true,
         bedroom: true,
         isAvailable: true,
+        openTime: true,
+        closeTime: true,
         deposit: true,
         availableFrom: true,
         images: {
