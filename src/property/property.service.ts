@@ -930,40 +930,57 @@ export class PropertyService {
     const maxPrice = property.monthly_price * 1.2;
     const bedroom = property.bedroom;
 
-    // get related property IDs using distance
-    const nearby = await this.prisma.$queryRaw<{ id: string }[]>`
-    SELECT sub.id
-    FROM (
-      SELECT p.id,
-      (
-        6371 * acos(
-          cos(radians(${property.lat})) *
-          cos(radians(p.lat)) *
-          cos(radians(p.lng) - radians(${property.lng})) +
-          sin(radians(${property.lat})) *
-          sin(radians(p.lat))
-        )
-      ) AS distance
-      FROM properties p
-      WHERE p.id != ${property.id}
-        AND p.bedroom BETWEEN (${bedroom - 2}) AND ${bedroom + 2}
-        AND p.property_type_id = ${property.propertyTypeId}
-        AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
-        AND p.lat IS NOT NULL
-        AND p.lng IS NOT NULL
-        AND p.is_published = true
-    ) sub
-    WHERE sub.distance < 15
-    ORDER BY sub.distance ASC
-    LIMIT 6
-  `;
+    let nearby: { id: string; distance: number }[] = [];
+
+    if (property.lat != null && property.lng != null) {
+      nearby = await this.prisma.$queryRaw<
+        { id: string; distance: number }[]
+      >`
+      SELECT sub.id, sub.distance
+      FROM (
+        SELECT p.id,
+        (
+          6371 * acos(
+            cos(radians(${property.lat})) *
+            cos(radians(p.lat)) *
+            cos(radians(p.lng) - radians(${property.lng})) +
+            sin(radians(${property.lat})) *
+            sin(radians(p.lat))
+          )
+        ) AS distance
+        FROM properties p
+        WHERE p.id != ${property.id}
+          AND p.bedroom BETWEEN (${bedroom - 2}) AND ${bedroom + 2}
+          AND p.property_type_id = ${property.propertyTypeId}
+          AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
+          AND p.lat IS NOT NULL
+          AND p.lng IS NOT NULL
+          AND p.is_published = true
+      ) sub
+      WHERE sub.distance < 15
+      ORDER BY sub.distance ASC
+      LIMIT 6
+    `;
+    } else {
+      const fallback = await this.prisma.property.findMany({
+        where: {
+          id: { not: property.id },
+          propertyTypeId: property.propertyTypeId,
+          bedroom: { gte: bedroom - 2, lte: bedroom + 2 },
+          monthly_price: { gte: minPrice, lte: maxPrice },
+          isPublished: true,
+        },
+        select: { id: true },
+        take: 6,
+      });
+      nearby = fallback.map((p) => ({ id: p.id, distance: 0 }));
+    }
+
+    if (!nearby.length) return [];
 
     const ids = nearby.map((p) => p.id);
 
-    if (!ids.length) return [];
-
-    // fetch full structured data
-    return this.prisma.property.findMany({
+    const properties = await this.prisma.property.findMany({
       where: {
         id: { in: ids },
       },
@@ -1005,6 +1022,11 @@ export class PropertyService {
           },
         },
       },
+    });
+
+    return nearby.map((n) => {
+      const prop = properties.find((p) => p.id === n.id)!;
+      return { ...prop, distanceKm: Number(n.distance.toFixed(2)) };
     });
   }
 }

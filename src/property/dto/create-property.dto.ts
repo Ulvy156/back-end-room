@@ -108,6 +108,16 @@ export class CreatePropertyDto {
   closeTime?: string;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  lat?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  lng?: number;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   folderType?: string;
