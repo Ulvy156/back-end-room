@@ -40,6 +40,10 @@ export class BrowsePropertyDto {
 
   @IsOptional()
   @IsInt()
+  furnishing?: number;
+
+  @IsOptional()
+  @IsInt()
   bedroom?: number;
 
   @IsOptional()

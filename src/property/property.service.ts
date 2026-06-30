@@ -792,7 +792,7 @@ export class PropertyService {
       const radius = 15; // default 15km
 
       const latDelta = radius / 111;
-      const lngDelta = radius / 111;
+      const lngDelta = radius / (111 * Math.cos((filter.lat * Math.PI) / 180));
 
       where.lat = {
         gte: filter.lat - latDelta,
@@ -809,6 +809,12 @@ export class PropertyService {
     if (filter.roomType && filter.roomType !== 0) {
       where.propertyTypeId = filter.roomType;
     }
+    // furnishing: 1 = furnished only, 2 = unfurnished only, 0/undefined = no filter
+    if (filter.furnishing === 1) {
+      where.furnished = true;
+    } else if (filter.furnishing === 2) {
+      where.furnished = false;
+    }
     // bedroom
     if (filter.bedroom && filter.bedroom > 0) {
       where.bedroom = {
@@ -821,13 +827,11 @@ export class PropertyService {
         gte: filter.bathroom,
       };
     }
-    // property amenities
+    // property amenities — AND logic: property must have every selected amenity
     if (filter.amenities?.length) {
-      where.propertyAmenities = {
-        some: {
-          amenityId: { in: filter.amenities },
-        },
-      };
+      where.AND = filter.amenities.map((amenityId) => ({
+        propertyAmenities: { some: { amenityId } },
+      }));
     }
     // property rules
     if (filter.houseRules?.length) {
@@ -839,7 +843,7 @@ export class PropertyService {
     }
 
     const page = filter.page && filter.page > 0 ? filter.page : 1;
-    const limit = filter.limit && filter.limit > 0 ? filter.limit : 6;
+    const limit = filter.limit && filter.limit > 0 ? filter.limit : 20;
     const skip = (page - 1) * limit;
 
     // eslint-disable-next-line prefer-const
@@ -895,17 +899,21 @@ export class PropertyService {
       this.prisma.property.count({ where }),
     ]);
 
-    // calculate real distance + sort
-    items = items.map((p) => {
-      const lat = p.lat ?? 0;
-      const lng = p.lng ?? 0;
-      const distance = haversineKm(filter.lat!, filter.lng!, lat, lng);
-
-      return {
+    if (filter.lat != null && filter.lng != null) {
+      items = items.map((p) => ({
         ...p,
-        distanceKm: Number(distance.toFixed(2)),
-      };
-    });
+        distanceKm: Number(
+          haversineKm(filter.lat!, filter.lng!, p.lat ?? 0, p.lng ?? 0).toFixed(
+            2,
+          ),
+        ),
+      }));
+      if (filter.orderType === 4) {
+        (items as Array<(typeof items)[0] & { distanceKm: number }>).sort(
+          (a, b) => a.distanceKm - b.distanceKm,
+        );
+      }
+    }
 
     return {
       items,

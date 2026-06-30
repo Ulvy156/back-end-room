@@ -32,11 +32,11 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"page\": 1,\n  \"limit\": 6,\n  \"minPrice\": 0,\n  \"maxPrice\": 500,\n  \"location\": 0,\n  \"locationType\": \"district\",\n  \"roomType\": 0,\n  \"bedroom\": 0,\n  \"bathroom\": 0,\n  \"amenities\": [],\n  \"houseRules\": [],\n  \"orderType\": 1,\n  \"lat\": null,\n  \"lng\": null\n}",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 20,\n  \"minPrice\": 0,\n  \"maxPrice\": 500,\n  \"location\": 0,\n  \"locationType\": \"district\",\n  \"roomType\": 0,\n  \"bedroom\": 0,\n  \"bathroom\": 0,\n  \"amenities\": [],\n  \"houseRules\": [],\n  \"orderType\": 0,\n  \"lat\": null,\n  \"lng\": null\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": { "raw": "{{baseUrl}}/property/browse-properties", "host": ["{{baseUrl}}"], "path": ["property", "browse-properties"] },
-            "description": "Filter and paginate published properties.\n\norderType: 1=newest, 2=price asc, 3=price desc, 4=nearest (requires lat/lng)\nlocationType: 'district' or 'province'\n\nReturns: { items[], meta: { page, limit, total, totalPages } }"
+            "description": "Filter and paginate published properties.\n\norderType: 0=newest, 1=price asc, 2=price desc, 3=most popular, 4=nearest (requires lat/lng)\nlocationType: 'district' or 'province'\namenities/houseRules: AND logic — property must have ALL selected IDs\ndistanceKm is included on each item only when lat/lng are provided.\n\nReturns: { items[], meta: { page, limit, total, totalPages } }"
           },
           "response": []
         },

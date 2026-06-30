@@ -7,6 +7,7 @@ import { seedProvinces } from './province.seed';
 import { seedDistricts } from './district.seed';
 import { seedPropetyRules } from './property-rules.seed';
 import { seedReportTypes } from './report-type.seed';
+import { seedProperties } from './property.seed';
 export async function runSeeds() {
   try {
     await seedProvinces(prisma);
@@ -16,6 +17,7 @@ export async function runSeeds() {
     await seedReportTypes(prisma);
     await seedUser(prisma);
     await seedAmenities(prisma);
+    await seedProperties(prisma);
 
     console.log('🌱 All seeds done');
   } finally {
