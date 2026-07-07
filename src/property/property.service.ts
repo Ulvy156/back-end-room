@@ -56,7 +56,8 @@ export class PropertyService {
         );
       }
 
-      const { amenityKeys, ruleKeys, parkings, ...propertyData } = createPropertyDto;
+      const { amenityKeys, ruleKeys, parkings, ...propertyData } =
+        createPropertyDto;
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
         createPropertyDto.folderType,
@@ -340,7 +341,8 @@ export class PropertyService {
     try {
       await this.assertOwner(id, requesterId, role);
 
-      const { amenityKeys, ruleKeys, parkings, ...updateData } = updatePropertyDto;
+      const { amenityKeys, ruleKeys, parkings, ...updateData } =
+        updatePropertyDto;
 
       const property = await this.prisma.$transaction(async (tx) => {
         const updatedProperty = await tx.property.update({
@@ -688,7 +690,7 @@ export class PropertyService {
       orderBy: {
         createdAt: 'desc',
       },
-      take: 4,
+      take: 8,
       select: {
         id: true,
         title: true,
@@ -757,7 +759,7 @@ export class PropertyService {
       WHERE p."is_published" = true
       GROUP BY p."district_id", d.name_en, d.name_kh
       ORDER BY "totalListings" DESC
-      LIMIT 10;
+      LIMIT 8;
     `;
 
     await this.cache.set(CACHE_KEYS.POPULAR_LOCATIONS, popularLocations);
@@ -941,9 +943,7 @@ export class PropertyService {
     let nearby: { id: string; distance: number }[] = [];
 
     if (property.lat != null && property.lng != null) {
-      nearby = await this.prisma.$queryRaw<
-        { id: string; distance: number }[]
-      >`
+      nearby = await this.prisma.$queryRaw<{ id: string; distance: number }[]>`
       SELECT sub.id, sub.distance
       FROM (
         SELECT p.id,
