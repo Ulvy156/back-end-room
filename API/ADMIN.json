@@ -77,6 +77,35 @@
       ]
     },
     {
+      "name": "Toggle Landlord Verification",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/admin/landlords/:id/verify",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "landlords", ":id", "verify"],
+          "variable": [{ "key": "id", "value": "landlord-uuid-here" }]
+        },
+        "description": "Flips the landlord's `isVerified` flag (verified badge). Reuses the existing `User.isVerified` column rather than adding a separate one.\n\nRole: ADMIN only.\n\nErrors:\n- 404: ID does not belong to a LANDLORD account"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/landlords/:id/verify", "host": ["{{baseUrl}}"], "path": ["admin", "landlords", ":id", "verify"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": \"uuid\",\n  \"isVerified\": true\n}"
+        }
+      ]
+    },
+    {
       "name": "Get Landlord Properties",
       "request": {
         "method": "GET",

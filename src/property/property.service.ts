@@ -156,6 +156,11 @@ export class PropertyService {
             where: { isCover: true },
             select: { imageKey: true },
           },
+          _count: {
+            select: {
+              images: true,
+            },
+          },
           district: {
             select: {
               nameEn: true,
@@ -189,6 +194,7 @@ export class PropertyService {
             showPhone: true,
             showTelegram: true,
             showEmail: true,
+            isVerified: true,
             phones: {
               select: {
                 phoneNumber: true,
@@ -431,6 +437,11 @@ export class PropertyService {
           where: { isCover: true },
           select: { imageKey: true },
         },
+        _count: {
+          select: {
+            images: true,
+          },
+        },
         district: {
           select: {
             nameEn: true,
@@ -650,6 +661,11 @@ export class PropertyService {
             imageKey: true,
           },
         },
+        _count: {
+          select: {
+            images: true,
+          },
+        },
         district: {
           select: {
             nameEn: true,
@@ -707,6 +723,11 @@ export class PropertyService {
           where: { isCover: true },
           select: {
             imageKey: true,
+          },
+        },
+        _count: {
+          select: {
+            images: true,
           },
         },
         district: {
@@ -772,6 +793,7 @@ export class PropertyService {
     const where: Prisma.PropertyWhereInput = {};
     // default get only public property
     where.isPublished = true;
+    where.isAvailable = true;
     // monthly_price
     if (filter.maxPrice && filter.maxPrice > 0) {
       where.monthly_price = {
@@ -874,6 +896,11 @@ export class PropertyService {
             where: { isCover: true },
             select: {
               imageKey: true,
+            },
+          },
+          _count: {
+            select: {
+              images: true,
             },
           },
           district: {
@@ -1009,6 +1036,11 @@ export class PropertyService {
           take: 1,
           where: { isCover: true },
           select: { imageKey: true },
+        },
+        _count: {
+          select: {
+            images: true,
+          },
         },
         district: {
           select: {
