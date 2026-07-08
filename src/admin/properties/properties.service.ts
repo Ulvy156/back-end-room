@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from 'prisma/generated/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FindAdminPropertiesDto } from './dto/find-admin-properties.dto';
 
@@ -13,12 +14,13 @@ export class AdminPropertiesService {
       isAvailable,
       search,
       landlordId,
+      propertyId,
       page = 1,
       limit = 20,
     } = filter;
     const skip = (page - 1) * limit;
 
-    const where = {
+    const where: Prisma.PropertyWhereInput = {
       ...(isPublished !== undefined ? { isPublished } : {}),
       ...(isFeatured !== undefined ? { isFeatured } : {}),
       ...(isAvailable !== undefined ? { isAvailable } : {}),
@@ -26,6 +28,7 @@ export class AdminPropertiesService {
         ? { title: { contains: search, mode: 'insensitive' as const } }
         : {}),
       ...(landlordId ? { userId: landlordId } : {}),
+      ...(propertyId ? { id: propertyId } : {}),
     };
 
     const [items, total] = await Promise.all([

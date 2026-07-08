@@ -104,6 +104,40 @@
       ]
     },
     {
+      "name": "[ADMIN] View Report Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/property-report/{{reportId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["property-report", "{{reportId}}"]
+        },
+        "description": "Get full details of a single property report, including reporter and reported property's owner info.\n\nRole: ADMIN only.\n\nErrors:\n- 403: Not an admin\n- 404: Report not found"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/property-report/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["property-report", "1"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": 1,\n  \"description\": \"This listing contains misleading photos and fake pricing.\",\n  \"createdAt\": \"2026-06-23T08:00:00.000Z\",\n  \"reportType\": {\n    \"id\": 1,\n    \"nameEn\": \"Scam / Fake Listing\",\n    \"nameKh\": \"បោកប្រាស់ / បញ្ជីក្លែងក្លាយ\",\n    \"icon\": \"alert-triangle\"\n  },\n  \"user\": {\n    \"id\": \"uuid\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"imgUrl\": null\n  },\n  \"property\": {\n    \"id\": \"uuid\",\n    \"title\": \"Cozy Room in BKK1\",\n    \"address\": \"Street 51, BKK1\",\n    \"monthly_price\": 350,\n    \"isPublished\": true,\n    \"isAvailable\": true,\n    \"userId\": \"uuid\",\n    \"user\": {\n      \"id\": \"uuid\",\n      \"name\": \"Jane Landlord\",\n      \"email\": \"jane@example.com\"\n    },\n    \"images\": [\n      { \"imageKey\": \"properties/abc123.webp\" }\n    ],\n    \"district\": {\n      \"nameEn\": \"Chamkarmon\",\n      \"nameKh\": \"ចំការមន\",\n      \"province\": { \"nameEn\": \"Phnom Penh\", \"nameKh\": \"ភ្នំពេញ\" }\n    },\n    \"propertyType\": {\n      \"nameEn\": \"Apartment\",\n      \"nameKh\": \"អាផាតមិន\",\n      \"icon\": \"building\"\n    }\n  }\n}"
+        }
+      ]
+    },
+    {
       "name": "Delete Report",
       "request": {
         "method": "DELETE",

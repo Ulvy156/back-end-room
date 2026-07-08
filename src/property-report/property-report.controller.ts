@@ -43,6 +43,12 @@ export class PropertyReportController {
     return this.reportService.findAll(dto);
   }
 
+  @Roles(UserRole.ADMIN)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.reportService.findOne(id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(

@@ -47,7 +47,9 @@ export class PropertyReportService {
           id: true,
           description: true,
           createdAt: true,
-          reportType: { select: { id: true, nameEn: true, nameKh: true, icon: true } },
+          reportType: {
+            select: { id: true, nameEn: true, nameKh: true, icon: true },
+          },
         },
       });
       return report;
@@ -75,7 +77,9 @@ export class PropertyReportService {
           id: true,
           description: true,
           createdAt: true,
-          reportType: { select: { id: true, nameEn: true, nameKh: true, icon: true } },
+          reportType: {
+            select: { id: true, nameEn: true, nameKh: true, icon: true },
+          },
           user: { select: { id: true, name: true, email: true } },
           property: {
             select: { id: true, title: true, userId: true },
@@ -89,6 +93,50 @@ export class PropertyReportService {
       items,
       meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
+  }
+
+  async findOne(id: number) {
+    const report = await this.prisma.propertyReport.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        description: true,
+        createdAt: true,
+        reportType: {
+          select: { id: true, nameEn: true, nameKh: true, icon: true },
+        },
+        user: { select: { id: true, name: true, email: true, imgUrl: true } },
+        property: {
+          select: {
+            id: true,
+            title: true,
+            address: true,
+            monthly_price: true,
+            isPublished: true,
+            isAvailable: true,
+            userId: true,
+            user: { select: { id: true, name: true, email: true } },
+            images: {
+              take: 1,
+              where: { isCover: true },
+              select: { imageKey: true },
+            },
+            district: {
+              select: {
+                nameEn: true,
+                nameKh: true,
+                province: { select: { nameEn: true, nameKh: true } },
+              },
+            },
+            propertyType: {
+              select: { nameEn: true, nameKh: true, icon: true },
+            },
+          },
+        },
+      },
+    });
+    if (!report) throw new NotFoundException('Report not found');
+    return report;
   }
 
   async remove(id: number, requesterId: string, requesterRole: UserRole) {

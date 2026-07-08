@@ -54,11 +54,12 @@
             { "key": "isAvailable", "value": "true", "disabled": true, "description": "Filter by availability (true/false). Omit to include all." },
             { "key": "search", "value": "", "disabled": true, "description": "Search by property title (case-insensitive partial match)." },
             { "key": "landlordId", "value": "", "disabled": true, "description": "Filter by landlord UUID. Omit to include all landlords." },
+            { "key": "propertyId", "value": "", "disabled": true, "description": "Filter to a single property UUID. Useful for locating the exact listing behind a report." },
             { "key": "page", "value": "1", "description": "Page number (default 1, min 1)." },
             { "key": "limit", "value": "20", "description": "Items per page (default 20, min 1, max 100)." }
           ]
         },
-        "description": "Returns a paginated list of all properties across all landlords with optional filters. Used for the admin property management page.\n\nRole: ADMIN only.\n\nQuery parameters:\n- isPublished (boolean) — filter by published status\n- isFeatured (boolean) — filter by featured status\n- isAvailable (boolean) — filter by availability\n- search (string) — case-insensitive title search\n- landlordId (UUID) — filter to a specific landlord's properties\n- page (int, default 1) — page number\n- limit (int, default 20, max 100) — items per page\n\nResponse includes favouriteCount and reportCount per property."
+        "description": "Returns a paginated list of all properties across all landlords with optional filters. Used for the admin property management page.\n\nRole: ADMIN only.\n\nQuery parameters:\n- isPublished (boolean) — filter by published status\n- isFeatured (boolean) — filter by featured status\n- isAvailable (boolean) — filter by availability\n- search (string) — case-insensitive title search\n- landlordId (UUID) — filter to a specific landlord's properties\n- propertyId (UUID) — filter to a specific property by ID\n- page (int, default 1) — page number\n- limit (int, default 20, max 100) — items per page\n\nResponse includes favouriteCount and reportCount per property."
       },
       "response": [
         {

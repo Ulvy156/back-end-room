@@ -40,6 +40,10 @@ export class FindAdminPropertiesDto {
   landlordId?: string;
 
   @IsOptional()
+  @IsUUID()
+  propertyId?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
