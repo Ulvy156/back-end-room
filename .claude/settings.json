@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(dir \"c:\\\\Personal\\\\back-end-room\\\\API\")",
-      "Read(//c/Personal/front-end-room/app/plugins/**)"
-    ]
-  }
-}
