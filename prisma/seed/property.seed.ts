@@ -13,8 +13,6 @@ export async function seedProperties(prisma: PrismaClient) {
   const base = {
     userId: landlord.id,
     districtId: 314,
-    locationUrl:
-      'https://www.google.com.kh/maps/dir/11.558839,104.8858539/Sangkat+Boeng+Tumpun,+Phnom+Penh/@11.5419568,104.8792419,6938m/data=!3m2!1e3!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x310950eba363337d:0xb1ab60b6f93fc5a4!2m2!1d104.911494!2d11.525076?hl=en&entry=ttu',
     lat: null,
     lng: null,
     nearby_location: '',

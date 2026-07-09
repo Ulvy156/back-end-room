@@ -9,10 +9,7 @@ export class LandlordProfileController {
 
   @Public()
   @Get(':id')
-  getProfile(
-    @Param('id') id: string,
-    @Query() query: FindLandlordProfileDto,
-  ) {
+  getProfile(@Param('id') id: string, @Query() query: FindLandlordProfileDto) {
     return this.profileService.getLandlordProfile(id, query);
   }
 }

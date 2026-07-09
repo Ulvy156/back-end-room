@@ -8,7 +8,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   Matches,
   ValidateNested,
 } from 'class-validator';
@@ -26,13 +25,6 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   @IsString()
   address: string;
-
-  @IsNotEmpty()
-  @IsUrl()
-  @Matches(/^https?:\/\/(www\.)?google\.[a-z.]+\/maps\/.+$/, {
-    message: 'location_url must be a valid Google Maps URL',
-  })
-  locationUrl: string;
 
   @IsNotEmpty()
   @IsString()

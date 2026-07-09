@@ -1,0 +1,73 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-settings-collection-rent-room",
+    "name": "Admin Settings",
+    "description": "Platform-wide configuration toggles managed by admins.\n\nBase URL: {{baseUrl}}\n\nAll endpoints require a JWT for a user with role ADMIN.\n\nThere is a single settings record for the whole platform (no ID needed in the URL). Reads are cached; updates invalidate the cache immediately.\n\nFields:\n- maintenanceMode (boolean): when true, all non-ADMIN requests receive 503 except POST /auth/login and POST /auth/refresh-token.\n- registrationEnabled (boolean): when false, POST /auth/register, telegram-login auto-register, and Google OAuth auto-register are all rejected with 403 for new accounts.\n- maxPropertiesPerLandlord (integer): max properties a landlord may create within a rolling 30-day window.\n- maxImagesPerProperty (integer): max images allowed per property.\n- minPropertyPrice / maxPropertyPrice (number, nullable): allowed monthly_price range on property create/update. Null means no bound.\n- commissionRate (number): stored platform commission rate, not yet enforced anywhere — reserved for future billing/reporting.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Get Settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/admin/settings", "host": ["{{baseUrl}}"], "path": ["admin", "settings"] },
+        "description": "Returns the current platform settings.\n\nErrors:\n- 401: Missing/invalid token\n- 403: Requester is not an ADMIN"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/settings", "host": ["{{baseUrl}}"], "path": ["admin", "settings"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": 1,\n  \"maintenanceMode\": false,\n  \"registrationEnabled\": true,\n  \"maxPropertiesPerLandlord\": 3,\n  \"maxImagesPerProperty\": 10,\n  \"minPropertyPrice\": null,\n  \"maxPropertyPrice\": null,\n  \"commissionRate\": \"0\",\n  \"updatedAt\": \"2026-07-08T10:00:00.000Z\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Update Settings",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maintenanceMode\": false,\n  \"registrationEnabled\": true,\n  \"maxPropertiesPerLandlord\": 3,\n  \"maxImagesPerProperty\": 10,\n  \"minPropertyPrice\": 20,\n  \"maxPropertyPrice\": 5000,\n  \"commissionRate\": 5\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/admin/settings", "host": ["{{baseUrl}}"], "path": ["admin", "settings"] },
+        "description": "Partially updates platform settings. All fields optional — only send the ones you want to change.\n\nErrors:\n- 400: minPropertyPrice greater than maxPropertyPrice, or invalid field types\n- 401: Missing/invalid token\n- 403: Requester is not an ADMIN"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"maintenanceMode\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/settings", "host": ["{{baseUrl}}"], "path": ["admin", "settings"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"id\": 1,\n  \"maintenanceMode\": true,\n  \"registrationEnabled\": true,\n  \"maxPropertiesPerLandlord\": 3,\n  \"maxImagesPerProperty\": 10,\n  \"minPropertyPrice\": \"20\",\n  \"maxPropertyPrice\": \"5000\",\n  \"commissionRate\": \"5\",\n  \"updatedAt\": \"2026-07-08T10:05:00.000Z\"\n}"
+        }
+      ]
+    }
+  ]
+}

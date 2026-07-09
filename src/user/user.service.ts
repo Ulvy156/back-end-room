@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMyInfoDto } from './dto/update-my-info.dto';
@@ -184,9 +188,7 @@ export class UserService {
       where: { userId, type: PhoneNumberType.PHONE },
     });
     if (phoneCount >= 3) {
-      throw new BadRequestException(
-        'Maximum 3 phone numbers allowed',
-      );
+      throw new BadRequestException('Maximum 3 phone numbers allowed');
     }
 
     try {

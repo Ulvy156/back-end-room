@@ -69,7 +69,7 @@ Server starts on `PORT` env variable (default `8080`).
 | `amenity` | Reference data — amenity definitions |
 | `location` | Province/district lookup and search suggestions |
 | `user-favourite` | Save and unsave favourite properties per user |
-| `property-report` | Users report property listings (`POST /property-report/:propertyId`); admins list/filter all reports (`GET /property-report`); owner or admin can delete (`DELETE /property-report/:id`). One report per user per property, self-report blocked. Reports require a `reportTypeId` from the `report-type` reference table. |
+| `property-report` | Users report property listings (`POST /property-report/:propertyId`); admins list/filter all reports (`GET /property-report`); owner or admin can delete (`DELETE /property-report/:id`). One report per user per property, self-report blocked. Reports require a `reportTypeId` from the `report-type` reference table. On creation, the property owner is notified async (Telegram if linked, else email) and the admin gets a Telegram alert — no auto-unpublish. |
 | `report-type` | Reference data — report type definitions (scam, inappropriate, duplicate, wrong info). Public `GET /report-type`. |
 | `feedback` | Users submit bug reports/suggestions (`POST /feedback`); admins list all feedback (`GET /feedback`). New submissions notify the admin via Telegram (async) |
 | `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings |
@@ -81,12 +81,15 @@ Server starts on `PORT` env variable (default `8080`).
 | `i18n` | Global `TranslationService` wrapping `nestjs-i18n`; locale files in `src/i18n/{en,km}/`. Locale resolved from `Accept-Language` header. |
 | `prisma` | Global `PrismaService`; standalone `PrismaClient` in `src/prisma/prisma.client.ts` for seed scripts. |
 | `config` | Global `ConfigModule`, CORS config, throttle config. |
+| `settings` | Global `SettingsService` backed by a single-row `AppSettings` table (cached via `CacheService`, key `CACHE_KEYS.APP_SETTINGS`). Holds platform toggles: `maintenanceMode`, `registrationEnabled`, `maxPropertiesPerLandlord`, `maxImagesPerProperty`, `minPropertyPrice`/`maxPropertyPrice`, `commissionRate` (stored only, not yet enforced). `MaintenanceGuard` is a global `APP_GUARD` — non-ADMIN requests are rejected with 503 while `maintenanceMode` is on, except routes marked `@BypassMaintenance()` (used on `POST /auth/login` and `POST /auth/refresh-token`). Admin CRUD lives at `GET/PATCH /admin/settings` (`src/admin/settings/`). |
+| `legal` | Public `GET /legal/:slug` (`privacy-policy` \| `terms-of-service`) — reads from the `LegalDocument` table (cached via `CacheService`, keys `CACHE_KEYS.LEGAL_PRIVACY_POLICY`/`LEGAL_TERMS_OF_SERVICE`). Seeded from `API/PRIVACY-POLICY.md`/`API/TERMS-OF-SERVICE.md` (`prisma/seed/legal-document.seed.ts`) but editable at runtime. Admin-only `PATCH /admin/legal/:slug` (`src/admin/legal/`) updates the DB content and invalidates the cache — the markdown files are the initial seed, not the source of truth after seeding. |
 
 ### Prisma
 
 - Schema: `prisma/schema.prisma`. Generated client: `prisma/generated/`.
 - Enums import from `prisma/generated/enums`; `Prisma` namespace types from `prisma/generated/client`.
-- Seed order: provinces → districts → property types → property rules → users → amenities.
+- Seed order: provinces → districts → property types → property rules → users → amenities → properties → app settings (singleton row, `id: 1`).
+- This project uses `npx prisma db push` for the dev database, not migration history — there is no `prisma/migrations/` folder. Use `db push` for schema changes here; `migrate dev` will report drift and offer to reset the database.
 
 ### Utilities (`src/utils/`)
 
@@ -107,6 +110,9 @@ pg-boss v12 is pure ESM, so it is loaded with `await import('pg-boss')` inside `
 | `send-otp-telegram` | `POST /auth/forgot-password` (telegram) | 3×, 30s exponential backoff |
 | `increment-property-view` | `PATCH /property/increment-view/:id` | default |
 | `send-feedback-notification` | `POST /feedback` | default |
+| `send-property-reported-telegram` | `POST /property-report/:propertyId` (owner has Telegram linked) | default |
+| `send-property-reported-email` | `POST /property-report/:propertyId` (owner has no Telegram linked) | default |
+| `send-property-report-admin-alert` | `POST /property-report/:propertyId` | default |
 | `purge-expired-tokens` | Cron `0 2 * * *` (02:00 daily) | — |
 
 ### Key environment variables
@@ -205,6 +211,8 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Async OTP delivery via email and Telegram | `queue`, `notification` | Done |
 | Property report (flag listings, admin review, owner/admin delete) | `property-report` | Done |
 | Nightly cleanup of expired tokens | `queue` | Done |
+| Admin platform settings (maintenance mode, registration toggle, listing limits, commission rate) | `settings`, `admin` | Done |
+| Public privacy policy / terms of service endpoints | `legal` | Done |
 
 ---
 
@@ -265,11 +273,15 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 | Admin | `API/ADMIN.json` |
 | Landlord | `API/LANDLORD.json` |
 | Property Report | `API/PROPERTY-REPORT.json` |
+| Admin Settings | `API/SETTINGS.json` |
+| Legal (Privacy Policy / Terms of Service) | `API/LEGAL.json` |
 | Location | `API/LOCATION.json` _(create when implementing)_ |
 | Amenity | `API/AMENITY.json` _(create when implementing)_ |
 | Rate limits | `API/RATE-LIMIT.md` _(exception — markdown, not Postman)_ |
 | Frontend integration guide | `API/INTEGRATION.md` _(exception — markdown, not Postman)_ |
 | Roles & access control | `API/ROLES.md` _(exception — markdown, not Postman)_ |
+| Privacy Policy | `API/PRIVACY-POLICY.md` _(exception — markdown, not Postman; seeds `LegalDocument`, served live via `GET /legal/privacy-policy`, editable via `PATCH /admin/legal/privacy-policy`)_ |
+| Terms of Service | `API/TERMS-OF-SERVICE.md` _(exception — markdown, not Postman; seeds `LegalDocument`, served live via `GET /legal/terms-of-service`, editable via `PATCH /admin/legal/terms-of-service`)_ |
 
 **Collection structure** (follow `API/AUTH.json` as the reference):
 - `info.name` — feature name

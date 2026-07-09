@@ -30,6 +30,9 @@ import { AuditLogModule } from './audit-log/audit-log.module';
 import { AuditInterceptor } from './audit-log/audit.interceptor';
 import { PropertyReportModule } from './property-report/property-report.module';
 import { ReportTypeModule } from './report-type/report-type.module';
+import { SettingsModule } from './settings/settings.module';
+import { MaintenanceGuard } from './settings/maintenance.guard';
+import { LegalModule } from './legal/legal.module';
 
 @Module({
   imports: [
@@ -84,6 +87,7 @@ import { ReportTypeModule } from './report-type/report-type.module';
     TranslationModule,
     AppCacheModule,
     AppConfigModule,
+    SettingsModule,
     PrismaModule,
     QueueModule,
     PropertyImageModule,
@@ -102,6 +106,7 @@ import { ReportTypeModule } from './report-type/report-type.module';
     AuditLogModule,
     PropertyReportModule,
     ReportTypeModule,
+    LegalModule,
   ],
   controllers: [AppController],
   providers: [
@@ -109,6 +114,7 @@ import { ReportTypeModule } from './report-type/report-type.module';
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: MaintenanceGuard },
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
 })

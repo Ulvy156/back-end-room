@@ -9,6 +9,9 @@ import {
   SendFeedbackNotificationJob,
   SendOtpEmailJob,
   SendOtpTelegramJob,
+  SendPropertyReportAdminAlertJob,
+  SendPropertyReportedEmailJob,
+  SendPropertyReportedTelegramJob,
   SendVerificationOtpJob,
   WriteAuditLogJob,
 } from './queue.jobs';
@@ -83,6 +86,51 @@ export class QueueWorker implements OnModuleInit {
         await this.telegram.sendMessage(
           adminChatId,
           `📬 *New Feedback — ${String(type)}*\n\nFrom: ${String(userName)}\n\n${String(description)}`,
+        );
+      },
+    );
+
+    await this.queue.work<SendPropertyReportedTelegramJob>(
+      QUEUE_JOBS.SEND_PROPERTY_REPORTED_TELEGRAM,
+      async (jobs) => {
+        const job = jobs[0];
+        const { chatId, propertyId, propertyTitle, reportTypeName } = job.data;
+        await this.telegram.sendMessage(
+          chatId,
+          `⚠️ *Your listing was reported*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReason: ${reportTypeName}\n\nPlease review your listing.`,
+        );
+      },
+    );
+
+    await this.queue.work<SendPropertyReportedEmailJob>(
+      QUEUE_JOBS.SEND_PROPERTY_REPORTED_EMAIL,
+      async (jobs) => {
+        const job = jobs[0];
+        const { to, ownerName, propertyId, propertyTitle, reportTypeName } =
+          job.data;
+        await this.email.sendPropertyReported(
+          to,
+          ownerName,
+          propertyId,
+          propertyTitle,
+          reportTypeName,
+        );
+      },
+    );
+
+    await this.queue.work<SendPropertyReportAdminAlertJob>(
+      QUEUE_JOBS.SEND_PROPERTY_REPORT_ADMIN_ALERT,
+      async (jobs) => {
+        const job = jobs[0];
+        const adminChatId = this.config.getOrThrow<string>(
+          'ADMIN_TELEGRAM_CHAT_ID',
+        );
+
+        const { propertyId, propertyTitle, reportTypeName, reporterName } =
+          job.data;
+        await this.telegram.sendMessage(
+          adminChatId,
+          `🚩 *Property Reported — ${reportTypeName}*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReported by: ${reporterName}`,
         );
       },
     );

@@ -6,6 +6,9 @@ export const QUEUE_JOBS = {
   PURGE_EXPIRED_TOKENS: 'purge-expired-tokens',
   SEND_FEEDBACK_NOTIFICATION: 'send-feedback-notification',
   WRITE_AUDIT_LOG: 'write-audit-log',
+  SEND_PROPERTY_REPORTED_EMAIL: 'send-property-reported-email',
+  SEND_PROPERTY_REPORTED_TELEGRAM: 'send-property-reported-telegram',
+  SEND_PROPERTY_REPORT_ADMIN_ALERT: 'send-property-report-admin-alert',
 } as const;
 
 export interface SendVerificationOtpJob {
@@ -42,4 +45,27 @@ export interface WriteAuditLogJob {
   statusCode: number;
   ipAddress: string | null;
   userAgent: string | null;
+}
+
+export interface SendPropertyReportedEmailJob {
+  to: string;
+  ownerName: string;
+  propertyId: string;
+  propertyTitle: string;
+  reportTypeName: string;
+}
+
+export interface SendPropertyReportedTelegramJob {
+  chatId: string;
+  ownerName: string;
+  propertyId: string;
+  propertyTitle: string;
+  reportTypeName: string;
+}
+
+export interface SendPropertyReportAdminAlertJob {
+  propertyId: string;
+  propertyTitle: string;
+  reportTypeName: string;
+  reporterName: string;
 }

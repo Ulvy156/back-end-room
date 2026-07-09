@@ -28,6 +28,7 @@ import { SelectRoleDto } from './dto/select-role.dto';
 import { Throttle } from '@nestjs/throttler';
 import { TranslationService } from '../i18n/translation.service';
 import { SkipAudit } from '../audit-log/skip-audit.decorator';
+import { BypassMaintenance } from '../settings/bypass-maintenance.decorator';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string; role: string };
@@ -56,6 +57,7 @@ export class AuthController {
   // ─── Login ───────────────────────────────────────────────────────────────────
 
   @Public()
+  @BypassMaintenance()
   @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -114,6 +116,7 @@ export class AuthController {
 
   @SkipAudit()
   @Public()
+  @BypassMaintenance()
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(

@@ -13,6 +13,9 @@ import { AdminAmenitiesController } from './amenities/amenities.controller';
 import { AdminHouseRulesController } from './house-rules/house-rules.controller';
 import { FeedbackModule } from 'src/feedback/feedback.module';
 import { AdminFeedbackController } from './feedback/feedback.controller';
+import { AdminSettingsController } from './settings/settings.controller';
+import { LegalModule } from 'src/legal/legal.module';
+import { AdminLegalController } from './legal/legal.controller';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { AdminFeedbackController } from './feedback/feedback.controller';
     AmenityModule,
     PropertyRulesModule,
     FeedbackModule,
+    LegalModule,
   ],
   controllers: [
     DashboardController,
@@ -29,6 +33,8 @@ import { AdminFeedbackController } from './feedback/feedback.controller';
     AdminAmenitiesController,
     AdminHouseRulesController,
     AdminFeedbackController,
+    AdminSettingsController,
+    AdminLegalController,
   ],
   providers: [DashboardService, AdminPropertiesService, AdminLandlordsService],
 })

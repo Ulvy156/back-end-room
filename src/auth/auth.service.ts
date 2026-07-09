@@ -23,6 +23,7 @@ import { prismaError } from '../utils/prismaError';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { TranslationService } from '../i18n/translation.service';
+import { SettingsService } from '../settings/settings.service';
 
 interface JwtAccessPayload {
   sub: string;
@@ -46,6 +47,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly queue: QueueService,
     private readonly translation: TranslationService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -83,6 +85,13 @@ export class AuthService {
   // ─── Register ───────────────────────────────────────────────────────────────
 
   async register(dto: RegisterDto) {
+    const settings = await this.settingsService.getSettings();
+    if (!settings.registrationEnabled) {
+      throw new ForbiddenException(
+        this.translation.t('errors.auth.registration_disabled'),
+      );
+    }
+
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -349,6 +358,13 @@ export class AuthService {
     let user: Awaited<ReturnType<typeof this.prisma.user.create>>;
 
     if (!phone) {
+      const settings = await this.settingsService.getSettings();
+      if (!settings.registrationEnabled) {
+        throw new ForbiddenException(
+          this.translation.t('errors.auth.registration_disabled'),
+        );
+      }
+
       // First time — auto-register, Telegram has already verified their identity
       isNewUser = true;
       const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
@@ -494,6 +510,13 @@ export class AuthService {
     });
 
     if (!user) {
+      const settings = await this.settingsService.getSettings();
+      if (!settings.registrationEnabled) {
+        throw new ForbiddenException(
+          this.translation.t('errors.auth.registration_disabled'),
+        );
+      }
+
       isNewUser = true;
       user = await this.prisma.user.create({
         data: {

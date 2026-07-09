@@ -3,8 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRole } from 'prisma/generated/enums';
+import { PhoneNumberType, UserRole } from 'prisma/generated/enums';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { QueueService } from 'src/queue/queue.service';
+import {
+  QUEUE_JOBS,
+  SendPropertyReportAdminAlertJob,
+  SendPropertyReportedEmailJob,
+  SendPropertyReportedTelegramJob,
+} from 'src/queue/queue.jobs';
 import { prismaError } from 'src/utils/prismaError';
 import { CreatePropertyReportDto } from './dto/create-property-report.dto';
 import { FindPropertyReportsDto } from './dto/find-property-reports.dto';
@@ -12,7 +19,10 @@ import { sanitizeRichText } from 'src/utils/sanitizeHtml';
 
 @Injectable()
 export class PropertyReportService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly queue: QueueService,
+  ) {}
 
   async create(
     userId: string,
@@ -21,6 +31,19 @@ export class PropertyReportService {
   ) {
     const property = await this.prisma.property.findUnique({
       where: { id: propertyId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phones: {
+              where: { type: PhoneNumberType.TELEGRAM },
+              select: { phoneNumber: true },
+            },
+          },
+        },
+      },
     });
     if (!property) throw new NotFoundException('Property not found');
 
@@ -50,8 +73,45 @@ export class PropertyReportService {
           reportType: {
             select: { id: true, nameEn: true, nameKh: true, icon: true },
           },
+          user: { select: { name: true } },
         },
       });
+
+      await this.queue.send<SendPropertyReportAdminAlertJob>(
+        QUEUE_JOBS.SEND_PROPERTY_REPORT_ADMIN_ALERT,
+        {
+          propertyId,
+          propertyTitle: property.title,
+          reportTypeName: report.reportType.nameEn,
+          reporterName: report.user.name,
+        },
+      );
+
+      const telegramPhone = property.user.phones[0];
+      if (telegramPhone) {
+        await this.queue.send<SendPropertyReportedTelegramJob>(
+          QUEUE_JOBS.SEND_PROPERTY_REPORTED_TELEGRAM,
+          {
+            chatId: telegramPhone.phoneNumber,
+            ownerName: property.user.name,
+            propertyId,
+            propertyTitle: property.title,
+            reportTypeName: report.reportType.nameEn,
+          },
+        );
+      } else {
+        await this.queue.send<SendPropertyReportedEmailJob>(
+          QUEUE_JOBS.SEND_PROPERTY_REPORTED_EMAIL,
+          {
+            to: property.user.email,
+            ownerName: property.user.name,
+            propertyId,
+            propertyTitle: property.title,
+            reportTypeName: report.reportType.nameEn,
+          },
+        );
+      }
+
       return report;
     } catch (error) {
       prismaError(error);

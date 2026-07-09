@@ -21,6 +21,7 @@ import { QueueService } from 'src/queue/queue.service';
 import { QUEUE_JOBS, IncrementPropertyViewJob } from 'src/queue/queue.jobs';
 import { TranslationService } from 'src/i18n/translation.service';
 import { FindPropertiesDto } from './dto/find-properties.dto';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class PropertyService {
@@ -30,7 +31,23 @@ export class PropertyService {
     private readonly cache: CacheService,
     private readonly queue: QueueService,
     private readonly translation: TranslationService,
+    private readonly settingsService: SettingsService,
   ) {}
+
+  private async assertPriceInRange(monthlyPrice: number | undefined) {
+    if (monthlyPrice == null) return;
+    const settings = await this.settingsService.getSettings();
+    const min = settings.minPropertyPrice;
+    const max = settings.maxPropertyPrice;
+    if (
+      (min != null && monthlyPrice < Number(min)) ||
+      (max != null && monthlyPrice > Number(max))
+    ) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.price_out_of_range'),
+      );
+    }
+  }
 
   async create(
     createPropertyDto: CreatePropertyDto,
@@ -45,12 +62,13 @@ export class PropertyService {
         );
       }
 
+      const settings = await this.settingsService.getSettings();
       const since = new Date();
       since.setDate(since.getDate() - 30);
       const recentCount = await this.prisma.property.count({
         where: { userId: requesterId, createdAt: { gte: since } },
       });
-      if (recentCount >= 3) {
+      if (recentCount >= settings.maxPropertiesPerLandlord) {
         throw new BadRequestException(
           this.translation.t('errors.property.monthly_limit'),
         );
@@ -58,6 +76,7 @@ export class PropertyService {
 
       const { amenityKeys, ruleKeys, parkings, ...propertyData } =
         createPropertyDto;
+      await this.assertPriceInRange(propertyData.monthly_price);
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
         createPropertyDto.folderType,
@@ -349,6 +368,7 @@ export class PropertyService {
 
       const { amenityKeys, ruleKeys, parkings, ...updateData } =
         updatePropertyDto;
+      await this.assertPriceInRange(updateData.monthly_price);
 
       const property = await this.prisma.$transaction(async (tx) => {
         const updatedProperty = await tx.property.update({
@@ -519,7 +539,6 @@ export class PropertyService {
           userId: requesterId,
           districtId: source.districtId,
           address: source.address,
-          locationUrl: source.locationUrl,
           lat: source.lat,
           lng: source.lng,
           nearby_location: source.nearby_location,

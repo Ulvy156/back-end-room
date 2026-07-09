@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import { R2Service } from 'src/R2/r2.service';
 import { TranslationService } from 'src/i18n/translation.service';
 import { UserRole } from 'prisma/generated/enums';
 import { prismaError } from 'src/utils/prismaError';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class PropertyImageService {
@@ -15,6 +17,7 @@ export class PropertyImageService {
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
     private readonly translation: TranslationService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   // Fetches the image and verifies the requester owns the parent property.
@@ -56,6 +59,16 @@ export class PropertyImageService {
       throw new ForbiddenException(
         this.translation.t('errors.property_image.forbidden'),
       );
+
+    const settings = await this.settingsService.getSettings();
+    const imageCount = await this.prisma.propertyImage.count({
+      where: { propertyId },
+    });
+    if (imageCount >= settings.maxImagesPerProperty) {
+      throw new BadRequestException(
+        this.translation.t('errors.property_image.image_limit'),
+      );
+    }
 
     try {
       const { key } = await this.r2Service.uploadSingleFile(file, 'properties');

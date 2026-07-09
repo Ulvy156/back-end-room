@@ -70,4 +70,34 @@ export class EmailService {
       throw error;
     }
   }
+
+  async sendPropertyReported(
+    to: string,
+    ownerName: string,
+    propertyId: string,
+    propertyTitle: string,
+    reportTypeName: string,
+  ): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: `"Rent Room" <${this.senderAddress}>`,
+        to,
+        subject: 'Your listing was reported',
+        html: `
+          <div style="font-family:sans-serif;max-width:480px;margin:auto">
+            <h2>⚠️ Your listing was reported</h2>
+            <p>Hi ${ownerName},</p>
+            <p>Your property listing <strong>${propertyTitle}</strong> (ID: ${propertyId}) was reported for: <strong>${reportTypeName}</strong>.</p>
+            <p>Please review your listing to make sure it complies with our guidelines.</p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to send property-reported email to ${to}`,
+        error,
+      );
+      throw error;
+    }
+  }
 }

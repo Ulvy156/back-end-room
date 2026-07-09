@@ -30,7 +30,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["property-report", "{{propertyId}}"]
         },
-        "description": "Report a property listing. One report per user per property.\n\nRate limit: 5 per hour.\n\nreportTypeId: number, required. Get available types from GET /report-type.\ndescription: string, required, max 1000 characters. HTML is sanitized.\n\nErrors:\n- 400: Cannot report your own property\n- 400: You have already reported this property\n- 400: Validation error (missing reportTypeId)\n- 404: Property not found\n- 429: Rate limit exceeded"
+        "description": "Report a property listing. One report per user per property.\n\nRate limit: 5 per hour.\n\nreportTypeId: number, required. Get available types from GET /report-type.\ndescription: string, required, max 1000 characters. HTML is sanitized.\n\nOn success, the property owner is notified asynchronously — via Telegram if they have a linked Telegram account, otherwise via email. The reporting user's identity is not disclosed to the owner. The admin also receives a Telegram alert (includes the reporter's name). This does not auto-unpublish the listing.\n\nErrors:\n- 400: Cannot report your own property\n- 400: You have already reported this property\n- 400: Validation error (missing reportTypeId)\n- 404: Property not found\n- 429: Rate limit exceeded"
       },
       "response": [
         {

@@ -8,4 +8,7 @@ export enum CACHE_KEYS {
   AMENITIES = 'amenities',
   PROPERTY_RULES = 'property_rules',
   REPORT_TYPES = 'report_types',
+  APP_SETTINGS = 'app_settings',
+  LEGAL_PRIVACY_POLICY = 'legal_privacy_policy',
+  LEGAL_TERMS_OF_SERVICE = 'legal_terms_of_service',
 }

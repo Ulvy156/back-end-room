@@ -8,6 +8,8 @@ import { seedDistricts } from './district.seed';
 import { seedPropetyRules } from './property-rules.seed';
 import { seedReportTypes } from './report-type.seed';
 import { seedProperties } from './property.seed';
+import { seedAppSettings } from './app-settings.seed';
+import { seedLegalDocuments } from './legal-document.seed';
 export async function runSeeds() {
   try {
     await seedProvinces(prisma);
@@ -18,6 +20,8 @@ export async function runSeeds() {
     await seedUser(prisma);
     await seedAmenities(prisma);
     await seedProperties(prisma);
+    await seedAppSettings(prisma);
+    await seedLegalDocuments(prisma);
 
     console.log('🌱 All seeds done');
   } finally {

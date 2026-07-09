@@ -146,7 +146,6 @@ def make_property(user_id: str, district_ids: list) -> dict:
         "user_id":             user_id,
         "district_id":         random.choice(district_ids),
         "address":             address,
-        "location_url":        None,
         "lat":                 None,
         "lng":                 None,
         "nearby_location":     "",
@@ -234,7 +233,6 @@ COLUMN_MAP = [
     ("user_id",              "user_id"),
     ("district_id",          "district_id"),
     ("address",              "address"),
-    ("location_url",         "location_url"),
     ("lat",                  "lat"),
     ("lng",                  "lng"),
     ("nearby_location",      "nearby_location"),
@@ -346,7 +344,7 @@ def to_sql(properties: list) -> str:
 
 
 _CAMEL = {
-    "user_id": "userId", "district_id": "districtId", "location_url": "locationUrl",
+    "user_id": "userId", "district_id": "districtId",
     "monthly_price": "monthly_price", "is_available": "isAvailable",
     "available_from": "availableFrom", "is_featured": "isFeatured",
     "featured_at": "featuredAt", "total_views": "totalViews",

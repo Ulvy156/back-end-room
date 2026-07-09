@@ -11,14 +11,16 @@
     "no_telegram_on_user": "No Telegram account linked to this user",
     "invalid_refresh_token": "Invalid refresh token",
     "missing_refresh_token": "Missing refresh token",
-    "wrong_current_password": "Current password is incorrect"
+    "wrong_current_password": "Current password is incorrect",
+    "registration_disabled": "New registrations are currently disabled"
   },
   "property": {
     "not_found": "Property not found",
     "forbidden": "You do not have permission to perform this action",
     "image_required": "At least one image is required",
     "monthly_limit": "You can only post up to 3 properties per month",
-    "feature_limit": "You can only feature up to 3 properties at a time"
+    "feature_limit": "You can only feature up to 3 properties at a time",
+    "price_out_of_range": "Monthly price is outside the allowed range"
   },
   "favourite": {
     "not_found": "Favourite not found",
@@ -26,11 +28,15 @@
   },
   "property_image": {
     "not_found": "Image not found",
-    "forbidden": "You do not have permission to manage this image"
+    "forbidden": "You do not have permission to manage this image",
+    "image_limit": "Maximum number of images reached for this property"
   },
   "file": {
     "required": "File is required",
     "invalid_type": "Invalid image type",
     "too_large": "Maximum file size is 1MB"
+  },
+  "settings": {
+    "maintenance_mode": "The platform is currently under maintenance. Please try again later."
   }
 }

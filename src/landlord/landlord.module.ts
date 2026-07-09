@@ -7,7 +7,15 @@ import { LandlordProfileController } from './profile/profile.controller';
 import { LandlordProfileService } from './profile/profile.service';
 
 @Module({
-  controllers: [LandlordDashboardController, LandlordPropertiesController, LandlordProfileController],
-  providers: [LandlordDashboardService, LandlordPropertiesService, LandlordProfileService],
+  controllers: [
+    LandlordDashboardController,
+    LandlordPropertiesController,
+    LandlordProfileController,
+  ],
+  providers: [
+    LandlordDashboardService,
+    LandlordPropertiesService,
+    LandlordProfileService,
+  ],
 })
 export class LandlordModule {}
