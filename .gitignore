@@ -59,3 +59,9 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 prisma/migrations
 prisma/generated
+
+# Claude Code local config
+.claude
+
+# API docs (Postman collections, local-only)
+API
