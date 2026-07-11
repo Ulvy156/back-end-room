@@ -82,6 +82,16 @@ export class AuthService {
     });
   }
 
+  private async sendVerificationOtp(userId: string, email: string) {
+    const otp = this.generateOtp();
+    await this.storeOtp(userId, otp, 'verification');
+    await this.queue.send<SendVerificationOtpJob>(
+      QUEUE_JOBS.SEND_VERIFICATION_OTP,
+      { to: email, otp },
+      { retryLimit: 3, retryDelay: 30, retryBackoff: true },
+    );
+  }
+
   // ─── Register ───────────────────────────────────────────────────────────────
 
   async register(dto: RegisterDto) {
@@ -113,14 +123,7 @@ export class AuthService {
         },
       });
 
-      // Send verification OTP to email
-      const otp = this.generateOtp();
-      await this.storeOtp(user.id, otp, 'verification');
-      await this.queue.send<SendVerificationOtpJob>(
-        QUEUE_JOBS.SEND_VERIFICATION_OTP,
-        { to: dto.email, otp },
-        { retryLimit: 3, retryDelay: 30, retryBackoff: true },
-      );
+      await this.sendVerificationOtp(user.id, dto.email);
 
       return { userId: user.id };
     } catch (error) {
@@ -178,6 +181,16 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken, userId: user.id };
+  }
+
+  async resendOtp(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    // Silent no-op — do not reveal whether the email exists, is already
+    // verified, or is locked (enumeration-safe, mirrors forgotPassword()).
+    if (!user || user.isLocked || user.isVerified) return;
+
+    await this.sendVerificationOtp(user.id, email);
   }
 
   // ─── Login ──────────────────────────────────────────────────────────────────

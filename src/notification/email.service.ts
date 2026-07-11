@@ -41,7 +41,7 @@ export class EmailService {
     } catch (error) {
       this.logger.error(
         `Failed to send verification OTP email to ${to}`,
-        error,
+        error instanceof Error ? error.stack : error,
       );
       throw error;
     }
@@ -66,7 +66,10 @@ export class EmailService {
         `,
       });
     } catch (error) {
-      this.logger.error(`Failed to send OTP email to ${to}`, error);
+      this.logger.error(
+        `Failed to send OTP email to ${to}`,
+        error instanceof Error ? error.stack : error,
+      );
       throw error;
     }
   }
@@ -95,7 +98,7 @@ export class EmailService {
     } catch (error) {
       this.logger.error(
         `Failed to send property-reported email to ${to}`,
-        error,
+        error instanceof Error ? error.stack : error,
       );
       throw error;
     }

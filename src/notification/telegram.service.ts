@@ -16,7 +16,10 @@ export class TelegramService {
     try {
       await this.bot.api.sendMessage(chatId, text, { parse_mode: 'Markdown' });
     } catch (error) {
-      this.logger.error(`Failed to send Telegram message to ${chatId}`, error);
+      this.logger.error(
+        `Failed to send Telegram message to ${chatId}`,
+        error instanceof Error ? error.stack : error,
+      );
       throw error;
     }
   }

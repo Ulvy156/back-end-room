@@ -233,6 +233,7 @@ Refresh tokens are stored in the `RefreshToken` table keyed by a UUID `jti`. Log
 
 1. `POST /auth/register` — creates the user with `isVerified: false`, enqueues a verification OTP email. Returns `{ message, user_id }` — no tokens yet.
 2. `POST /auth/verify-account` — validates the OTP (SHA-256-hashed, expires in 10 min). On success, sets `isVerified: true`, deletes the OTP record, and issues both tokens.
+3. `POST /auth/resend-otp` — re-sends a fresh verification OTP (overwrites the stored hash via the same `PasswordResetToken` upsert). Used when `POST /auth/login` returns 403 `not_verified`, since login itself never sends an OTP. Enumeration-safe: always returns success, silently no-ops if the email doesn't exist, is already verified, or is locked.
 
 **Login flows**
 

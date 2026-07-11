@@ -20,6 +20,7 @@ import { GoogleUser } from './google.strategy';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
+import { ResendOtpDto } from './dto/resend-otp.dto';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -110,6 +111,15 @@ export class AuthController {
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
     return { accessToken, user_id: userId };
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 3, ttl: 900000 } }) // 3 per 15 min — prevents OTP email spam
+  @Post('resend-otp')
+  @HttpCode(HttpStatus.OK)
+  async resendOtp(@Body() dto: ResendOtpDto) {
+    await this.authService.resendOtp(dto.email);
+    return { message: this.translation.t('messages.auth.otp_sent') };
   }
 
   // ─── Token management ────────────────────────────────────────────────────────
