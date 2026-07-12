@@ -73,7 +73,7 @@ export class LocationService {
 
   async getDistrictByProvinceId(id: number) {
     try {
-      return await this.prisma.district.findFirstOrThrow({
+      return await this.prisma.district.findMany({
         where: { provinceId: id },
       });
     } catch (error) {

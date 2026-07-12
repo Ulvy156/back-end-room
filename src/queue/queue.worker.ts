@@ -79,13 +79,8 @@ export class QueueWorker implements OnModuleInit {
       QUEUE_JOBS.SEND_FEEDBACK_NOTIFICATION,
       async (jobs) => {
         const job = jobs[0];
-        const adminChatId = this.config.getOrThrow<string>(
-          'ADMIN_TELEGRAM_CHAT_ID',
-        );
-
         const { type, userName, description } = job.data;
-        await this.telegram.sendMessage(
-          adminChatId,
+        await this.telegram.sendAdminMessage(
           `📬 *New Feedback — ${String(type)}*\n\nFrom: ${String(userName)}\n\n${String(description)}`,
         );
       },
@@ -123,14 +118,9 @@ export class QueueWorker implements OnModuleInit {
       QUEUE_JOBS.SEND_PROPERTY_REPORT_ADMIN_ALERT,
       async (jobs) => {
         const job = jobs[0];
-        const adminChatId = this.config.getOrThrow<string>(
-          'ADMIN_TELEGRAM_CHAT_ID',
-        );
-
         const { propertyId, propertyTitle, reportTypeName, reporterName } =
           job.data;
-        await this.telegram.sendMessage(
-          adminChatId,
+        await this.telegram.sendAdminMessage(
           `🚩 *Property Reported — ${reportTypeName}*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReported by: ${reporterName}`,
         );
       },
@@ -159,16 +149,12 @@ export class QueueWorker implements OnModuleInit {
       QUEUE_JOBS.SEND_ERROR_ALERT,
       async (jobs) => {
         const job = jobs[0];
-        const adminChatId = this.config.getOrThrow<string>(
-          'ADMIN_TELEGRAM_CHAT_ID',
-        );
         const adminEmail = this.config.getOrThrow<string>('ADMIN_ALERT_EMAIL');
         const { message, stack, method, route, timestamp } = job.data;
 
         // Send via both channels independently — an outage on one shouldn't swallow the other.
         const results = await Promise.allSettled([
-          this.telegram.sendMessage(
-            adminChatId,
+          this.telegram.sendAdminMessage(
             `🔥 *Server Error*\n\n*${method}* ${route}\n${message}\n\n_${timestamp}_`,
           ),
           this.email.sendErrorAlert(

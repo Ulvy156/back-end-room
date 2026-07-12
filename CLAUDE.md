@@ -138,8 +138,12 @@ PORT
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL    # e.g. http://localhost:8080/auth/google/callback
-ADMIN_TELEGRAM_CHAT_ID # Telegram chat ID to receive feedback/report/error-alert notifications
+ADMIN_TELEGRAM_CHAT_ID # Comma-separated Telegram chat ID(s) to receive feedback/report/error-alert notifications
 ADMIN_ALERT_EMAIL      # Email inbox to receive critical server-error alerts
+ADMIN_SEED_EMAIL       # Required by `npx prisma db seed` — email for the seeded ADMIN account
+ADMIN_SEED_PASSWORD    # Required by `npx prisma db seed` — plaintext password, hashed before insert
+LANDLORD_SEED_EMAIL    # Required by `npx prisma db seed` — email for the seeded LANDLORD account (property.seed.ts looks up this user)
+LANDLORD_SEED_PASSWORD # Required by `npx prisma db seed` — plaintext password, hashed before insert
 ```
 
 ### Validation

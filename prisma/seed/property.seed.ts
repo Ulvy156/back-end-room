@@ -1,8 +1,14 @@
 import { PrismaClient } from 'prisma/generated/client';
 
 export async function seedProperties(prisma: PrismaClient) {
+  const landlordEmail = process.env.LANDLORD_SEED_EMAIL;
+  if (!landlordEmail) {
+    console.warn('⚠️  LANDLORD_SEED_EMAIL not set – skipping property seed.');
+    return;
+  }
+
   const landlord = await prisma.user.findUnique({
-    where: { email: 'landlord@gmail.com' },
+    where: { email: landlordEmail },
   });
 
   if (!landlord) {
