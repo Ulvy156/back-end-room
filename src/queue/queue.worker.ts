@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   IncrementPropertyViewJob,
   QUEUE_JOBS,
+  SendErrorAlertJob,
   SendFeedbackNotificationJob,
   SendOtpEmailJob,
   SendOtpTelegramJob,
@@ -151,6 +152,38 @@ export class QueueWorker implements OnModuleInit {
             userAgent: job.data.userAgent,
           },
         });
+      },
+    );
+
+    await this.queue.work<SendErrorAlertJob>(
+      QUEUE_JOBS.SEND_ERROR_ALERT,
+      async (jobs) => {
+        const job = jobs[0];
+        const adminChatId = this.config.getOrThrow<string>(
+          'ADMIN_TELEGRAM_CHAT_ID',
+        );
+        const adminEmail = this.config.getOrThrow<string>('ADMIN_ALERT_EMAIL');
+        const { message, stack, method, route, timestamp } = job.data;
+
+        // Send via both channels independently — an outage on one shouldn't swallow the other.
+        const results = await Promise.allSettled([
+          this.telegram.sendMessage(
+            adminChatId,
+            `🔥 *Server Error*\n\n*${method}* ${route}\n${message}\n\n_${timestamp}_`,
+          ),
+          this.email.sendErrorAlert(
+            adminEmail,
+            message,
+            stack,
+            method,
+            route,
+            timestamp,
+          ),
+        ]);
+        const failure = results.find((r) => r.status === 'rejected');
+        if (failure && failure.status === 'rejected') {
+          throw failure.reason;
+        }
       },
     );
 

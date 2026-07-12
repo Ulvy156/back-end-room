@@ -41,6 +41,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "grammy": "^1.43.0",
+    "helmet": "^8.2.0",
     "multer": "^2.1.1",
     "nestjs-i18n": "^10.8.4",
     "nestjs-pino": "^4.6.1",
@@ -100,6 +101,9 @@
       "ts"
     ],
     "rootDir": "src",
+    "modulePaths": [
+      "<rootDir>/.."
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

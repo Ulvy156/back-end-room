@@ -78,6 +78,7 @@ Server starts on `PORT` env variable (default `8080`).
 | `cache` | In-memory cache wrapper (NestJS cache-manager). Keys defined in `src/cache/cache.key.ts`. Property mutations clear relevant homepage cache keys. |
 | `queue` | Background jobs via pg-boss (PostgreSQL-backed). `QueueService` manages lifecycle and exposes `send()`, `work()`, `schedule()`. `QueueWorker` registers all handlers on startup. Job names and payload types live in `src/queue/queue.jobs.ts`. |
 | `notification` | `EmailService` (nodemailer/Gmail) and `TelegramService` (grammy) — called only by `QueueWorker`. |
+| `common` | Cross-cutting HTTP concerns. `AllExceptionsFilter` (`src/common/filters/`) is a global `APP_FILTER` — for any 5xx/unhandled exception it enqueues `send-error-alert` (Telegram + email to `ADMIN_ALERT_EMAIL`/`ADMIN_TELEGRAM_CHAT_ID`, in-memory 5-min dedupe per route+message) then delegates to Nest's default `BaseExceptionFilter` for the response. `main.ts` also registers `uncaughtException`/`unhandledRejection` handlers that send the same alert job before exiting the process. |
 | `i18n` | Global `TranslationService` wrapping `nestjs-i18n`; locale files in `src/i18n/{en,km}/`. Locale resolved from `Accept-Language` header. |
 | `prisma` | Global `PrismaService`; standalone `PrismaClient` in `src/prisma/prisma.client.ts` for seed scripts. |
 | `config` | Global `ConfigModule`, CORS config, throttle config. |
@@ -113,6 +114,7 @@ pg-boss v12 is pure ESM, so it is loaded with `await import('pg-boss')` inside `
 | `send-property-reported-telegram` | `POST /property-report/:propertyId` (owner has Telegram linked) | default |
 | `send-property-reported-email` | `POST /property-report/:propertyId` (owner has no Telegram linked) | default |
 | `send-property-report-admin-alert` | `POST /property-report/:propertyId` | default |
+| `send-error-alert` | Any 5xx/unhandled exception (`AllExceptionsFilter`) or process-level `uncaughtException`/`unhandledRejection` (`main.ts`) | default |
 | `purge-expired-tokens` | Cron `0 2 * * *` (02:00 daily) | — |
 
 ### Key environment variables
@@ -136,7 +138,8 @@ PORT
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL    # e.g. http://localhost:8080/auth/google/callback
-ADMIN_TELEGRAM_CHAT_ID # Telegram chat ID to receive feedback notifications
+ADMIN_TELEGRAM_CHAT_ID # Telegram chat ID to receive feedback/report/error-alert notifications
+ADMIN_ALERT_EMAIL      # Email inbox to receive critical server-error alerts
 ```
 
 ### Validation
@@ -213,6 +216,7 @@ Do not put ownership logic in the controller. Do not create a guard for a single
 | Nightly cleanup of expired tokens | `queue` | Done |
 | Admin platform settings (maintenance mode, registration toggle, listing limits, commission rate) | `settings`, `admin` | Done |
 | Public privacy policy / terms of service endpoints | `legal` | Done |
+| Server error alerting — 5xx/unhandled exceptions and process crashes notify admin via Telegram + email | `common`, `queue`, `notification` | Done |
 
 ---
 

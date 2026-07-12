@@ -9,6 +9,7 @@ export const QUEUE_JOBS = {
   SEND_PROPERTY_REPORTED_EMAIL: 'send-property-reported-email',
   SEND_PROPERTY_REPORTED_TELEGRAM: 'send-property-reported-telegram',
   SEND_PROPERTY_REPORT_ADMIN_ALERT: 'send-property-report-admin-alert',
+  SEND_ERROR_ALERT: 'send-error-alert',
 } as const;
 
 export interface SendVerificationOtpJob {
@@ -68,4 +69,12 @@ export interface SendPropertyReportAdminAlertJob {
   propertyTitle: string;
   reportTypeName: string;
   reporterName: string;
+}
+
+export interface SendErrorAlertJob {
+  message: string;
+  stack: string | null;
+  method: string;
+  route: string;
+  timestamp: string;
 }

@@ -2,6 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 @Injectable()
 export class EmailService {
   private readonly transporter: nodemailer.Transporter;
@@ -98,6 +107,42 @@ export class EmailService {
     } catch (error) {
       this.logger.error(
         `Failed to send property-reported email to ${to}`,
+        error instanceof Error ? error.stack : error,
+      );
+      throw error;
+    }
+  }
+
+  async sendErrorAlert(
+    to: string,
+    message: string,
+    stack: string | null,
+    method: string,
+    route: string,
+    timestamp: string,
+  ): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: `"Rent Room" <${this.senderAddress}>`,
+        to,
+        subject: `🔥 Server Error — ${method} ${route}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:640px;margin:auto">
+            <h2>🔥 Server Error</h2>
+            <p><strong>${escapeHtml(method)}</strong> ${escapeHtml(route)}</p>
+            <p>${escapeHtml(message)}</p>
+            <p style="color:#888;font-size:13px">${escapeHtml(timestamp)}</p>
+            ${
+              stack
+                ? `<pre style="background:#f4f4f4;padding:12px;border-radius:8px;overflow-x:auto;font-size:12px">${escapeHtml(stack)}</pre>`
+                : ''
+            }
+          </div>
+        `,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to send error alert email to ${to}`,
         error instanceof Error ? error.stack : error,
       );
       throw error;

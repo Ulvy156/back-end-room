@@ -10,10 +10,7 @@ export class AdminLegalController {
   constructor(private readonly legalService: LegalService) {}
 
   @Patch(':slug')
-  update(
-    @Param('slug') slug: string,
-    @Body() dto: UpdateLegalDocumentDto,
-  ) {
+  update(@Param('slug') slug: string, @Body() dto: UpdateLegalDocumentDto) {
     return this.legalService.updateDocument(slug, dto.content);
   }
 }

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
 import { TranslationModule } from './i18n/translation.module';
@@ -33,6 +33,7 @@ import { ReportTypeModule } from './report-type/report-type.module';
 import { SettingsModule } from './settings/settings.module';
 import { MaintenanceGuard } from './settings/maintenance.guard';
 import { LegalModule } from './legal/legal.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -116,6 +117,7 @@ import { LegalModule } from './legal/legal.module';
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: MaintenanceGuard },
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })
 export class AppModule {}

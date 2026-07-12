@@ -37,7 +37,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       connectionString: this.config.getOrThrow<string>('DATABASE_URL'),
     });
     // Surface pg-boss internal errors through NestJS logger instead of crashing the process.
-    this.boss.on('error', (err) => this.logger.error('pg-boss error', err.stack));
+    this.boss.on('error', (err) =>
+      this.logger.error('pg-boss error', err.stack),
+    );
     await this.boss.start();
     // pg-boss v12 requires queues to exist before work() or schedule() can use them.
     await Promise.all(
