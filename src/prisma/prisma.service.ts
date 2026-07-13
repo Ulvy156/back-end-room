@@ -13,7 +13,10 @@ export class PrismaService
     super({
       adapter: new PrismaPg({
         connectionString: configService.get('DATABASE_URL'),
-        max: 5,
+        // Kept low because Render's zero-downtime deploys briefly run two
+        // instances at once, doubling this pool + QueueService's pool against
+        // Supabase's session-pooler cap (pool_size: 15).
+        max: 3,
       }),
     });
   }
