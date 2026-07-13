@@ -7,8 +7,9 @@
 // GENERATOR & DATASOURCE
 // ==============================
 generator client {
-  provider = "prisma-client"
-  output   = "generated"
+  provider     = "prisma-client"
+  output       = "generated"
+  moduleFormat = "cjs"
 }
 
 datasource db {
