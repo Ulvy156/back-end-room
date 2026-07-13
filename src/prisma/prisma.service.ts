@@ -13,6 +13,7 @@ export class PrismaService
     super({
       adapter: new PrismaPg({
         connectionString: configService.get('DATABASE_URL'),
+        max: 5,
       }),
     });
   }

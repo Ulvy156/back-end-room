@@ -35,6 +35,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     const { PgBoss } = await import('pg-boss');
     this.boss = new PgBoss({
       connectionString: this.config.getOrThrow<string>('DATABASE_URL'),
+      // Keep pg-boss's own pool small — it shares Supabase's session-pooler
+      // connection cap (15 on the free tier) with PrismaService's pool.
+      max: 5,
     });
     // Surface pg-boss internal errors through NestJS logger instead of crashing the process.
     this.boss.on('error', (err) =>
