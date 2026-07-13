@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+logs
+.git
+.env
+.env.*
+*.md
+prisma/generated
+.vscode
+.idea
+API
+test
