@@ -59,7 +59,7 @@ export class AuthController {
 
   @Public()
   @BypassMaintenance()
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 attempts per minute
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
