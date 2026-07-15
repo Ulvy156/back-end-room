@@ -36,9 +36,16 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
 
   private alert(exception: unknown, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest<Request>();
+    // Prefer the wrapped `cause` (the real underlying error) over a generic
+    // wrapper message like "Internal server error" from prismaError().
+    const cause =
+      exception instanceof Error
+        ? (exception as Error & { cause?: unknown }).cause
+        : undefined;
+    const realError = cause instanceof Error ? cause : exception;
     const message =
-      exception instanceof Error ? exception.message : String(exception);
-    const stack = exception instanceof Error ? (exception.stack ?? null) : null;
+      realError instanceof Error ? realError.message : String(realError);
+    const stack = realError instanceof Error ? (realError.stack ?? null) : null;
 
     const key = `${request.method} ${request.path}:${message}`;
     const now = Date.now();

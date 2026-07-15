@@ -1,5 +1,7 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Prisma } from 'prisma/generated/client';
+
+const logger = new Logger('prismaError');
 
 export function prismaError(err: unknown): never {
   if (err instanceof HttpException) {
@@ -34,8 +36,14 @@ export function prismaError(err: unknown): never {
     }
   }
 
+  logger.error(
+    err instanceof Error ? err.message : String(err),
+    err instanceof Error ? err.stack : undefined,
+  );
+
   throw new HttpException(
     'Internal server error',
     HttpStatus.INTERNAL_SERVER_ERROR,
+    { cause: err },
   );
 }
