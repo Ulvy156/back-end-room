@@ -74,12 +74,12 @@ export class PropertyService {
         );
       }
 
-      const { amenityKeys, ruleKeys, parkings, ...propertyData } =
+      const { amenityKeys, ruleKeys, parkings, folderType, ...propertyData } =
         createPropertyDto;
       await this.assertPriceInRange(propertyData.monthly_price);
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
-        createPropertyDto.folderType,
+        folderType,
       );
       const property = await this.prisma.property.create({
         data: {
