@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NestInterceptor,
   ExecutionContext,
   CallHandler,
@@ -21,6 +22,8 @@ const AUDITED_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(AuditInterceptor.name);
+
   constructor(
     private readonly reflector: Reflector,
     private readonly queue: QueueService,
@@ -52,16 +55,23 @@ export class AuditInterceptor implements NestInterceptor {
     const userAgent = request.headers['user-agent'] ?? null;
 
     const queueAudit = (statusCode: number) => {
-      void this.queue.send<WriteAuditLogJob>(QUEUE_JOBS.WRITE_AUDIT_LOG, {
-        userId: user?.id ?? null,
-        action: method,
-        route,
-        resourceType,
-        resourceId,
-        statusCode,
-        ipAddress,
-        userAgent,
-      });
+      void this.queue
+        .send<WriteAuditLogJob>(QUEUE_JOBS.WRITE_AUDIT_LOG, {
+          userId: user?.id ?? null,
+          action: method,
+          route,
+          resourceType,
+          resourceId,
+          statusCode,
+          ipAddress,
+          userAgent,
+        })
+        .catch((err: unknown) =>
+          this.logger.error(
+            'Failed to enqueue audit log',
+            err instanceof Error ? err.stack : err,
+          ),
+        );
     };
 
     return next.handle().pipe(
