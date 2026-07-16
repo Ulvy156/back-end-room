@@ -80,7 +80,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
-        path: path.join(__dirname, '/i18n/'),
+        path: path.join(__dirname, '../i18n/'),
         watch: process.env.NODE_ENV !== 'production',
       },
       resolvers: [AcceptLanguageResolver],
