@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -100,6 +101,23 @@ export class AuthService {
       throw new ForbiddenException(
         this.translation.t('errors.auth.registration_disabled'),
       );
+    }
+
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existing) {
+      if (existing.isVerified) {
+        throw new ConflictException(
+          this.translation.t('errors.auth.already_verified'),
+        );
+      }
+
+      // Account exists but never completed OTP verification — resend the
+      // code instead of failing, so the user can pick up where they left off.
+      await this.sendVerificationOtp(existing.id, dto.email);
+      return { userId: existing.id };
     }
 
     try {
