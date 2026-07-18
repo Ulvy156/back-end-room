@@ -47,7 +47,7 @@ export class UserService {
       }
       createUserDto.password = await hashingPassword(createUserDto.password);
       const { password: _, ...user } = await this.prisma.user.create({
-        data: createUserDto,
+        data: { ...createUserDto, isVerified: true },
       });
       return user;
     } catch (error) {
