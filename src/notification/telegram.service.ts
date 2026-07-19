@@ -18,9 +18,15 @@ export class TelegramService {
       .filter(Boolean);
   }
 
-  async sendMessage(chatId: string, text: string): Promise<void> {
+  async sendMessage(
+    chatId: string,
+    text: string,
+    options?: { parseMode?: false },
+  ): Promise<void> {
     try {
-      await this.bot.api.sendMessage(chatId, text, { parse_mode: 'Markdown' });
+      await this.bot.api.sendMessage(chatId, text, {
+        parse_mode: options?.parseMode === false ? undefined : 'Markdown',
+      });
     } catch (error) {
       this.logger.error(
         `Failed to send Telegram message to ${chatId}`,
@@ -30,9 +36,14 @@ export class TelegramService {
     }
   }
 
-  async sendAdminMessage(text: string): Promise<void> {
+  async sendAdminMessage(
+    text: string,
+    options?: { parseMode?: false },
+  ): Promise<void> {
     const results = await Promise.allSettled(
-      this.adminChatIds.map((chatId) => this.sendMessage(chatId, text)),
+      this.adminChatIds.map((chatId) =>
+        this.sendMessage(chatId, text, options),
+      ),
     );
     const failure = results.find((r) => r.status === 'rejected');
     if (failure && failure.status === 'rejected') {

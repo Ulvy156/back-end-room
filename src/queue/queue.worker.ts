@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../notification/email.service';
 import { TelegramService } from '../notification/telegram.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -27,7 +26,6 @@ export class QueueWorker implements OnModuleInit {
     private readonly email: EmailService,
     private readonly telegram: TelegramService,
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -149,27 +147,14 @@ export class QueueWorker implements OnModuleInit {
       QUEUE_JOBS.SEND_ERROR_ALERT,
       async (jobs) => {
         const job = jobs[0];
-        const adminEmail = this.config.getOrThrow<string>('ADMIN_ALERT_EMAIL');
-        const { message, stack, method, route, timestamp } = job.data;
+        const { message, method, route, timestamp } = job.data;
 
-        // Send via both channels independently — an outage on one shouldn't swallow the other.
-        const results = await Promise.allSettled([
-          this.telegram.sendAdminMessage(
-            `🔥 *Server Error*\n\n*${method}* ${route}\n${message}\n\n_${timestamp}_`,
-          ),
-          this.email.sendErrorAlert(
-            adminEmail,
-            message,
-            stack,
-            method,
-            route,
-            timestamp,
-          ),
-        ]);
-        const failure = results.find((r) => r.status === 'rejected');
-        if (failure && failure.status === 'rejected') {
-          throw failure.reason;
-        }
+        // Plain text — the message/route come from arbitrary error text (e.g. Prisma
+        // messages with backticks/underscores) and would break Markdown parsing.
+        await this.telegram.sendAdminMessage(
+          `🔥 Server Error\n\n${method} ${route}\n${message}\n\n${timestamp}`,
+          { parseMode: false },
+        );
       },
     );
 
