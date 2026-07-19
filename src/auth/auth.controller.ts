@@ -140,8 +140,16 @@ export class AuthController {
 
     // TEMP diagnostic logging — remove once the "Missing refresh token" /
     // "Invalid refresh token" mismatch reported by the frontend is resolved.
+    const incomingJti = (() => {
+      try {
+        return (JSON.parse(Buffer.from(refreshToken?.split('.')[1] ?? '', 'base64').toString()) as { jti?: string })?.jti ?? null;
+      } catch {
+        return null;
+      }
+    })();
+    const viaProxy = !!req.headers['x-vercel-id'];
     this.logger.warn(
-      `refresh-token attempt — rawCookieHeader=${JSON.stringify(req.headers.cookie ?? null)} parsedCookieKeys=${JSON.stringify(Object.keys(req.cookies ?? {}))} hasRefreshToken=${!!refreshToken}`,
+      `refresh-token IN — reqId=${req.headers['x-request-id'] ?? 'n/a'} viaVercelProxy=${viaProxy} incomingJti=${incomingJti} hasRefreshToken=${!!refreshToken}`,
     );
 
     if (!refreshToken)
@@ -150,6 +158,17 @@ export class AuthController {
       );
 
     const tokens = await this.authService.refreshTokens(refreshToken);
+
+    const outgoingJti = (() => {
+      try {
+        return (JSON.parse(Buffer.from(tokens.refreshToken.split('.')[1], 'base64').toString()) as { jti?: string })?.jti ?? null;
+      } catch {
+        return null;
+      }
+    })();
+    this.logger.warn(
+      `refresh-token OUT — incomingJti=${incomingJti} outgoingJti=${outgoingJti}`,
+    );
 
     res.cookie('refresh_token', tokens.refreshToken, cookieOptions);
     return { accessToken: tokens.accessToken };
