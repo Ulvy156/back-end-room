@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -49,6 +50,8 @@ const cookieOptions = {
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private readonly authService: AuthService,
     private readonly translation: TranslationService,
@@ -134,6 +137,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = (req.cookies as Record<string, string>)?.refresh_token;
+
+    // TEMP diagnostic logging — remove once the "Missing refresh token" /
+    // "Invalid refresh token" mismatch reported by the frontend is resolved.
+    this.logger.warn(
+      `refresh-token attempt — rawCookieHeader=${JSON.stringify(req.headers.cookie ?? null)} parsedCookieKeys=${JSON.stringify(Object.keys(req.cookies ?? {}))} hasRefreshToken=${!!refreshToken}`,
+    );
+
     if (!refreshToken)
       throw new UnauthorizedException(
         this.translation.t('errors.auth.missing_refresh_token'),
