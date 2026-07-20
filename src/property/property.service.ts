@@ -200,139 +200,143 @@ export class PropertyService {
   }
 
   async findOne(filter: PropertyDetailDTO) {
-    const property = await this.prisma.property.findFirstOrThrow({
-      where: {
-        id: filter.id,
-        isPublished: true,
-      },
-      include: {
-        user: {
-          select: {
-            imgUrl: true,
-            role: true,
-            showPhone: true,
-            showTelegram: true,
-            showEmail: true,
-            isVerified: true,
-            phones: {
-              select: {
-                phoneNumber: true,
-                type: true,
+    try {
+      const property = await this.prisma.property.findFirstOrThrow({
+        where: {
+          id: filter.id,
+          isPublished: true,
+        },
+        include: {
+          user: {
+            select: {
+              imgUrl: true,
+              role: true,
+              showPhone: true,
+              showTelegram: true,
+              showEmail: true,
+              isVerified: true,
+              phones: {
+                select: {
+                  phoneNumber: true,
+                  type: true,
+                },
               },
-            },
-            name: true,
-            email: true,
-          },
-        },
-        images: {
-          select: {
-            imageKey: true,
-          },
-        },
-        propertyType: {
-          select: {
-            nameEn: true,
-            nameKh: true,
-            icon: true,
-          },
-        },
-        propertyAmenities: {
-          select: {
-            amenity: {
-              select: {
-                nameEn: true,
-                nameKh: true,
-                icon: true,
-              },
+              name: true,
+              email: true,
             },
           },
-        },
-        district: {
-          select: {
-            nameEn: true,
-            nameKh: true,
-            province: {
-              select: {
-                nameEn: true,
-                nameKh: true,
+          images: {
+            select: {
+              imageKey: true,
+            },
+          },
+          propertyType: {
+            select: {
+              nameEn: true,
+              nameKh: true,
+              icon: true,
+            },
+          },
+          propertyAmenities: {
+            select: {
+              amenity: {
+                select: {
+                  nameEn: true,
+                  nameKh: true,
+                  icon: true,
+                },
               },
             },
           },
-        },
-        propertyRuleValue: {
-          select: {
-            rule: {
-              select: {
-                id: true,
-                nameEn: true,
-                nameKh: true,
-                icon: true,
+          district: {
+            select: {
+              nameEn: true,
+              nameKh: true,
+              province: {
+                select: {
+                  nameEn: true,
+                  nameKh: true,
+                },
               },
             },
           },
-        },
-        parkings: {
-          select: {
-            id: true,
-            type: true,
-            slots: true,
-            isFree: true,
-            price: true,
-            note: true,
+          propertyRuleValue: {
+            select: {
+              rule: {
+                select: {
+                  id: true,
+                  nameEn: true,
+                  nameKh: true,
+                  icon: true,
+                },
+              },
+            },
+          },
+          parkings: {
+            select: {
+              id: true,
+              type: true,
+              slots: true,
+              isFree: true,
+              price: true,
+              note: true,
+            },
           },
         },
-      },
-    });
-    // set to empty if user doenst provide lat and lng
-    property['distanceKm'] = '~';
-    if (filter.lat && filter.lng && property.lat && property.lng) {
-      property['distanceKm'] = haversineKm(
-        filter.lat,
-        filter.lng,
-        property.lat,
-        property.lng,
-      ).toFixed(2);
+      });
+      // set to empty if user doenst provide lat and lng
+      property['distanceKm'] = '~';
+      if (filter.lat && filter.lng && property.lat && property.lng) {
+        property['distanceKm'] = haversineKm(
+          filter.lat,
+          filter.lng,
+          property.lat,
+          property.lng,
+        ).toFixed(2);
+      }
+
+      const allRules = await this.prisma.propertyRules.findMany({
+        select: {
+          id: true,
+          nameEn: true,
+          nameKh: true,
+          icon: true,
+        },
+      });
+
+      const selectedRuleIds = new Set(
+        property.propertyRuleValue.map((prv) => prv.rule.id),
+      );
+
+      const rules = allRules.map((rule) => ({
+        nameEn: rule.nameEn,
+        nameKh: rule.nameKh,
+        icon: rule.icon,
+        is_allow: selectedRuleIds.has(rule.id) ? true : false,
+      }));
+
+      const { propertyAmenities, ...rest } = property;
+
+      const { showPhone, showTelegram, showEmail, phones, email, ...userRest } =
+        rest.user;
+      rest.user = {
+        ...userRest,
+        email: showEmail ? email : null,
+        phones: phones.filter(
+          (p) =>
+            (p.type === PhoneNumberType.PHONE && showPhone) ||
+            (p.type === PhoneNumberType.TELEGRAM && showTelegram),
+        ),
+      } as typeof rest.user;
+
+      return {
+        ...rest,
+        amenities: propertyAmenities.map((p) => p.amenity),
+        rules,
+      };
+    } catch (error) {
+      prismaError(error);
     }
-
-    const allRules = await this.prisma.propertyRules.findMany({
-      select: {
-        id: true,
-        nameEn: true,
-        nameKh: true,
-        icon: true,
-      },
-    });
-
-    const selectedRuleIds = new Set(
-      property.propertyRuleValue.map((prv) => prv.rule.id),
-    );
-
-    const rules = allRules.map((rule) => ({
-      nameEn: rule.nameEn,
-      nameKh: rule.nameKh,
-      icon: rule.icon,
-      is_allow: selectedRuleIds.has(rule.id) ? true : false,
-    }));
-
-    const { propertyAmenities, ...rest } = property;
-
-    const { showPhone, showTelegram, showEmail, phones, email, ...userRest } =
-      rest.user;
-    rest.user = {
-      ...userRest,
-      email: showEmail ? email : null,
-      phones: phones.filter(
-        (p) =>
-          (p.type === PhoneNumberType.PHONE && showPhone) ||
-          (p.type === PhoneNumberType.TELEGRAM && showTelegram),
-      ),
-    } as typeof rest.user;
-
-    return {
-      ...rest,
-      amenities: propertyAmenities.map((p) => p.amenity),
-      rules,
-    };
   }
 
   private async assertOwner(id: string, requesterId: string, role: UserRole) {
