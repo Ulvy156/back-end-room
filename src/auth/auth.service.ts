@@ -66,6 +66,12 @@ export class AuthService {
     );
   }
 
+  // Window during which a jti that just lost a rotation race is still
+  // honored — long enough to cover concurrent requests firing within the
+  // same access-token-expiry event, short enough not to meaningfully weaken
+  // single-use rotation.
+  private readonly refreshGraceMs = 10_000;
+
   private generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
@@ -289,36 +295,69 @@ export class AuthService {
     });
 
     if (
-      !stored ||
-      stored.userId !== payload.sub ||
-      stored.expiresAt < new Date()
+      stored &&
+      stored.userId === payload.sub &&
+      stored.expiresAt >= new Date()
     ) {
+      const newJti = randomUUID();
+      const expiresAt = new Date(
+        Date.now() + this.refreshExpiresInSeconds * 1000,
+      );
+
+      const [newAccessToken, newRefreshToken] = await Promise.all([
+        Promise.resolve(
+          this.jwtService.sign({ sub: payload.sub, role: payload.role }),
+        ),
+        this.jwtService.signAsync(
+          { sub: payload.sub, role: payload.role, jti: newJti },
+          {
+            secret: this.refreshSecret,
+            expiresIn: this.refreshExpiresInSeconds,
+          },
+        ),
+      ]);
+
+      await this.prisma.refreshToken.update({
+        where: { jti: payload.jti },
+        data: {
+          jti: newJti,
+          expiresAt,
+          previousJti: payload.jti,
+          previousJtiExpiresAt: new Date(Date.now() + this.refreshGraceMs),
+        },
+      });
+
+      return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    }
+
+    // Lost a rotation race: this jti was valid moments ago but a concurrent
+    // refresh call already rotated it. If we're inside that rotation's grace
+    // window, replay tokens for the jti it was rotated into instead of
+    // rejecting a legitimate, merely-late request.
+    const rotated = await this.prisma.refreshToken.findFirst({
+      where: {
+        previousJti: payload.jti,
+        userId: payload.sub,
+        previousJtiExpiresAt: { gt: new Date() },
+      },
+    });
+
+    if (!rotated)
       throw new UnauthorizedException(
         this.translation.t('errors.auth.invalid_refresh_token'),
       );
-    }
 
-    const newJti = randomUUID();
-    const expiresAt = new Date(
-      Date.now() + this.refreshExpiresInSeconds * 1000,
-    );
-
-    const [newAccessToken, newRefreshToken] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       Promise.resolve(
         this.jwtService.sign({ sub: payload.sub, role: payload.role }),
       ),
       this.jwtService.signAsync(
-        { sub: payload.sub, role: payload.role, jti: newJti },
+        { sub: payload.sub, role: payload.role, jti: rotated.jti },
         { secret: this.refreshSecret, expiresIn: this.refreshExpiresInSeconds },
       ),
     ]);
 
-    await this.prisma.refreshToken.update({
-      where: { jti: payload.jti },
-      data: { jti: newJti, expiresAt },
-    });
-
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return { accessToken, refreshToken };
   }
 
   async logout(token: string | undefined) {

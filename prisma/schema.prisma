@@ -7,9 +7,9 @@
 // GENERATOR & DATASOURCE
 // ==============================
 generator client {
-  provider            = "prisma-client"
-  output              = "generated"
-  moduleFormat        = "cjs"
+  provider               = "prisma-client"
+  output                 = "generated"
+  moduleFormat           = "cjs"
   generatedFileExtension = "ts"
   importFileExtension    = "js"
 }
@@ -26,16 +26,19 @@ enum UserRole {
   LANDLORD
   ADMIN
 }
+
 enum ParkingType {
   MOTO
   BICYCLE
   CAR
   TUK_TUK
 }
+
 enum PhoneNumberType {
   TELEGRAM
   PHONE
 }
+
 enum FeedbackType {
   BUG
   SUGGESTION
@@ -46,11 +49,11 @@ enum FeedbackType {
 // USER
 // ==============================
 model User {
-  id       String   @id @default(uuid())
-  name     String
-  email    String   @unique
-  password String
-  imgUrl   String?  @map("img_url")
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  imgUrl     String?  @map("img_url")
   isVerified Boolean  @default(false) @map("is_verified")
   isLocked   Boolean  @default(false)
   role       UserRole @default(USER)
@@ -79,14 +82,22 @@ model User {
 // REFRESH TOKENS
 // ==============================
 model RefreshToken {
-  id        String   @id @default(uuid())
-  jti       String   @unique
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  jti    String @unique
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
 
+  // Short-lived pointer to the jti this row was rotated FROM, so a refresh
+  // call that loses a race against a concurrent rotation (same cookie, two
+  // in-flight requests) can still be served instead of rejected as invalid.
+  previousJti          String?   @map("previous_jti")
+  previousJtiExpiresAt DateTime? @map("previous_jti_expires_at")
+
   @@index([userId])
+  @@index([previousJti])
   @@map("refresh_tokens")
 }
 
@@ -96,8 +107,8 @@ model RefreshToken {
 model PasswordResetToken {
   id        String   @id @default(uuid())
   userId    String   @unique @map("user_id")
-  otp       String   // SHA-256 hash of the 6-digit OTP
-  channel   String   // "telegram" | "email"
+  otp       String // SHA-256 hash of the 6-digit OTP
+  channel   String // "telegram" | "email"
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -110,8 +121,8 @@ model PasswordResetToken {
 // PHONE
 // ==============================
 model Phone {
-  id          Int    @id @default(autoincrement())
-  phoneNumber String @unique @map("phone_number")
+  id          Int             @id @default(autoincrement())
+  phoneNumber String          @unique @map("phone_number")
   type        PhoneNumberType @default(PHONE)
 
   userId String @map("user_id")
@@ -128,9 +139,9 @@ model Phone {
 // LOCATION
 // ==============================
 model Province {
-  id     Int    @id
-  nameKh String @map("name_kh")
-  nameEn String @map("name_en")
+  id        Int    @id
+  nameKh    String @map("name_kh")
+  nameEn    String @map("name_en")
   latitude  Float
   longitude Float
 
@@ -175,20 +186,20 @@ model Property {
   userId     String @map("user_id")
   districtId Int    @map("district_id")
 
-  address     String
-  lat Float?
-  lng Float?
+  address         String
+  lat             Float?
+  lng             Float?
   nearby_location String? @default("")
 
   title       String
   description String?
 
-  monthly_price   Float
-  deposit Float?
+  monthly_price Float
+  deposit       Float?
 
-  bedroom  Int @default(1)
-  bathroom Int @default(1)
-  floor Int @default(1)        // current floor
+  bedroom     Int @default(1)
+  bathroom    Int @default(1)
+  floor       Int @default(1) // current floor
   totalFloors Int @default(1) // building height
 
   isAvailable   Boolean  @default(true) @map("is_available")
@@ -199,11 +210,11 @@ model Property {
 
   totalViews Int @default(0) @map("total_views")
 
-  propertyTypeId Int     @map("property_type_id")
-  sizeSqm        Int     @map("size_sqm")
-  furnished      Boolean @default(true)
-  isPublished    Boolean @default(true) @map("is_published")
-  minimumStayLength Int @default(1) @map("minimum_stay_length")
+  propertyTypeId    Int     @map("property_type_id")
+  sizeSqm           Int     @map("size_sqm")
+  furnished         Boolean @default(true)
+  isPublished       Boolean @default(true) @map("is_published")
+  minimumStayLength Int     @default(1) @map("minimum_stay_length")
 
   openTime  String? @map("open_time")
   closeTime String? @map("close_time")
@@ -218,7 +229,7 @@ model Property {
   propertyReport    PropertyReport[]
   propertyViews     PropertyView[]
   propertyRuleValue PropertyRuleValue[]
-  parkings           Parking[]
+  parkings          Parking[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -239,25 +250,23 @@ model Property {
 // PARKING
 // ==============================
 model Parking {
-  id           String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  propertyId   String
-  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
-  type         ParkingType
-  slots        Int      @default(0) // total slots
-  isFree       Boolean  @default(true)
-  price        Float?   // nullable if free
-  note         String?
+  type   ParkingType
+  slots  Int         @default(0) // total slots
+  isFree Boolean     @default(true)
+  price  Float? // nullable if free
+  note   String?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([propertyId])
-
   @@map("parkings")
 }
-
 
 // ==============================
 // PROPERTY TYPE
@@ -293,7 +302,6 @@ model PropertyView {
 
   @@unique([propertyId, date])
   @@index([date])
-
   @@map("property_views")
 }
 
@@ -303,14 +311,13 @@ model PropertyView {
 model PropertyRules {
   id     Int                 @id @default(autoincrement())
   key    String
-  nameEn    String  @unique @map("name_en")
-  nameKh    String  @unique @map("name_kh")
+  nameEn String              @unique @map("name_en")
+  nameKh String              @unique @map("name_kh")
   icon   String
   values PropertyRuleValue[]
 
   @@unique([key])
   @@index([key])
-
   @@map("property_rules")
 }
 
@@ -330,7 +337,6 @@ model PropertyRuleValue {
   updatedAt DateTime @updatedAt
 
   @@unique([propertyId, propertyRuleId])
-
   @@map("property_rule_value")
 }
 
@@ -368,7 +374,6 @@ model PropertyReport {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([propertyId, userId])
-
   @@map("property_reports")
 }
 

@@ -166,7 +166,6 @@ export class AdminPropertiesService {
       is_allow: selectedRuleIds.has(rule.id),
     }));
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { propertyAmenities, propertyRuleValue, _count, ...rest } = property;
 
     return {
