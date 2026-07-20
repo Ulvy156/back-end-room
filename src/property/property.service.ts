@@ -63,6 +63,12 @@ export class PropertyService {
       }
 
       const settings = await this.settingsService.getSettings();
+      if (files.length > settings.maxImagesPerProperty) {
+        throw new BadRequestException(
+          this.translation.t('errors.property_image.image_limit'),
+        );
+      }
+
       const since = new Date();
       since.setDate(since.getDate() - 30);
       const recentCount = await this.prisma.property.count({
