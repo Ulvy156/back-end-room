@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../notification/email.service';
 import { TelegramService } from '../notification/telegram.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -26,6 +27,7 @@ export class QueueWorker implements OnModuleInit {
     private readonly email: EmailService,
     private readonly telegram: TelegramService,
     private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -89,9 +91,10 @@ export class QueueWorker implements OnModuleInit {
       async (jobs) => {
         const job = jobs[0];
         const { chatId, propertyId, propertyTitle, reportTypeName } = job.data;
+        const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
         await this.telegram.sendMessage(
           chatId,
-          `⚠️ *Your listing was reported*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReason: ${reportTypeName}\n\nPlease review your listing.`,
+          `⚠️ *Your listing was reported*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReason: ${reportTypeName}\nLink: ${frontendUrl}/properties/details/${propertyId}\n\nPlease review your listing.`,
         );
       },
     );
@@ -118,8 +121,9 @@ export class QueueWorker implements OnModuleInit {
         const job = jobs[0];
         const { propertyId, propertyTitle, reportTypeName, reporterName } =
           job.data;
+        const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
         await this.telegram.sendAdminMessage(
-          `🚩 *Property Reported — ${reportTypeName}*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReported by: ${reporterName}`,
+          `🚩 *Property Reported — ${reportTypeName}*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReported by: ${reporterName}\nLink: ${frontendUrl}/properties/details/${propertyId}`,
         );
       },
     );
