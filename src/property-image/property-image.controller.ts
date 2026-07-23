@@ -16,6 +16,7 @@ import { Throttle } from '@nestjs/throttler';
 import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 import { PropertyImageService } from './property-image.service';
+import { multerDiskOptions } from 'src/R2/multer-disk.config';
 
 interface AuthenticatedRequest extends Request {
   user: { id: string; role: UserRole };
@@ -29,7 +30,7 @@ export class PropertyImageController {
   // [LANDLORD | ADMIN] Upload a new image to an existing property
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — image uploads are fast but still rate-limited
   @Post(':propertyId')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerDiskOptions()))
   upload(
     @Param('propertyId') propertyId: string,
     @UploadedFile() file: Express.Multer.File,

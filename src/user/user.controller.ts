@@ -23,6 +23,7 @@ import { UpdateContactVisibilityDto } from './dto/update-contact-visibility.dto'
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { FindUsersDto } from './dto/find-users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { multerDiskOptions } from 'src/R2/multer-disk.config';
 import { Roles } from '../auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 
@@ -71,7 +72,7 @@ export class UserController {
   }
 
   @Patch('/me/profile-image')
-  @UseInterceptors(FileInterceptor('profile'))
+  @UseInterceptors(FileInterceptor('profile', multerDiskOptions()))
   updateProfileImage(
     @UploadedFile() profile: Express.Multer.File,
     @Req() req: AuthenticatedRequest,
@@ -88,7 +89,7 @@ export class UserController {
 
   @Roles(UserRole.ADMIN)
   @Post()
-  @UseInterceptors(FileInterceptor('profile'))
+  @UseInterceptors(FileInterceptor('profile', multerDiskOptions()))
   create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() profile?: Express.Multer.File,

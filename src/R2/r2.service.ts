@@ -3,16 +3,18 @@ import {
   DeleteObjectsCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Client } from '@aws-sdk/client-s3';
 import { createR2Client } from './r2.client';
 import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './r2.interface';
 import sharp from 'sharp';
+import * as fs from 'fs/promises';
 import { TranslationService } from 'src/i18n/translation.service';
 
 @Injectable()
 export class R2Service {
+  private readonly logger = new Logger(R2Service.name);
   readonly client: S3Client;
   readonly bucket: string;
   readonly publicUrl: string;
@@ -26,14 +28,24 @@ export class R2Service {
     this.publicUrl = config.get<string>('R2_PUB_URL')!;
   }
 
-  private async optimizeImage(buffer: Buffer) {
-    return await sharp(buffer)
+  private async optimizeImage(filePath: string) {
+    return await sharp(filePath)
       .resize(2400, 3200, {
         fit: 'inside',
         withoutEnlargement: true, // Small images are NOT upscaled
       })
       .webp({ quality: 82 })
       .toBuffer();
+  }
+
+  private async cleanupTempFile(filePath?: string) {
+    if (!filePath) return;
+
+    try {
+      await fs.unlink(filePath);
+    } catch (error) {
+      this.logger.warn(`Failed to remove temp file ${filePath}: ${error}`);
+    }
   }
 
   private validateFile(file: Express.Multer.File) {
@@ -101,29 +113,37 @@ export class R2Service {
     files: Express.Multer.File[],
     folder: string = 'rooms',
   ) {
-    // validate each files before upload
-    files.forEach((file) => {
-      // validate image
-      this.validateFile(file);
-    });
-    // upload file after validate
-    const uploads = files.map(async (file) => {
-      // generate file name
-      const key = this.generateFileName(folder);
+    try {
+      // validate each files before upload
+      files.forEach((file) => {
+        // validate image
+        this.validateFile(file);
+      });
+      // upload file after validate
+      const uploads = files.map(async (file) => {
+        // generate file name
+        const key = this.generateFileName(folder);
 
-      const optimizedBuffer = await this.optimizeImage(file.buffer);
-      return await this.putObjectCommand(key, optimizedBuffer);
-    });
+        const optimizedBuffer = await this.optimizeImage(file.path);
+        return await this.putObjectCommand(key, optimizedBuffer);
+      });
 
-    return Promise.all(uploads);
+      return await Promise.all(uploads);
+    } finally {
+      await Promise.all(files.map((file) => this.cleanupTempFile(file.path)));
+    }
   }
 
   async uploadSingleFile(file: Express.Multer.File, folder: string = 'rooms') {
-    this.validateFile(file);
-    const key = this.generateFileName(folder);
-    const optimizedBuffer = await this.optimizeImage(file.buffer);
+    try {
+      this.validateFile(file);
+      const key = this.generateFileName(folder);
+      const optimizedBuffer = await this.optimizeImage(file.path);
 
-    return await this.putObjectCommand(key, optimizedBuffer);
+      return await this.putObjectCommand(key, optimizedBuffer);
+    } finally {
+      await this.cleanupTempFile(file?.path);
+    }
   }
 
   async deleteMultipleFiles(keys: string[]) {

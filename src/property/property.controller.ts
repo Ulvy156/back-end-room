@@ -18,6 +18,7 @@ import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { multerDiskOptions } from 'src/R2/multer-disk.config';
 import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
 import { Throttle } from '@nestjs/throttler';
@@ -38,7 +39,7 @@ export class PropertyController {
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Throttle({ default: { limit: 2, ttl: 600000 } }) // 2 per 10 min — reflects 3-5 min upload time per property
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files', 20, multerDiskOptions()))
   create(
     @Body() createPropertyDto: CreatePropertyDto,
     @UploadedFiles() files: Express.Multer.File[],
