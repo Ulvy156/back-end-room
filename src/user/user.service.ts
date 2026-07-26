@@ -98,6 +98,34 @@ export class UserService {
     });
   }
 
+  async isEmailExist(email: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+        select: {
+          id: true,
+        },
+      });
+      return !!user;
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async isPhoneExist(phoneNumber: string) {
+    try {
+      const phone = await this.prisma.phone.findUnique({
+        where: { phoneNumber },
+        select: {
+          id: true,
+        },
+      });
+      return !!phone;
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       const { password: _, ...user } = await this.prisma.user.update({

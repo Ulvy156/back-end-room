@@ -22,9 +22,12 @@ import { UpdateMyInfoDto } from './dto/update-my-info.dto';
 import { UpdateContactVisibilityDto } from './dto/update-contact-visibility.dto';
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { FindUsersDto } from './dto/find-users.dto';
+import { IsEmailExistDto } from './dto/is-email-exist.dto';
+import { IsPhoneExistDto } from './dto/is-phone-exist.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerDiskOptions } from 'src/R2/multer-disk.config';
 import { Roles } from '../auth/roles.decorator';
+import { Public } from '../auth/public.decorator';
 import { UserRole } from 'prisma/generated/enums';
 
 interface AuthenticatedRequest extends Request {
@@ -83,6 +86,18 @@ export class UserController {
   @Delete('/me/profile-image')
   deleteProfileImage(@Req() req: AuthenticatedRequest) {
     return this.userService.deleteProfileByUserId(req.user.id);
+  }
+
+  @Public()
+  @Get('/is-email-exist')
+  isEmailExist(@Query() { email }: IsEmailExistDto) {
+    return this.userService.isEmailExist(email);
+  }
+
+  @Public()
+  @Get('/is-phone-exist')
+  isPhoneExist(@Query() { phoneNumber }: IsPhoneExistDto) {
+    return this.userService.isPhoneExist(phoneNumber);
   }
 
   // ─── Admin ───────────────────────────────────────────────────────────────────

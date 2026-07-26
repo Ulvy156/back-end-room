@@ -4,5 +4,6 @@ export const corsConfig: CorsOptions = {
   origin: [process.env.FRONT_END_URL ?? ''],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Retry-After'],
   credentials: true,
 };
