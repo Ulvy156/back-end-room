@@ -220,7 +220,7 @@ export class PropertyService {
               showPhone: true,
               showTelegram: true,
               showEmail: true,
-              isVerified: true,
+              hasVerifiedBadge: true,
               phones: {
                 select: {
                   phoneNumber: true,

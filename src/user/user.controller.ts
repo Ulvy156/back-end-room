@@ -143,6 +143,18 @@ export class UserController {
   }
 
   @Roles(UserRole.ADMIN)
+  @Patch('/grant-badge/:id')
+  grantBadge(@Param('id') id: string) {
+    return this.userService.grantBadge(id);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Patch('/revoke-badge/:id')
+  revokeBadge(@Param('id') id: string) {
+    return this.userService.revokeBadge(id);
+  }
+
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);

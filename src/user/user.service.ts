@@ -23,6 +23,7 @@ const USER_PUBLIC_FIELDS = {
   role: true,
   isVerified: true,
   isLocked: true,
+  hasVerifiedBadge: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -154,6 +155,30 @@ export class UserService {
     try {
       return await this.prisma.user.update({
         data: { isLocked: false },
+        where: { id },
+        select: USER_PUBLIC_FIELDS,
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async grantBadge(id: string) {
+    try {
+      return await this.prisma.user.update({
+        data: { hasVerifiedBadge: true },
+        where: { id },
+        select: USER_PUBLIC_FIELDS,
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async revokeBadge(id: string) {
+    try {
+      return await this.prisma.user.update({
+        data: { hasVerifiedBadge: false },
         where: { id },
         select: USER_PUBLIC_FIELDS,
       });

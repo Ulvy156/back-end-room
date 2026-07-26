@@ -54,9 +54,10 @@ model User {
   email      String   @unique
   password   String
   imgUrl     String?  @map("img_url")
-  isVerified Boolean  @default(false) @map("is_verified")
-  isLocked   Boolean  @default(false)
-  role       UserRole @default(USER)
+  isVerified       Boolean  @default(false) @map("is_verified")
+  isLocked         Boolean  @default(false)
+  hasVerifiedBadge Boolean  @default(false) @map("has_verified_badge")
+  role             UserRole @default(USER)
 
   showPhone    Boolean @default(true) @map("show_phone")
   showTelegram Boolean @default(true) @map("show_telegram")

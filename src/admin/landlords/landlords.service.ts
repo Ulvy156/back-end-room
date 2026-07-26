@@ -1,29 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserRole } from 'prisma/generated/enums';
-import { prismaError } from 'src/utils/prismaError';
 
 @Injectable()
 export class AdminLandlordsService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async toggleLandlordVerification(landlordId: string) {
-    const landlord = await this.prisma.user.findFirst({
-      where: { id: landlordId, role: UserRole.LANDLORD },
-    });
-
-    if (!landlord) throw new NotFoundException('Landlord not found');
-
-    try {
-      return await this.prisma.user.update({
-        where: { id: landlordId },
-        data: { isVerified: !landlord.isVerified },
-        select: { id: true, isVerified: true },
-      });
-    } catch (error) {
-      prismaError(error);
-    }
-  }
 
   async getLandlordProperties(landlordId: string) {
     const landlord = await this.prisma.user.findFirst({

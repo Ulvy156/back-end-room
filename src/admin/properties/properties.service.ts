@@ -91,6 +91,7 @@ export class AdminPropertiesService {
             role: true,
             isVerified: true,
             isLocked: true,
+            hasVerifiedBadge: true,
             createdAt: true,
             phones: { select: { phoneNumber: true, type: true } },
           },
