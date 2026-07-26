@@ -43,13 +43,13 @@ export class LegalService {
     return document;
   }
 
-  async updateDocument(slug: string, content: string) {
+  async updateDocument(slug: string, contentEn: string, contentKh: string) {
     const documentSlug = this.resolveSlug(slug);
 
     try {
       const document = await this.prisma.legalDocument.update({
         where: { slug: documentSlug },
-        data: { content },
+        data: { contentEn, contentKh },
       });
       await this.cache.del(CACHE_KEY_MAP[documentSlug]);
       return document;

@@ -1,23 +1,34 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { PrismaClient } from 'prisma/generated/client';
 import { LegalDocumentSlug } from 'prisma/generated/enums';
 
-const SEED_FILES: Record<LegalDocumentSlug, string> = {
-  [LegalDocumentSlug.PRIVACY_POLICY]: 'PRIVACY-POLICY.md',
-  [LegalDocumentSlug.TERMS_OF_SERVICE]: 'TERMS-OF-SERVICE.md',
+const SEED_FILES: Record<LegalDocumentSlug, { en: string; kh: string }> = {
+  [LegalDocumentSlug.PRIVACY_POLICY]: {
+    en: 'PRIVACY-POLICY.md',
+    kh: 'PRIVACY-POLICY.kh.md',
+  },
+  [LegalDocumentSlug.TERMS_OF_SERVICE]: {
+    en: 'TERMS-OF-SERVICE.md',
+    kh: 'TERMS-OF-SERVICE.kh.md',
+  },
 };
 
 export async function seedLegalDocuments(prisma: PrismaClient) {
-  for (const [slug, fileName] of Object.entries(SEED_FILES) as [
+  for (const [slug, { en, kh }] of Object.entries(SEED_FILES) as [
     LegalDocumentSlug,
-    string,
+    { en: string; kh: string },
   ][]) {
-    const content = readFileSync(join(process.cwd(), 'API', fileName), 'utf-8');
+    const contentEn = readFileSync(join(process.cwd(), 'API', en), 'utf-8');
+    const khPath = join(process.cwd(), 'API', kh);
+    const contentKh = existsSync(khPath)
+      ? readFileSync(khPath, 'utf-8')
+      : contentEn;
+
     await prisma.legalDocument.upsert({
       where: { slug },
       update: {},
-      create: { slug, content },
+      create: { slug, contentEn, contentKh },
     });
   }
 

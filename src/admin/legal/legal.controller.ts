@@ -11,6 +11,6 @@ export class AdminLegalController {
 
   @Patch(':slug')
   update(@Param('slug') slug: string, @Body() dto: UpdateLegalDocumentDto) {
-    return this.legalService.updateDocument(slug, dto.content);
+    return this.legalService.updateDocument(slug, dto.contentEn, dto.contentKh);
   }
 }

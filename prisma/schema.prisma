@@ -508,7 +508,8 @@ enum LegalDocumentSlug {
 model LegalDocument {
   id        Int               @id @default(autoincrement())
   slug      LegalDocumentSlug @unique
-  content   String
+  contentEn String            @map("content_en")
+  contentKh String            @map("content_kh")
   updatedAt DateTime          @updatedAt @map("updated_at")
 
   @@map("legal_documents")
