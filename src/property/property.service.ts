@@ -291,9 +291,9 @@ export class PropertyService {
         },
       });
       // set to empty if user doenst provide lat and lng
-      property['distanceKm'] = '~';
+      let distanceKm: string = '~';
       if (filter.lat && filter.lng && property.lat && property.lng) {
-        property['distanceKm'] = haversineKm(
+        distanceKm = haversineKm(
           filter.lat,
           filter.lng,
           property.lat,
@@ -339,6 +339,7 @@ export class PropertyService {
         ...rest,
         amenities: propertyAmenities.map((p) => p.amenity),
         rules,
+        distanceKm,
       };
     } catch (error) {
       prismaError(error);
