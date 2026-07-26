@@ -986,15 +986,38 @@ export class PropertyService {
 
   // get related properties based on current selected properties
   async getRelatedProperties(propertyId: string) {
+    const TAKE = 6;
+    const MAX_DISTANCE_KM = 15;
+    const PRICE_RANGE_RATIO = 0.2; // +/- 20%
+    const BEDROOM_RANGE = 2;
+
     const property = await this.prisma.property.findUnique({
       where: { id: propertyId, isPublished: true, isAvailable: true },
+      select: {
+        id: true,
+        lat: true,
+        lng: true,
+        monthly_price: true,
+        bedroom: true,
+        propertyTypeId: true,
+      },
     });
 
     if (!property) throw new NotFoundException();
 
-    const minPrice = property.monthly_price * 0.8;
-    const maxPrice = property.monthly_price * 1.2;
+    const minPrice = property.monthly_price * (1 - PRICE_RANGE_RATIO);
+    const maxPrice = property.monthly_price * (1 + PRICE_RANGE_RATIO);
     const bedroom = property.bedroom;
+
+    // shared match criteria for any non-geo (ORM) query below — keep this in
+    // sync with the raw SQL WHERE clause in the geo branch
+    const similarWhere: Prisma.PropertyWhereInput = {
+      propertyTypeId: property.propertyTypeId,
+      bedroom: { gte: bedroom - BEDROOM_RANGE, lte: bedroom + BEDROOM_RANGE },
+      monthly_price: { gte: minPrice, lte: maxPrice },
+      isPublished: true,
+      isAvailable: true,
+    };
 
     let nearby: { id: string; distance: number | null }[] = [];
 
@@ -1014,7 +1037,7 @@ export class PropertyService {
         ) AS distance
         FROM properties p
         WHERE p.id != ${property.id}
-          AND p.bedroom BETWEEN (${bedroom - 2}) AND ${bedroom + 2}
+          AND p.bedroom BETWEEN (${bedroom - BEDROOM_RANGE}) AND ${bedroom + BEDROOM_RANGE}
           AND p.property_type_id = ${property.propertyTypeId}
           AND p.monthly_price BETWEEN ${minPrice} AND ${maxPrice}
           AND p.lat IS NOT NULL
@@ -1022,23 +1045,30 @@ export class PropertyService {
           AND p.is_published = true
           AND p.is_available = true
       ) sub
-      WHERE sub.distance < 15
+      WHERE sub.distance < ${MAX_DISTANCE_KM}
       ORDER BY sub.distance ASC
-      LIMIT 6
+      LIMIT ${TAKE}
     `;
+
+      if (nearby.length < TAKE) {
+        const excludeIds = [property.id, ...nearby.map((n) => n.id)];
+        const backfill = await this.prisma.property.findMany({
+          where: { ...similarWhere, id: { notIn: excludeIds } },
+          select: { id: true },
+          orderBy: [{ totalViews: 'desc' }, { createdAt: 'desc' }],
+          take: TAKE - nearby.length,
+        });
+        nearby = [
+          ...nearby,
+          ...backfill.map((p) => ({ id: p.id, distance: null })),
+        ];
+      }
     } else {
       const fallback = await this.prisma.property.findMany({
-        where: {
-          id: { not: property.id },
-          propertyTypeId: property.propertyTypeId,
-          bedroom: { gte: bedroom - 2, lte: bedroom + 2 },
-          monthly_price: { gte: minPrice, lte: maxPrice },
-          isPublished: true,
-          isAvailable: true,
-        },
+        where: { ...similarWhere, id: { not: property.id } },
         select: { id: true },
         orderBy: [{ totalViews: 'desc' }, { createdAt: 'desc' }],
-        take: 6,
+        take: TAKE,
       });
       nearby = fallback.map((p) => ({ id: p.id, distance: null }));
     }
