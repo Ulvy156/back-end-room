@@ -29,3 +29,4 @@
 | Admin platform settings (maintenance mode, registration toggle, listing limits, commission rate) | `settings`, `admin` | Done |
 | Public privacy policy / terms of service endpoints | `legal` | Done |
 | Server error alerting — 5xx/unhandled exceptions and process crashes notify admin via Telegram + email | `common`, `queue`, `notification` | Done |
+| Admin Telegram alert on new user registration (OTP verify, Telegram widget, Google OAuth) | `auth`, `queue`, `notification` | Done |

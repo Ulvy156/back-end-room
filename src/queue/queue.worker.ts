@@ -13,6 +13,7 @@ import {
   SendPropertyReportAdminAlertJob,
   SendPropertyReportedEmailJob,
   SendPropertyReportedTelegramJob,
+  SendUserRegisteredAdminAlertJob,
   SendVerificationOtpJob,
   WriteAuditLogJob,
 } from './queue.jobs';
@@ -124,6 +125,23 @@ export class QueueWorker implements OnModuleInit {
         const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
         await this.telegram.sendAdminMessage(
           `🚩 *Property Reported — ${reportTypeName}*\n\nProperty: ${propertyTitle} (ID: ${propertyId})\nReported by: ${reporterName}\nLink: ${frontendUrl}/properties/details/${propertyId}`,
+        );
+      },
+    );
+
+    await this.queue.work<SendUserRegisteredAdminAlertJob>(
+      QUEUE_JOBS.SEND_USER_REGISTERED_ADMIN_ALERT,
+      async (jobs) => {
+        const job = jobs[0];
+        const { name, email, source } = job.data;
+        const sourceLabel =
+          source === 'otp'
+            ? 'Email/OTP'
+            : source === 'telegram'
+              ? 'Telegram'
+              : 'Google';
+        await this.telegram.sendAdminMessage(
+          `👤 *New User Registered — ${sourceLabel}*\n\nName: ${name}\nEmail: ${email}`,
         );
       },
     );

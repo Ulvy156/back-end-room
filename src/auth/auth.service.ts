@@ -17,6 +17,7 @@ import {
   QUEUE_JOBS,
   SendOtpEmailJob,
   SendOtpTelegramJob,
+  SendUserRegisteredAdminAlertJob,
   SendVerificationOtpJob,
 } from '../queue/queue.jobs';
 import { hashingPassword } from '../utils/hashingPassword';
@@ -198,6 +199,11 @@ export class AuthService {
       }),
       this.prisma.passwordResetToken.delete({ where: { userId: user.id } }),
     ]);
+
+    await this.queue.send<SendUserRegisteredAdminAlertJob>(
+      QUEUE_JOBS.SEND_USER_REGISTERED_ADMIN_ALERT,
+      { userId: user.id, name: user.name, email: user.email, source: 'otp' },
+    );
 
     const { accessToken, refreshToken } = await this.login({
       id: user.id,
@@ -462,6 +468,18 @@ export class AuthService {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
+    if (isNewUser) {
+      await this.queue.send<SendUserRegisteredAdminAlertJob>(
+        QUEUE_JOBS.SEND_USER_REGISTERED_ADMIN_ALERT,
+        {
+          userId: user.id,
+          name: user.name,
+          email: user.email,
+          source: 'telegram',
+        },
+      );
+    }
+
     return { user, isNewUser };
   }
 
@@ -608,6 +626,18 @@ export class AuthService {
 
     if (user.isLocked) {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+    }
+
+    if (isNewUser) {
+      await this.queue.send<SendUserRegisteredAdminAlertJob>(
+        QUEUE_JOBS.SEND_USER_REGISTERED_ADMIN_ALERT,
+        {
+          userId: user.id,
+          name: user.name,
+          email: user.email,
+          source: 'google',
+        },
+      );
     }
 
     const tokens = await this.login({ id: user.id, role: user.role });

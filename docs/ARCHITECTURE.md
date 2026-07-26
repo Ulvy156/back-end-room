@@ -67,6 +67,7 @@ pg-boss v12 is pure ESM, so it is loaded with `await import('pg-boss')` inside `
 | `send-property-reported-telegram` | `POST /property-report/:propertyId` (owner has Telegram linked) | default |
 | `send-property-reported-email` | `POST /property-report/:propertyId` (owner has no Telegram linked) | default |
 | `send-property-report-admin-alert` | `POST /property-report/:propertyId` | default |
+| `send-user-registered-admin-alert` | New user completes registration — `POST /auth/verify-account` (OTP), Telegram widget login, or Google OAuth (first-time only) | default |
 | `send-error-alert` | Any 5xx/unhandled exception (`AllExceptionsFilter`) or process-level `uncaughtException`/`unhandledRejection` (`main.ts`) | default |
 | `purge-expired-tokens` | Cron `0 2 * * *` (02:00 daily) | — |
 

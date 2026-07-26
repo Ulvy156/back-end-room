@@ -9,6 +9,7 @@ export const QUEUE_JOBS = {
   SEND_PROPERTY_REPORTED_EMAIL: 'send-property-reported-email',
   SEND_PROPERTY_REPORTED_TELEGRAM: 'send-property-reported-telegram',
   SEND_PROPERTY_REPORT_ADMIN_ALERT: 'send-property-report-admin-alert',
+  SEND_USER_REGISTERED_ADMIN_ALERT: 'send-user-registered-admin-alert',
   SEND_ERROR_ALERT: 'send-error-alert',
 } as const;
 
@@ -69,6 +70,13 @@ export interface SendPropertyReportAdminAlertJob {
   propertyTitle: string;
   reportTypeName: string;
   reporterName: string;
+}
+
+export interface SendUserRegisteredAdminAlertJob {
+  userId: string;
+  name: string;
+  email: string;
+  source: 'otp' | 'telegram' | 'google';
 }
 
 export interface SendErrorAlertJob {
