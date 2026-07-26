@@ -987,7 +987,7 @@ export class PropertyService {
   // get related properties based on current selected properties
   async getRelatedProperties(propertyId: string) {
     const property = await this.prisma.property.findUnique({
-      where: { id: propertyId },
+      where: { id: propertyId, isPublished: true, isAvailable: true },
     });
 
     if (!property) throw new NotFoundException();
@@ -996,7 +996,7 @@ export class PropertyService {
     const maxPrice = property.monthly_price * 1.2;
     const bedroom = property.bedroom;
 
-    let nearby: { id: string; distance: number }[] = [];
+    let nearby: { id: string; distance: number | null }[] = [];
 
     if (property.lat != null && property.lng != null) {
       nearby = await this.prisma.$queryRaw<{ id: string; distance: number }[]>`
@@ -1020,6 +1020,7 @@ export class PropertyService {
           AND p.lat IS NOT NULL
           AND p.lng IS NOT NULL
           AND p.is_published = true
+          AND p.is_available = true
       ) sub
       WHERE sub.distance < 15
       ORDER BY sub.distance ASC
@@ -1033,11 +1034,13 @@ export class PropertyService {
           bedroom: { gte: bedroom - 2, lte: bedroom + 2 },
           monthly_price: { gte: minPrice, lte: maxPrice },
           isPublished: true,
+          isAvailable: true,
         },
         select: { id: true },
+        orderBy: [{ totalViews: 'desc' }, { createdAt: 'desc' }],
         take: 6,
       });
-      nearby = fallback.map((p) => ({ id: p.id, distance: 0 }));
+      nearby = fallback.map((p) => ({ id: p.id, distance: null }));
     }
 
     if (!nearby.length) return [];
@@ -1093,9 +1096,15 @@ export class PropertyService {
       },
     });
 
-    return nearby.map((n) => {
-      const prop = properties.find((p) => p.id === n.id)!;
-      return { ...prop, distanceKm: Number(n.distance.toFixed(2)) };
-    });
+    return nearby
+      .map((n) => {
+        const prop = properties.find((p) => p.id === n.id);
+        if (!prop) return null;
+        return {
+          ...prop,
+          distanceKm: n.distance != null ? Number(n.distance.toFixed(2)) : null,
+        };
+      })
+      .filter((p) => p != null);
   }
 }
