@@ -49,6 +49,36 @@ export class PropertyService {
     }
   }
 
+  // pinned lat/lng must stay within this radius of the selected district's province center
+  private readonly MAX_LOCATION_DISTANCE_KM = 60;
+
+  private async assertLocationWithinDistrict(
+    districtId: number,
+    lat: number | null | undefined,
+    lng: number | null | undefined,
+  ) {
+    if (lat == null || lng == null) return;
+
+    const district = await this.prisma.district.findUnique({
+      where: { id: districtId },
+      include: { province: true },
+    });
+    if (!district) return;
+
+    const distance = haversineKm(
+      lat,
+      lng,
+      district.province.latitude,
+      district.province.longitude,
+    );
+
+    if (distance > this.MAX_LOCATION_DISTANCE_KM) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.location_out_of_bounds'),
+      );
+    }
+  }
+
   async create(
     createPropertyDto: CreatePropertyDto,
     files: Express.Multer.File[],
@@ -83,6 +113,11 @@ export class PropertyService {
       const { amenityKeys, ruleKeys, parkings, folderType, ...propertyData } =
         createPropertyDto;
       await this.assertPriceInRange(propertyData.monthly_price);
+      await this.assertLocationWithinDistrict(
+        propertyData.districtId,
+        propertyData.lat,
+        propertyData.lng,
+      );
       uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
         files,
         folderType,
@@ -375,11 +410,16 @@ export class PropertyService {
     role: UserRole,
   ) {
     try {
-      await this.assertOwner(id, requesterId, role);
+      const existingProperty = await this.assertOwner(id, requesterId, role);
 
       const { amenityKeys, ruleKeys, parkings, ...updateData } =
         updatePropertyDto;
       await this.assertPriceInRange(updateData.monthly_price);
+      await this.assertLocationWithinDistrict(
+        updateData.districtId ?? existingProperty.districtId,
+        updateData.lat !== undefined ? updateData.lat : existingProperty.lat,
+        updateData.lng !== undefined ? updateData.lng : existingProperty.lng,
+      );
 
       const property = await this.prisma.$transaction(async (tx) => {
         const updatedProperty = await tx.property.update({

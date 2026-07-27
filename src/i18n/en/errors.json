@@ -20,7 +20,8 @@
     "image_required": "At least one image is required",
     "monthly_limit": "You can only post up to 3 properties per month",
     "feature_limit": "You can only feature up to 3 properties at a time",
-    "price_out_of_range": "Monthly price is outside the allowed range"
+    "price_out_of_range": "Monthly price is outside the allowed range",
+    "location_out_of_bounds": "Pinned location is too far from the selected district/province"
   },
   "favourite": {
     "not_found": "Favourite not found",

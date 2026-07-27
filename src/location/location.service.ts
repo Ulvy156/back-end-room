@@ -61,6 +61,17 @@ export class LocationService {
     }
   }
 
+  async getProvinceCoordinates(id: number) {
+    try {
+      return await this.prisma.province.findFirstOrThrow({
+        where: { id },
+        select: { id: true, latitude: true, longitude: true },
+      });
+    } catch (error) {
+      return prismaError(error);
+    }
+  }
+
   async getDistrictById(id: number) {
     try {
       return await this.prisma.district.findFirstOrThrow({

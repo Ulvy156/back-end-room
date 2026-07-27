@@ -22,6 +22,11 @@ export class LocationController {
     return this.locationService.getProvinceById(id);
   }
 
+  @Get('/province/:id/coordinates')
+  getProvinceCoordinates(@Param('id') id: number) {
+    return this.locationService.getProvinceCoordinates(id);
+  }
+
   @Get('/district/:id')
   getDistrictById(@Param('id') id: number) {
     return this.locationService.getDistrictById(id);
