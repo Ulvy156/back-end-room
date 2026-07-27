@@ -20,7 +20,11 @@ export class AdminPropertiesService {
     } = filter;
     const skip = (page - 1) * limit;
 
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
     const where: Prisma.PropertyWhereInput = {
+      createdAt: { gte: threeMonthsAgo },
       ...(isPublished !== undefined ? { isPublished } : {}),
       ...(isFeatured !== undefined ? { isFeatured } : {}),
       ...(isAvailable !== undefined ? { isAvailable } : {}),
