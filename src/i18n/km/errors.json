@@ -12,7 +12,8 @@
     "invalid_refresh_token": "Token បន្ត session មិនត្រឹមត្រូវ",
     "missing_refresh_token": "បាត់ Token បន្ត session",
     "wrong_current_password": "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ",
-    "registration_disabled": "ការចុះឈ្មោះថ្មីត្រូវបានផ្អាកជាបណ្តោះអាសន្ន"
+    "registration_disabled": "ការចុះឈ្មោះថ្មីត្រូវបានផ្អាកជាបណ្តោះអាសន្ន",
+    "password_already_set": "គណនីនេះមានពាក្យសម្ងាត់រួចហើយ"
   },
   "property": {
     "not_found": "មិនរកឃើញអចលនទ្រព្យ",

@@ -450,6 +450,7 @@ export class AuthService {
           // Synthetic email — Telegram users have no email until they set one
           email: `tg_${data.id}@telegram.placeholder`,
           password: await hashingPassword(randomUUID()),
+          hasPassword: false,
           role: UserRole.USER,
           isVerified: true,
           phones: {
@@ -560,10 +561,31 @@ export class AuthService {
 
   // ─── Select role ─────────────────────────────────────────────────────────────
 
-  async selectRole(userId: string, role: UserRole) {
+  async selectRole(userId: string, role: UserRole, password?: string) {
+    if (!password) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { role },
+      });
+      return;
+    }
+
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    if (user.hasPassword) {
+      throw new BadRequestException(
+        this.translation.t('errors.auth.password_already_set'),
+      );
+    }
+
     await this.prisma.user.update({
       where: { id: userId },
-      data: { role },
+      data: {
+        role,
+        password: await hashingPassword(password),
+        hasPassword: true,
+      },
     });
   }
 
@@ -610,8 +632,9 @@ export class AuthService {
         data: {
           email: googleUser.email,
           name: googleUser.name,
-          // Random hash — Google users have no usable password until they set one via forgot-password
+          // Random hash — Google users have no usable password until they set one via select-role
           password: await hashingPassword(randomUUID()),
+          hasPassword: false,
           role: UserRole.USER,
           isVerified: true,
         },

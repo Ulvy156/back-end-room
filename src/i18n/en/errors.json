@@ -12,7 +12,8 @@
     "invalid_refresh_token": "Invalid refresh token",
     "missing_refresh_token": "Missing refresh token",
     "wrong_current_password": "Current password is incorrect",
-    "registration_disabled": "New registrations are currently disabled"
+    "registration_disabled": "New registrations are currently disabled",
+    "password_already_set": "A password is already set for this account"
   },
   "property": {
     "not_found": "Property not found",
