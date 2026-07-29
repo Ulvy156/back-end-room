@@ -1120,7 +1120,7 @@ export class PropertyService {
 
     const properties = await this.prisma.property.findMany({
       where: {
-        id: { in: ids },
+        id: { in: ids, not: property.id },
       },
       select: {
         id: true,
