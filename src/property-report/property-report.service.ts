@@ -99,7 +99,7 @@ export class PropertyReportService {
             reportTypeName: report.reportType.nameEn,
           },
         );
-      } else {
+      } else if (property.user.email) {
         await this.queue.send<SendPropertyReportedEmailJob>(
           QUEUE_JOBS.SEND_PROPERTY_REPORTED_EMAIL,
           {

@@ -433,62 +433,35 @@ export class AuthService {
     let isNewUser = false;
     let user: Awaited<ReturnType<typeof this.prisma.user.create>>;
 
-    // Synthetic email — Telegram users have no email until they set one.
-    // It's deterministic on the Telegram id, so it doubles as a fallback key
-    // when the Phone link is missing or stale (e.g. re-created with a
-    // different value) — otherwise create() below crashes on the unique
-    // email constraint instead of just logging the returning user in.
-    const syntheticEmail = `tg_${data.id}@telegram.placeholder`;
-
     if (phone) {
       user = phone.user;
     } else {
-      const existingByEmail = await this.prisma.user.findUnique({
-        where: { email: syntheticEmail },
-      });
+      const settings = await this.settingsService.getSettings();
+      if (!settings.registrationEnabled) {
+        throw new ForbiddenException(
+          this.translation.t('errors.auth.registration_disabled'),
+        );
+      }
 
-      if (existingByEmail) {
-        user = existingByEmail;
-        // Heal the phone link so future logins find it directly.
-        await this.prisma.phone.upsert({
-          where: { phoneNumber: String(data.id) },
-          create: {
-            phoneNumber: String(data.id),
-            type: PhoneNumberType.TELEGRAM,
-            userId: user.id,
-          },
-          update: { userId: user.id, type: PhoneNumberType.TELEGRAM },
-        });
-      } else {
-        const settings = await this.settingsService.getSettings();
-        if (!settings.registrationEnabled) {
-          throw new ForbiddenException(
-            this.translation.t('errors.auth.registration_disabled'),
-          );
-        }
-
-        // First time — auto-register, Telegram has already verified their identity
-        isNewUser = true;
-        const name = [data.first_name, data.last_name]
-          .filter(Boolean)
-          .join(' ');
-        user = await this.prisma.user.create({
-          data: {
-            name,
-            email: syntheticEmail,
-            password: await hashingPassword(randomUUID()),
-            hasPassword: false,
-            role: UserRole.USER,
-            isVerified: true,
-            phones: {
-              create: {
-                phoneNumber: String(data.id),
-                type: PhoneNumberType.TELEGRAM,
-              },
+      // First time — auto-register, Telegram has already verified their identity
+      isNewUser = true;
+      const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+      user = await this.prisma.user.create({
+        data: {
+          name,
+          email: null,
+          password: await hashingPassword(randomUUID()),
+          hasPassword: false,
+          role: UserRole.USER,
+          isVerified: true,
+          phones: {
+            create: {
+              phoneNumber: String(data.id),
+              type: PhoneNumberType.TELEGRAM,
             },
           },
-        });
-      }
+        },
+      });
     }
 
     if (user.isLocked) {

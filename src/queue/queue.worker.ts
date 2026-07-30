@@ -141,7 +141,7 @@ export class QueueWorker implements OnModuleInit {
               ? 'Telegram'
               : 'Google';
         await this.telegram.sendAdminMessage(
-          `👤 *New User Registered — ${sourceLabel}*\n\nName: ${name}\nEmail: ${email}`,
+          `👤 *New User Registered — ${sourceLabel}*\n\nName: ${name}\nEmail: ${email ?? 'N/A'}`,
         );
       },
     );

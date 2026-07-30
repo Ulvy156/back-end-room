@@ -51,7 +51,7 @@ enum FeedbackType {
 model User {
   id         String   @id @default(uuid())
   name       String
-  email      String   @unique
+  email      String?  @unique
   password    String
   hasPassword Boolean @default(true) @map("has_password")
   imgUrl     String?  @map("img_url")

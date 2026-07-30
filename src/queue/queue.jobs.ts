@@ -75,7 +75,7 @@ export interface SendPropertyReportAdminAlertJob {
 export interface SendUserRegisteredAdminAlertJob {
   userId: string;
   name: string;
-  email: string;
+  email: string | null;
   source: 'otp' | 'telegram' | 'google';
 }
 
