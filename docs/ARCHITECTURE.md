@@ -35,14 +35,14 @@
 | `i18n` | Global `TranslationService` wrapping `nestjs-i18n`; locale files in `src/i18n/{en,km}/`. Locale resolved from `Accept-Language` header. |
 | `prisma` | Global `PrismaService`; standalone `PrismaClient` in `src/prisma/prisma.client.ts` for seed scripts. |
 | `config` | Global `ConfigModule`, CORS config, throttle config. |
-| `settings` | Global `SettingsService` backed by a single-row `AppSettings` table (cached via `CacheService`, key `CACHE_KEYS.APP_SETTINGS`). Holds platform toggles: `maintenanceMode`, `registrationEnabled`, `maxPropertiesPerLandlord`, `maxImagesPerProperty`, `minPropertyPrice`/`maxPropertyPrice`, `commissionRate` (stored only, not yet enforced). `MaintenanceGuard` is a global `APP_GUARD` — non-ADMIN requests are rejected with 503 while `maintenanceMode` is on, except routes marked `@BypassMaintenance()` (used on `POST /auth/login` and `POST /auth/refresh-token`). Admin CRUD lives at `GET/PATCH /admin/settings` (`src/admin/settings/`). |
+| `settings` | Global `SettingsService` backed by a key/value `AppSetting` table (`key`, `group`, `value: Json`; cached as a flattened object via `CacheService`, key `CACHE_KEYS.APP_SETTINGS`). Holds platform toggles: `maintenanceMode`, `registrationEnabled`, `maxPropertiesPerLandlord`, `maxImagesPerProperty`, `minPropertyPrice`/`maxPropertyPrice`. New settings can be added by seeding a new row, or via `POST /admin/settings` at runtime — no schema change needed either way. `MaintenanceGuard` is a global `APP_GUARD` — non-ADMIN requests are rejected with 503 while `maintenanceMode` is on, except routes marked `@BypassMaintenance()` (used on `POST /auth/login` and `POST /auth/refresh-token`). Admin CRUD lives at `GET/POST/PATCH /admin/settings` (`src/admin/settings/`): `POST` creates a new key (400 if it already exists), `PATCH` accepts a partial map of any subset of existing keys to update, validated per-key server-side. |
 | `legal` | Public `GET /legal/:slug` (`privacy-policy` \| `terms-of-service`) — reads from the `LegalDocument` table (cached via `CacheService`, keys `CACHE_KEYS.LEGAL_PRIVACY_POLICY`/`LEGAL_TERMS_OF_SERVICE`). Seeded from `API/PRIVACY-POLICY.md`/`API/TERMS-OF-SERVICE.md` (`prisma/seed/legal-document.seed.ts`) but editable at runtime. Admin-only `PATCH /admin/legal/:slug` (`src/admin/legal/`) updates the DB content and invalidates the cache — the markdown files are the initial seed, not the source of truth after seeding. |
 
 ### Prisma
 
 - Schema: `prisma/schema.prisma`. Generated client: `prisma/generated/`.
 - Enums import from `prisma/generated/enums`; `Prisma` namespace types from `prisma/generated/client`.
-- Seed order: provinces → districts → property types → property rules → users → amenities → properties → app settings (singleton row, `id: 1`).
+- Seed order: provinces → districts → property types → property rules → users → amenities → properties → app settings (key/value rows).
 - This project uses `npx prisma db push` for the dev database, not migration history — there is no `prisma/migrations/` folder. Use `db push` for schema changes here; `migrate dev` will report drift and offer to reset the database.
 
 ### Utilities (`src/utils/`)

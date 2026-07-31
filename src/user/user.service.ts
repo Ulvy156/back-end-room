@@ -203,7 +203,7 @@ export class UserService {
         showTelegram: true,
         showEmail: true,
         phones: {
-          select: { phoneNumber: true, type: true },
+          select: { id: true, phoneNumber: true, type: true },
         },
       },
     });

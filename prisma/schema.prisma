@@ -484,16 +484,11 @@ model AuditLog {
 // ==============================
 // APP SETTINGS
 // ==============================
-model AppSettings {
-  id                       Int      @id @default(1)
-  maintenanceMode          Boolean  @default(false) @map("maintenance_mode")
-  registrationEnabled      Boolean  @default(true) @map("registration_enabled")
-  maxPropertiesPerLandlord Int      @default(3) @map("max_properties_per_landlord")
-  maxImagesPerProperty     Int      @default(10) @map("max_images_per_property")
-  minPropertyPrice         Decimal? @map("min_property_price")
-  maxPropertyPrice         Decimal? @map("max_property_price")
-  commissionRate           Decimal  @default(0) @map("commission_rate")
-  updatedAt                DateTime @updatedAt @map("updated_at")
+model AppSetting {
+  key       String   @id
+  group     String
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("app_settings")
 }
