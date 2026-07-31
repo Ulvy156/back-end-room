@@ -16,6 +16,7 @@ const SETTINGS: Array<{
   { key: 'maxImagesPerProperty', group: 'property', value: 5 },
   { key: 'minPropertyPrice', group: 'property', value: 30 },
   { key: 'maxPropertyPrice', group: 'property', value: 2000 },
+  { key: 'limitAddPhoneNumber', group: 'user', value: 3 },
 ];
 
 export async function seedAppSettings(prisma: PrismaClient) {

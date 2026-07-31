@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CacheService } from 'src/cache/cache.service';
 import { CACHE_KEYS } from 'src/cache/cache.key';
 import { prismaError } from 'src/utils/prismaError';
-import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { UpdateSettingDto } from './dto/update-setting.dto';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { Prisma } from 'prisma/generated/client';
 
@@ -17,6 +17,7 @@ export interface AppSettingsMap {
   maxImagesPerProperty: number;
   minPropertyPrice: number | null;
   maxPropertyPrice: number | null;
+  limitAddPhoneNumber: number;
   [key: string]: unknown;
 }
 
@@ -32,6 +33,8 @@ const SETTING_VALIDATORS: Record<string, SettingValidator> = {
     typeof v === 'number' && Number.isInteger(v) && v >= 1,
   maxImagesPerProperty: (v) =>
     typeof v === 'number' && Number.isInteger(v) && v >= 1,
+  limitAddPhoneNumber: (v) =>
+    typeof v === 'number' && Number.isInteger(v) && v >= 1,
   minPropertyPrice: (v) =>
     v === null || (typeof v === 'number' && Number.isFinite(v) && v >= 0),
   maxPropertyPrice: (v) =>
@@ -43,8 +46,8 @@ function matchesCurrentType(current: unknown, value: unknown): boolean {
   return typeof value === typeof current;
 }
 
-// The global ValidationPipe intentionally skips this endpoint's body (see
-// dto/update-settings.dto.ts) so it can accept arbitrary keys — which also
+// The global ValidationPipe intentionally skips these endpoints' bodies (see
+// dto/update-setting.dto.ts) since `value` can be any JSON type — which also
 // means it does zero shape-checking for us. Guard it ourselves.
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -73,37 +76,38 @@ export class SettingsService {
     return settings;
   }
 
-  async updateSettings(dto: UpdateSettingsDto): Promise<AppSettingsMap> {
-    if (!isPlainObject(dto)) {
-      throw new BadRequestException('Request body must be a JSON object');
+  async updateSetting(
+    key: string,
+    dto: UpdateSettingDto,
+  ): Promise<AppSettingsMap> {
+    if (!isPlainObject(dto) || !('value' in dto)) {
+      throw new BadRequestException('value is required');
     }
 
     const current = await this.getSettings();
-    const keys = Object.keys(dto);
-    if (keys.length === 0) return current;
+    if (!(key in current)) {
+      throw new BadRequestException(`Unknown setting: ${key}`);
+    }
 
-    for (const key of keys) {
-      if (!(key in current)) {
-        throw new BadRequestException(`Unknown setting: ${key}`);
-      }
-      const validate =
-        SETTING_VALIDATORS[key] ??
-        ((v: unknown) => matchesCurrentType(current[key], v));
-      if (!validate(dto[key])) {
-        throw new BadRequestException(`Invalid value for setting: ${key}`);
-      }
+    const validate =
+      SETTING_VALIDATORS[key] ??
+      ((v: unknown) => matchesCurrentType(current[key], v));
+    if (!validate(dto.value)) {
+      throw new BadRequestException(`Invalid value for setting: ${key}`);
     }
 
     // Cross-field invariant — not expressible by a single per-key validator.
-    // Merge with `current` so a PATCH touching only one of the two fields is
-    // still checked against the other's stored value.
-    if ('minPropertyPrice' in dto || 'maxPropertyPrice' in dto) {
-      const nextMin = keys.includes('minPropertyPrice')
-        ? (dto.minPropertyPrice as number | null)
-        : current.minPropertyPrice;
-      const nextMax = keys.includes('maxPropertyPrice')
-        ? (dto.maxPropertyPrice as number | null)
-        : current.maxPropertyPrice;
+    // Merge with `current` so updating only one of the two fields is still
+    // checked against the other's stored value.
+    if (key === 'minPropertyPrice' || key === 'maxPropertyPrice') {
+      const nextMin =
+        key === 'minPropertyPrice'
+          ? (dto.value as number | null)
+          : current.minPropertyPrice;
+      const nextMax =
+        key === 'maxPropertyPrice'
+          ? (dto.value as number | null)
+          : current.maxPropertyPrice;
       if (nextMin != null && nextMax != null && nextMin > nextMax) {
         throw new BadRequestException(
           'minPropertyPrice cannot be greater than maxPropertyPrice',
@@ -112,19 +116,15 @@ export class SettingsService {
     }
 
     try {
-      await this.prisma.$transaction(
-        keys.map((key) =>
-          this.prisma.appSetting.update({
-            where: { key },
-            data: {
-              value:
-                dto[key] === null
-                  ? Prisma.JsonNull
-                  : (dto[key] as Prisma.InputJsonValue),
-            },
-          }),
-        ),
-      );
+      await this.prisma.appSetting.update({
+        where: { key },
+        data: {
+          value:
+            dto.value === null
+              ? Prisma.JsonNull
+              : (dto.value as Prisma.InputJsonValue),
+        },
+      });
       await this.cache.del(CACHE_KEYS.APP_SETTINGS);
     } catch (error) {
       prismaError(error);

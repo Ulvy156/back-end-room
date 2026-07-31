@@ -14,6 +14,7 @@ import { PhoneNumberType } from 'prisma/generated/enums';
 import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
+import { SettingsService } from 'src/settings/settings.service';
 
 const USER_PUBLIC_FIELDS = {
   id: true,
@@ -33,6 +34,7 @@ export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
+    private readonly appSetting: SettingsService,
   ) {}
 
   // ─── Admin ───────────────────────────────────────────────────────────────────
@@ -237,11 +239,15 @@ export class UserService {
   }
 
   async addPhone(userId: string, dto: AddPhoneDto) {
+    const { limitAddPhoneNumber } = await this.appSetting.getSettings();
+
     const phoneCount = await this.prisma.phone.count({
       where: { userId, type: PhoneNumberType.PHONE },
     });
-    if (phoneCount >= 3) {
-      throw new BadRequestException('Maximum 3 phone numbers allowed');
+    if (phoneCount >= limitAddPhoneNumber) {
+      throw new BadRequestException(
+        `Maximum ${limitAddPhoneNumber} phone numbers allowed`,
+      );
     }
 
     try {

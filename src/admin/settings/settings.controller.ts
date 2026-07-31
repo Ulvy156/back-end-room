@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 import { SettingsService } from 'src/settings/settings.service';
-import { UpdateSettingsDto } from 'src/settings/dto/update-settings.dto';
+import { UpdateSettingDto } from 'src/settings/dto/update-setting.dto';
 import { CreateSettingDto } from 'src/settings/dto/create-setting.dto';
 
 @Roles(UserRole.ADMIN)
@@ -20,8 +20,8 @@ export class AdminSettingsController {
     return this.settingsService.createSetting(dto);
   }
 
-  @Patch()
-  update(@Body() dto: UpdateSettingsDto) {
-    return this.settingsService.updateSettings(dto);
+  @Patch(':key')
+  update(@Param('key') key: string, @Body() dto: UpdateSettingDto) {
+    return this.settingsService.updateSetting(key, dto);
   }
 }
