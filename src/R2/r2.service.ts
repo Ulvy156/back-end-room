@@ -66,7 +66,8 @@ export class R2Service {
   }
 
   private generateFileName(folder: string) {
-    return `${folder}/${crypto.randomUUID()}.webp`;
+    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    return `${folder}/${crypto.randomUUID()}-${date}.webp`;
   }
 
   private async putObjectCommand(key: string, buffer: Buffer) {
