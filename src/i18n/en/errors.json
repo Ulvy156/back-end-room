@@ -40,5 +40,9 @@
   },
   "settings": {
     "maintenance_mode": "The platform is currently under maintenance. Please try again later."
+  },
+  "user": {
+    "phone_limit_exceeded": "Maximum {limit} phone numbers allowed",
+    "phone_already_used": "This phone number is already registered"
   }
 }

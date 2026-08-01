@@ -22,6 +22,7 @@ import {
 } from '../queue/queue.jobs';
 import { hashingPassword } from '../utils/hashingPassword';
 import { prismaError } from '../utils/prismaError';
+import { Prisma } from 'prisma/generated/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { TranslationService } from '../i18n/translation.service';
@@ -323,17 +324,28 @@ export class AuthService {
         ),
       ]);
 
-      await this.prisma.refreshToken.update({
-        where: { jti: payload.jti },
-        data: {
-          jti: newJti,
-          expiresAt,
-          previousJti: payload.jti,
-          previousJtiExpiresAt: new Date(Date.now() + this.refreshGraceMs),
-        },
-      });
+      try {
+        await this.prisma.refreshToken.update({
+          where: { jti: payload.jti },
+          data: {
+            jti: newJti,
+            expiresAt,
+            previousJti: payload.jti,
+            previousJtiExpiresAt: new Date(Date.now() + this.refreshGraceMs),
+          },
+        });
 
-      return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+        return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+      } catch (error) {
+        // Lost a rotation race between the findUnique above and this update:
+        // a concurrent refresh call already rotated this jti out from under
+        // us. Fall through to the "already rotated" handling below instead
+        // of surfacing a 500.
+        const isMissingRecord =
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2025';
+        if (!isMissingRecord) throw error;
+      }
     }
 
     // Lost a rotation race: this jti was valid moments ago but a concurrent

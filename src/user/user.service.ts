@@ -15,6 +15,7 @@ import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
 import { SettingsService } from 'src/settings/settings.service';
+import { TranslationService } from 'src/i18n/translation.service';
 
 const USER_PUBLIC_FIELDS = {
   id: true,
@@ -35,6 +36,7 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
     private readonly appSetting: SettingsService,
+    private readonly translation: TranslationService,
   ) {}
 
   // ─── Admin ───────────────────────────────────────────────────────────────────
@@ -246,7 +248,18 @@ export class UserService {
     });
     if (phoneCount >= limitAddPhoneNumber) {
       throw new BadRequestException(
-        `Maximum ${limitAddPhoneNumber} phone numbers allowed`,
+        this.translation.t('errors.user.phone_limit_exceeded', {
+          limit: limitAddPhoneNumber,
+        }),
+      );
+    }
+
+    const existingPhone = await this.prisma.phone.findUnique({
+      where: { phoneNumber: dto.phoneNumber },
+    });
+    if (existingPhone) {
+      throw new BadRequestException(
+        this.translation.t('errors.user.phone_already_used'),
       );
     }
 
