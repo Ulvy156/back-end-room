@@ -14,9 +14,12 @@ import {
 import { CreateParkingDto } from './create-parking.dto';
 
 export class CreatePropertyDto {
-  @IsNotEmpty()
+  // Only honored when the requester is ADMIN, to create/reassign a listing on
+  // a specific landlord's behalf — ignored for LANDLORD requests, which are
+  // always attributed to req.user.id. See PropertyService.create/update.
+  @IsOptional()
   @IsString()
-  userId: string;
+  userId?: string;
 
   @IsNotEmpty()
   @IsNumber()

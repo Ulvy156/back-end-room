@@ -45,10 +45,16 @@ export class PropertyController {
     @UploadedFiles() files: Express.Multer.File[],
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.propertyService.create(createPropertyDto, files, req.user.id);
+    return this.propertyService.create(
+      createPropertyDto,
+      files,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   // [ADMIN] All properties — filterable by status, searchable by title, paginated
+  @Roles(UserRole.ADMIN)
   @Get()
   findAll(@Query() filter: FindPropertiesDto) {
     return this.propertyService.findAll(filter);

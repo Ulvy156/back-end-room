@@ -83,6 +83,7 @@ export class PropertyService {
     createPropertyDto: CreatePropertyDto,
     files: Express.Multer.File[],
     requesterId: string,
+    role: UserRole,
   ) {
     let uploadedImgKeys: Array<{ key: string; url: string }> = [];
     try {
@@ -91,6 +92,14 @@ export class PropertyService {
           this.translation.t('errors.property.image_required'),
         );
       }
+
+      // Client-supplied userId is only trusted from an ADMIN, to create a
+      // listing on a specific landlord's behalf — a LANDLORD can never set
+      // another user as the owner, only themselves.
+      const ownerId =
+        role === UserRole.ADMIN && createPropertyDto.userId
+          ? createPropertyDto.userId
+          : requesterId;
 
       const settings = await this.settingsService.getSettings();
       if (files.length > settings.maxImagesPerProperty) {
@@ -102,7 +111,7 @@ export class PropertyService {
       const since = new Date();
       since.setDate(since.getDate() - 30);
       const recentCount = await this.prisma.property.count({
-        where: { userId: requesterId, createdAt: { gte: since } },
+        where: { userId: ownerId, createdAt: { gte: since } },
       });
       if (recentCount >= settings.maxPropertiesPerLandlord) {
         throw new BadRequestException(
@@ -110,8 +119,14 @@ export class PropertyService {
         );
       }
 
-      const { amenityKeys, ruleKeys, parkings, folderType, ...propertyData } =
-        createPropertyDto;
+      const {
+        amenityKeys,
+        ruleKeys,
+        parkings,
+        folderType,
+        userId: _bodyUserId,
+        ...propertyData
+      } = createPropertyDto;
       await this.assertPriceInRange(propertyData.monthly_price);
       await this.assertLocationWithinDistrict(
         propertyData.districtId,
@@ -125,6 +140,7 @@ export class PropertyService {
       const property = await this.prisma.property.create({
         data: {
           ...propertyData,
+          userId: ownerId,
           images: {
             create: uploadedImgKeys.map((img, index) => ({
               imageKey: img.key,
@@ -412,8 +428,13 @@ export class PropertyService {
     try {
       const existingProperty = await this.assertOwner(id, requesterId, role);
 
-      const { amenityKeys, ruleKeys, parkings, ...updateData } =
-        updatePropertyDto;
+      const {
+        amenityKeys,
+        ruleKeys,
+        parkings,
+        userId: bodyUserId,
+        ...updateData
+      } = updatePropertyDto;
       await this.assertPriceInRange(updateData.monthly_price);
       await this.assertLocationWithinDistrict(
         updateData.districtId ?? existingProperty.districtId,
@@ -421,10 +442,15 @@ export class PropertyService {
         updateData.lng !== undefined ? updateData.lng : existingProperty.lng,
       );
 
+      // Reassigning the owner is an ADMIN-only capability — a LANDLORD
+      // editing their own property can never hand it off to someone else.
+      const ownerUpdate =
+        role === UserRole.ADMIN && bodyUserId ? { userId: bodyUserId } : {};
+
       const property = await this.prisma.$transaction(async (tx) => {
         const updatedProperty = await tx.property.update({
           where: { id },
-          data: updateData,
+          data: { ...updateData, ...ownerUpdate },
         });
 
         // Update amenities (REPLACE)

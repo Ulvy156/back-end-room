@@ -13,7 +13,8 @@
     "missing_refresh_token": "Missing refresh token",
     "wrong_current_password": "Current password is incorrect",
     "registration_disabled": "New registrations are currently disabled",
-    "password_already_set": "A password is already set for this account"
+    "password_already_set": "A password is already set for this account",
+    "google_email_not_verified": "Your Google email is not verified. Please verify it with Google before signing in."
   },
   "property": {
     "not_found": "Property not found",

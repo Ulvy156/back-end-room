@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
+import { TranslationService } from '../i18n/translation.service';
 
 export interface GoogleUser {
   email: string;
@@ -10,7 +11,10 @@ export interface GoogleUser {
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(config: ConfigService) {
+  constructor(
+    config: ConfigService,
+    private readonly translation: TranslationService,
+  ) {
     super({
       clientID: config.getOrThrow<string>('GOOGLE_CLIENT_ID'),
       clientSecret: config.getOrThrow<string>('GOOGLE_CLIENT_SECRET'),
@@ -25,7 +29,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: VerifyCallback,
   ) {
-    const email = profile.emails![0].value;
+    const { value: email, verified } = profile.emails![0];
+    // Google itself hasn't confirmed this email — don't trust it to link or
+    // auto-verify a Rent Room account.
+    if (!verified) {
+      return done(
+        new UnauthorizedException(
+          this.translation.t('errors.auth.google_email_not_verified'),
+        ),
+      );
+    }
     const name = profile.displayName;
     done(null, { email, name } satisfies GoogleUser);
   }

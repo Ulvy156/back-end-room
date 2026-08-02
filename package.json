@@ -47,7 +47,7 @@
     "multer": "^2.2.0",
     "nestjs-i18n": "^10.8.5",
     "nestjs-pino": "^4.6.1",
-    "nodemailer": "^8.0.11",
+    "nodemailer": "^9.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
@@ -58,7 +58,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "sanitize-html": "^2.17.6",
-    "sharp": "^0.34.5"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",

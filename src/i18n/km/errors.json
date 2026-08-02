@@ -13,7 +13,8 @@
     "missing_refresh_token": "រកមិនឃើញ Refresh Token។",
     "wrong_current_password": "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ។",
     "registration_disabled": "ការចុះឈ្មោះគណនីថ្មីត្រូវបានផ្អាកជាបណ្ដោះអាសន្ន។",
-    "password_already_set": "គណនីនេះបានកំណត់ពាក្យសម្ងាត់រួចហើយ។"
+    "password_already_set": "គណនីនេះបានកំណត់ពាក្យសម្ងាត់រួចហើយ។",
+    "google_email_not_verified": "អ៊ីមែល Google របស់អ្នកមិនទាន់បានផ្ទៀងផ្ទាត់ទេ។ សូមផ្ទៀងផ្ទាត់វាជាមួយ Google មុននឹងចូលប្រើប្រាស់។"
   },
   "property": {
     "not_found": "រកមិនឃើញអចលនទ្រព្យ។",

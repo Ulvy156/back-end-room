@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { createHash, createHmac, randomUUID } from 'crypto';
+import { createHash, createHmac, randomInt, randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
@@ -75,7 +75,7 @@ export class AuthService {
   private readonly refreshGraceMs = 10_000;
 
   private generateOtp(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return randomInt(100000, 1000000).toString();
   }
 
   private hashOtp(otp: string): string {

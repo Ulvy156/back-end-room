@@ -62,7 +62,7 @@ export class AuthController {
 
   @Public()
   @BypassMaintenance()
-  @Throttle({ default: { limit: 110, ttl: 60000 } }) // 3 attempts per minute
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min — brute force protection
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -169,7 +169,7 @@ export class AuthController {
   // ─── Telegram login ──────────────────────────────────────────────────────────
 
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
   @Post('telegram-login')
   @HttpCode(HttpStatus.OK)
   async telegramLogin(
