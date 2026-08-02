@@ -651,10 +651,23 @@ export class AuthService {
         },
       });
     } else if (!user.isVerified) {
-      // Existing unverified email account — Google has confirmed the email, mark as verified
+      // Existing unverified email account — Google has proven ownership of this
+      // email, but whoever created the account originally chose its password,
+      // so it can't be trusted (pre-account-takeover: an attacker registers a
+      // dangling unverified account with the victim's email, then waits for
+      // the victim to "claim" it via Google and inherits access via the
+      // password only the attacker knows). Reset the password and drop any
+      // pending verification OTP so only this Google sign-in can access it.
       user = await this.prisma.user.update({
         where: { id: user.id },
-        data: { isVerified: true },
+        data: {
+          isVerified: true,
+          password: await hashingPassword(randomUUID()),
+          hasPassword: false,
+        },
+      });
+      await this.prisma.passwordResetToken.deleteMany({
+        where: { userId: user.id },
       });
     }
 

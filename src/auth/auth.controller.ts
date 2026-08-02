@@ -48,6 +48,16 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
+// Mirrors cookieOptions but for the short-lived access token — kept out of
+// response bodies/URLs so frontend JS never has a copy of it to leak via XSS.
+const accessCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: parseInt(process.env.JWT_EXPIRES_IN ?? '900', 10) * 1000,
+};
+
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
@@ -84,6 +94,7 @@ export class AuthController {
     });
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
+    res.cookie('access_token', accessToken, accessCookieOptions);
     return { accessToken, user_id: user.id };
   }
 
@@ -113,6 +124,7 @@ export class AuthController {
       await this.authService.verifyAccount(dto);
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
+    res.cookie('access_token', accessToken, accessCookieOptions);
     return { accessToken, user_id: userId };
   }
 
@@ -146,6 +158,7 @@ export class AuthController {
     const tokens = await this.authService.refreshTokens(refreshToken);
 
     res.cookie('refresh_token', tokens.refreshToken, cookieOptions);
+    res.cookie('access_token', tokens.accessToken, accessCookieOptions);
     return { accessToken: tokens.accessToken };
   }
 
@@ -157,6 +170,7 @@ export class AuthController {
     const refreshToken = (req.cookies as Record<string, string>)?.refresh_token;
     await this.authService.logout(refreshToken);
     res.clearCookie('refresh_token', { path: '/' });
+    res.clearCookie('access_token', { path: '/' });
   }
 
   // ─── Profile ─────────────────────────────────────────────────────────────────
@@ -184,6 +198,7 @@ export class AuthController {
     });
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
+    res.cookie('access_token', accessToken, accessCookieOptions);
     return { accessToken, user_id: user.id, is_new_user: isNewUser };
   }
 
@@ -255,9 +270,11 @@ export class AuthController {
     const { accessToken, refreshToken, isNewUser } =
       await this.authService.googleLogin(req.user);
     res.cookie('refresh_token', refreshToken, cookieOptions);
+    res.cookie('access_token', accessToken, accessCookieOptions);
     const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
-    res.redirect(
-      `${frontendUrl}/auth/callback?token=${accessToken}&is_new_user=${isNewUser}`,
-    );
+    // No token in the URL — it would sit in browser history and any
+    // server/CDN access logs along the redirect chain. The cookies set
+    // above are enough for the frontend to pick up the session.
+    res.redirect(`${frontendUrl}/auth/callback?is_new_user=${isNewUser}`);
   }
 }
