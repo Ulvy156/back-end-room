@@ -6,27 +6,22 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { ToBoolean } from 'src/utils/toBoolean';
 
 export class FindPropertiesDto {
   @IsOptional()
-  @Transform(({ value }) =>
-    value === 'true' ? true : value === 'false' ? false : undefined,
-  )
+  @ToBoolean()
   @IsBoolean()
   isPublished?: boolean;
 
   @IsOptional()
-  @Transform(({ value }) =>
-    value === 'true' ? true : value === 'false' ? false : undefined,
-  )
+  @ToBoolean()
   @IsBoolean()
   isFeatured?: boolean;
 
   @IsOptional()
-  @Transform(({ value }) =>
-    value === 'true' ? true : value === 'false' ? false : undefined,
-  )
+  @ToBoolean()
   @IsBoolean()
   isAvailable?: boolean;
 

@@ -17,24 +17,48 @@ export class LandlordPropertiesService {
   ) {}
 
   async getProperties(landlordId: string, filter: FindLandlordPropertiesDto) {
-    const { isPublished, isAvailable, search, page = 1, limit = 20 } = filter;
+    const {
+      isPublished,
+      isAvailable,
+      isFeatured,
+      propertyTypeId,
+      districtId,
+      provinceId,
+      minPrice,
+      maxPrice,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      page = 1,
+      limit = 20,
+    } = filter;
     const skip = (page - 1) * limit;
 
     const where: Prisma.PropertyWhereInput = {
       userId: landlordId,
-      ...(isPublished !== undefined && { isPublished }),
-      ...(isAvailable !== undefined && { isAvailable }),
+      isPublished,
+      isAvailable,
+      isFeatured,
+      propertyTypeId,
+      districtId,
+      ...(provinceId && { district: { provinceId } }),
+      ...((minPrice !== undefined || maxPrice !== undefined) && {
+        monthly_price: {
+          ...(minPrice !== undefined && { gte: minPrice }),
+          ...(maxPrice !== undefined && { lte: maxPrice }),
+        },
+      }),
       ...(search && {
         title: { contains: search, mode: 'insensitive' as const },
       }),
     };
 
-    const [items, total] = await Promise.all([
+    const [items, total] = await this.prisma.$transaction([
       this.prisma.property.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { [sortBy]: sortOrder },
         select: {
           id: true,
           title: true,
@@ -77,11 +101,10 @@ export class LandlordPropertiesService {
     ]);
 
     return {
-      items: items.map((p) => ({
+      items: items.map(({ _count, ...p }) => ({
         ...p,
-        favouriteCount: p._count.favorites,
-        reportCount: p._count.propertyReport,
-        _count: undefined,
+        favouriteCount: _count.favorites,
+        reportCount: _count.propertyReport,
       })),
       meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
@@ -92,9 +115,7 @@ export class LandlordPropertiesService {
     requesterId: string,
     role: UserRole,
   ) {
-    await this.assertOwner(propertyId, requesterId, role);
-
-    const property = await this.prisma.property.findUniqueOrThrow({
+    const property = await this.prisma.property.findUnique({
       where: { id: propertyId },
       include: {
         images: { select: { id: true, imageKey: true, isCover: true } },
@@ -141,6 +162,15 @@ export class LandlordPropertiesService {
       },
     });
 
+    if (!property)
+      throw new NotFoundException(
+        this.translation.t('errors.property.not_found'),
+      );
+    if (property.userId !== requesterId && role !== UserRole.ADMIN)
+      throw new ForbiddenException(
+        this.translation.t('errors.property.forbidden'),
+      );
+
     const allRules = await this.prisma.propertyRules.findMany({
       select: { id: true, nameEn: true, nameKh: true, icon: true },
     });
@@ -165,24 +195,5 @@ export class LandlordPropertiesService {
       favouriteCount: _count.favorites,
       reportCount: _count.propertyReport,
     };
-  }
-
-  private async assertOwner(
-    propertyId: string,
-    requesterId: string,
-    role: UserRole,
-  ) {
-    const property = await this.prisma.property.findUnique({
-      where: { id: propertyId },
-    });
-    if (!property)
-      throw new NotFoundException(
-        this.translation.t('errors.property.not_found'),
-      );
-    if (property.userId !== requesterId && role !== UserRole.ADMIN)
-      throw new ForbiddenException(
-        this.translation.t('errors.property.forbidden'),
-      );
-    return property;
   }
 }
