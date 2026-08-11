@@ -2,6 +2,7 @@ import {
   PutObjectCommand,
   DeleteObjectsCommand,
   DeleteObjectCommand,
+  CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -86,6 +87,21 @@ export class R2Service {
     };
   }
 
+  private async copyObjectCommand(sourceKey: string, destKey: string) {
+    await this.client.send(
+      new CopyObjectCommand({
+        Bucket: this.bucket,
+        CopySource: `${this.bucket}/${sourceKey}`,
+        Key: destKey,
+      }),
+    );
+
+    return {
+      key: destKey,
+      url: `${this.publicUrl}/${destKey}`,
+    };
+  }
+
   private async deleteSingleObjCommand(key: string) {
     return await this.client.send(
       new DeleteObjectCommand({
@@ -145,6 +161,14 @@ export class R2Service {
     } finally {
       await this.cleanupTempFile(file?.path);
     }
+  }
+
+  async copyMultipleFiles(keys: string[], folder: string = 'properties') {
+    return Promise.all(
+      keys.map((key) =>
+        this.copyObjectCommand(key, this.generateFileName(folder)),
+      ),
+    );
   }
 
   async deleteMultipleFiles(keys: string[]) {

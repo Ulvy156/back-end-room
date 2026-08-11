@@ -607,8 +607,18 @@ export class PropertyService {
         propertyAmenities: true,
         propertyRuleValue: true,
         parkings: true,
+        images: true,
       },
     });
+
+    // Copy each image object in R2 so the duplicate owns independent files —
+    // sharing imageKeys with the source would mean deleting either property's
+    // image (or the property itself) deletes the underlying file for both.
+    const copiedImages = source.images.length
+      ? await this.r2Service.copyMultipleFiles(
+          source.images.map((img) => img.imageKey),
+        )
+      : [];
 
     try {
       const copy = await this.prisma.property.create({
@@ -635,6 +645,14 @@ export class PropertyService {
           openTime: source.openTime,
           closeTime: source.closeTime,
           isPublished: false,
+          images: copiedImages.length
+            ? {
+                create: copiedImages.map((img, index) => ({
+                  imageKey: img.key,
+                  isCover: source.images[index].isCover,
+                })),
+              }
+            : undefined,
           propertyAmenities: {
             create: source.propertyAmenities.map((a) => ({
               amenity: { connect: { id: a.amenityId } },
@@ -661,6 +679,12 @@ export class PropertyService {
 
       return copy;
     } catch (error) {
+      // Cleanup copied images if the DB write fails
+      if (copiedImages.length) {
+        await this.r2Service.deleteMultipleFiles(
+          copiedImages.map((img) => img.key),
+        );
+      }
       prismaError(error);
     }
   }
