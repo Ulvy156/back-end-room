@@ -37,7 +37,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 2, ttl: 600000 } }) // 2 per 10 min — reflects 3-5 min upload time per property
+  @Throttle({ default: { limit: 4, ttl: 60000 } }) // 4 per min
   @Post()
   @UseInterceptors(FilesInterceptor('files', 20, multerDiskOptions()))
   create(
