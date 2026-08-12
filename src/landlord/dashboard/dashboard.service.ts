@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SettingsService } from 'src/settings/settings.service';
+import { getPropertyLimitWindowStart } from 'src/utils/propertyLimitWindow';
 
 @Injectable()
 export class LandlordDashboardService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  private static readonly MONTHLY_LIMIT = 3;
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async getDashboard(landlordId: string) {
-    const since = new Date();
-    since.setDate(since.getDate() - 30);
+    const [settings, landlord] = await Promise.all([
+      this.settingsService.getSettings(),
+      this.prisma.user.findUnique({
+        where: { id: landlordId },
+        select: { postLimitResetAt: true },
+      }),
+    ]);
+    const since = getPropertyLimitWindowStart(landlord?.postLimitResetAt);
 
     const [
       totalProperties,
@@ -99,9 +108,9 @@ export class LandlordDashboardService {
         totalViews: totalViewsAgg._sum.totalViews ?? 0,
         totalFavourites,
         propertiesThisMonth,
-        monthlyLimit: LandlordDashboardService.MONTHLY_LIMIT,
+        monthlyLimit: settings.maxPropertiesPerLandlord,
         propertiesRemaining: Math.max(
-          LandlordDashboardService.MONTHLY_LIMIT - propertiesThisMonth,
+          settings.maxPropertiesPerLandlord - propertiesThisMonth,
           0,
         ),
       },

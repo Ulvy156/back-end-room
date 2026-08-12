@@ -25,7 +25,7 @@
 | `property-report` | Users report property listings (`POST /property-report/:propertyId`); admins list/filter all reports (`GET /property-report`); owner or admin can delete (`DELETE /property-report/:id`). One report per user per property, self-report blocked. Reports require a `reportTypeId` from the `report-type` reference table. On creation, the property owner is notified async (Telegram if linked, else email) and the admin gets a Telegram alert — no auto-unpublish. |
 | `report-type` | Reference data — report type definitions (scam, inappropriate, duplicate, wrong info). Public `GET /report-type`. |
 | `feedback` | Users submit bug reports/suggestions (`POST /feedback`); admins list all feedback (`GET /feedback`). New submissions notify the admin via Telegram (async) |
-| `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings |
+| `admin` | Admin-only dashboard (stats, recent activity, top properties) and per-landlord property listings. `PATCH /admin/landlords/:id/reset-limit` resets a landlord's rolling 30-day posting-limit window early (sets `User.postLimitResetAt` to now) so they can post again before it would naturally clear. |
 | `landlord` | Landlord dashboard (summary stats, property performance table, recent favourites activity, top properties) |
 | `R2` | Cloudflare R2 via AWS S3 SDK. Images are resized (max 2400×3200) and converted to WebP (quality 82) using `sharp` before upload. |
 | `cache` | In-memory cache wrapper (NestJS cache-manager). Keys defined in `src/cache/cache.key.ts`. Property mutations clear relevant homepage cache keys. |

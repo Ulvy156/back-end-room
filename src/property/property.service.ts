@@ -22,6 +22,7 @@ import { QUEUE_JOBS, IncrementPropertyViewJob } from 'src/queue/queue.jobs';
 import { TranslationService } from 'src/i18n/translation.service';
 import { FindPropertiesDto } from './dto/find-properties.dto';
 import { SettingsService } from 'src/settings/settings.service';
+import { getPropertyLimitWindowStart } from 'src/utils/propertyLimitWindow';
 
 @Injectable()
 export class PropertyService {
@@ -33,6 +34,22 @@ export class PropertyService {
     private readonly translation: TranslationService,
     private readonly settingsService: SettingsService,
   ) {}
+
+  private async assertUnderPostingLimit(ownerId: string, limit: number) {
+    const owner = await this.prisma.user.findUnique({
+      where: { id: ownerId },
+      select: { postLimitResetAt: true },
+    });
+    const since = getPropertyLimitWindowStart(owner?.postLimitResetAt);
+    const recentCount = await this.prisma.property.count({
+      where: { userId: ownerId, createdAt: { gte: since } },
+    });
+    if (recentCount >= limit) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.monthly_limit'),
+      );
+    }
+  }
 
   private async assertPriceInRange(monthlyPrice: number | undefined) {
     if (monthlyPrice == null) return;
@@ -108,16 +125,10 @@ export class PropertyService {
         );
       }
 
-      const since = new Date();
-      since.setDate(since.getDate() - 30);
-      const recentCount = await this.prisma.property.count({
-        where: { userId: ownerId, createdAt: { gte: since } },
-      });
-      if (recentCount >= settings.maxPropertiesPerLandlord) {
-        throw new BadRequestException(
-          this.translation.t('errors.property.monthly_limit'),
-        );
-      }
+      await this.assertUnderPostingLimit(
+        ownerId,
+        settings.maxPropertiesPerLandlord,
+      );
 
       const {
         amenityKeys,
@@ -427,6 +438,11 @@ export class PropertyService {
   ) {
     try {
       const existingProperty = await this.assertOwner(id, requesterId, role);
+      if (existingProperty.isLocked && role !== UserRole.ADMIN) {
+        throw new ForbiddenException(
+          this.translation.t('errors.property.locked'),
+        );
+      }
 
       const {
         amenityKeys,
@@ -527,6 +543,7 @@ export class PropertyService {
         isPublished: true,
         isAvailable: true,
         isFeatured: true,
+        isLocked: true,
         totalViews: true,
         createdAt: true,
         images: {
@@ -552,6 +569,11 @@ export class PropertyService {
 
   async togglePublish(id: string, requesterId: string, role: UserRole) {
     const property = await this.assertOwner(id, requesterId, role);
+    if (property.isLocked && role !== UserRole.ADMIN) {
+      throw new ForbiddenException(
+        this.translation.t('errors.property.locked'),
+      );
+    }
     const updated = await this.prisma.property.update({
       where: { id },
       data: { isPublished: !property.isPublished },
@@ -559,6 +581,32 @@ export class PropertyService {
     });
     await this.clearCacheHomePage();
     return updated;
+  }
+
+  async lockProperty(id: string) {
+    try {
+      const updated = await this.prisma.property.update({
+        where: { id },
+        data: { isLocked: true, isPublished: false },
+        select: { id: true, isLocked: true, isPublished: true },
+      });
+      await this.clearCacheHomePage();
+      return updated;
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  async unlockProperty(id: string) {
+    try {
+      return await this.prisma.property.update({
+        where: { id },
+        data: { isLocked: false },
+        select: { id: true, isLocked: true, isPublished: true },
+      });
+    } catch (error) {
+      prismaError(error);
+    }
   }
 
   async toggleAvailability(id: string, requesterId: string, role: UserRole) {
@@ -590,16 +638,11 @@ export class PropertyService {
   async duplicate(id: string, requesterId: string, role: UserRole) {
     await this.assertOwner(id, requesterId, role);
 
-    const since = new Date();
-    since.setDate(since.getDate() - 30);
-    const recentCount = await this.prisma.property.count({
-      where: { userId: requesterId, createdAt: { gte: since } },
-    });
-    if (recentCount >= 3) {
-      throw new BadRequestException(
-        this.translation.t('errors.property.monthly_limit'),
-      );
-    }
+    const settings = await this.settingsService.getSettings();
+    await this.assertUnderPostingLimit(
+      requesterId,
+      settings.maxPropertiesPerLandlord,
+    );
 
     const source = await this.prisma.property.findUniqueOrThrow({
       where: { id },

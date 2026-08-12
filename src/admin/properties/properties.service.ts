@@ -12,6 +12,7 @@ export class AdminPropertiesService {
       isPublished,
       isFeatured,
       isAvailable,
+      isLocked,
       search,
       landlordId,
       propertyId,
@@ -28,6 +29,7 @@ export class AdminPropertiesService {
       ...(isPublished !== undefined ? { isPublished } : {}),
       ...(isFeatured !== undefined ? { isFeatured } : {}),
       ...(isAvailable !== undefined ? { isAvailable } : {}),
+      ...(isLocked !== undefined ? { isLocked } : {}),
       ...(search
         ? { title: { contains: search, mode: 'insensitive' as const } }
         : {}),
@@ -48,6 +50,7 @@ export class AdminPropertiesService {
           isPublished: true,
           isAvailable: true,
           isFeatured: true,
+          isLocked: true,
           totalViews: true,
           createdAt: true,
           updatedAt: true,

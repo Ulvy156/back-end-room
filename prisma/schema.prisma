@@ -64,6 +64,11 @@ model User {
   showTelegram Boolean @default(true) @map("show_telegram")
   showEmail    Boolean @default(true) @map("show_email")
 
+  // Set by an admin to let a landlord post again before their rolling
+  // 30-day posting-limit window would otherwise clear naturally — the limit
+  // check clamps its lookback to this timestamp when it's more recent.
+  postLimitResetAt DateTime? @map("post_limit_reset_at")
+
   properties         Property[]
   favorites          Favorite[]
   phones             Phone[]
@@ -216,6 +221,7 @@ model Property {
   sizeSqm           Int     @map("size_sqm")
   furnished         Boolean @default(true)
   isPublished       Boolean @default(true) @map("is_published")
+  isLocked          Boolean @default(false) @map("is_locked")
   minimumStayLength Int     @default(1) @map("minimum_stay_length")
 
   openTime  String? @map("open_time")

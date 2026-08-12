@@ -66,6 +66,7 @@ export class LandlordPropertiesService {
           isPublished: true,
           isAvailable: true,
           isFeatured: true,
+          isLocked: true,
           totalViews: true,
           openTime: true,
           closeTime: true,

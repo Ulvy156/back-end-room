@@ -146,6 +146,18 @@ export class PropertyController {
     return this.propertyService.setPropertyToFeature(id);
   }
 
+  @Roles(UserRole.ADMIN)
+  @Patch('/lock/:id')
+  lockProperty(@Param('id') id: string) {
+    return this.propertyService.lockProperty(id);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Patch('/unlock/:id')
+  unlockProperty(@Param('id') id: string) {
+    return this.propertyService.unlockProperty(id);
+  }
+
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents spam delete attempts
   @Delete(':id')

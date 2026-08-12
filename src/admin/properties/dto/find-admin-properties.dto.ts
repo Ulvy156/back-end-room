@@ -27,6 +27,11 @@ export class FindAdminPropertiesDto {
   isAvailable?: boolean;
 
   @IsOptional()
+  @ToBoolean()
+  @IsBoolean()
+  isLocked?: boolean;
+
+  @IsOptional()
   @IsString()
   search?: string;
 

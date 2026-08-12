@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Patch } from '@nestjs/common';
 import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 import { AdminLandlordsService } from './landlords.service';
@@ -11,5 +11,10 @@ export class AdminLandlordsController {
   @Get(':id/properties')
   getLandlordProperties(@Param('id') id: string) {
     return this.adminLandlordsService.getLandlordProperties(id);
+  }
+
+  @Patch(':id/reset-limit')
+  resetPostingLimit(@Param('id') id: string) {
+    return this.adminLandlordsService.resetPostingLimit(id);
   }
 }
