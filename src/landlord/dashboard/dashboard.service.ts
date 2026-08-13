@@ -113,6 +113,7 @@ export class LandlordDashboardService {
           settings.maxPropertiesPerLandlord - propertiesThisMonth,
           0,
         ),
+        resetAt: landlord?.postLimitResetAt ?? null,
       },
       recentActivity,
       topProperties: topProperties.map((p) => ({
