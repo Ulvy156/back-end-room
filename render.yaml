@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: rent-room-api
+    name: sabayrent-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: starter
