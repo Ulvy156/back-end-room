@@ -1,8 +1,11 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMyInfoDto } from './dto/update-my-info.dto';
@@ -10,12 +13,14 @@ import { UpdateContactVisibilityDto } from './dto/update-contact-visibility.dto'
 import { AddPhoneDto } from './dto/add-phone.dto';
 import { FindUsersDto } from './dto/find-users.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PhoneNumberType } from 'prisma/generated/enums';
+import { PhoneNumberType, UserRole } from 'prisma/generated/enums';
 import { hashingPassword } from 'src/utils/hashingPassword';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
 import { SettingsService } from 'src/settings/settings.service';
 import { TranslationService } from 'src/i18n/translation.service';
+import { PropertyService } from 'src/property/property.service';
+import { getDraftImages } from 'src/property-draft/draft-image.util';
 
 const USER_PUBLIC_FIELDS = {
   id: true,
@@ -30,13 +35,44 @@ const USER_PUBLIC_FIELDS = {
   updatedAt: true,
 } as const;
 
+// Account-management fields, not general public-profile data — only ever
+// selected for the caller's own record (getMyProfile, deletion-request
+// responses), never for admin listing/detail of another user.
+const USER_SELF_FIELDS = {
+  ...USER_PUBLIC_FIELDS,
+  showPhone: true,
+  showTelegram: true,
+  showEmail: true,
+  hasPassword: true,
+  deletionRequestedAt: true,
+  deletionScheduledFor: true,
+} as const;
+
+// What an admin needs to triage a pending deletion request — deliberately
+// separate from USER_PUBLIC_FIELDS (kept free of deletion state) rather than
+// adding these fields there.
+const DELETION_REQUEST_FIELDS = {
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  imgUrl: true,
+  createdAt: true,
+  deletionRequestedAt: true,
+  deletionScheduledFor: true,
+} as const;
+
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+  private readonly ACCOUNT_DELETION_GRACE_PERIOD_DAYS = 30;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly r2Service: R2Service,
     private readonly appSetting: SettingsService,
     private readonly translation: TranslationService,
+    private readonly propertyService: PropertyService,
   ) {}
 
   // ─── Admin ───────────────────────────────────────────────────────────────────
@@ -86,6 +122,42 @@ export class UserService {
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      items,
+      meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    };
+  }
+
+  // [ADMIN] Users with a pending self-service deletion request, oldest
+  // first — the review queue that feeds approveAccountDeletion(:id).
+  async findDeletionRequests(filter: FindUsersDto) {
+    const { role, search, page = 1, limit = 20 } = filter;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      deletionRequestedAt: { not: null },
+      ...(role ? { role } : {}),
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: 'insensitive' as const } },
+              { email: { contains: search, mode: 'insensitive' as const } },
+            ],
+          }
+        : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: DELETION_REQUEST_FIELDS,
+        skip,
+        take: limit,
+        orderBy: { deletionRequestedAt: 'asc' },
       }),
       this.prisma.user.count({ where }),
     ]);
@@ -202,10 +274,7 @@ export class UserService {
     return await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
       select: {
-        ...USER_PUBLIC_FIELDS,
-        showPhone: true,
-        showTelegram: true,
-        showEmail: true,
+        ...USER_SELF_FIELDS,
         phones: {
           select: { id: true, phoneNumber: true, type: true },
         },
@@ -336,5 +405,175 @@ export class UserService {
     } catch (error) {
       prismaError(error);
     }
+  }
+
+  // [USER] Request account deletion — flags the account and starts the
+  // grace period; a landlord's unlocked properties get hidden immediately.
+  async requestAccountDeletion(userId: string, currentPassword: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (!user.hasPassword) {
+      throw new BadRequestException(
+        this.translation.t('errors.user.password_required_for_deletion'),
+      );
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      throw new BadRequestException(
+        this.translation.t('errors.auth.wrong_current_password'),
+      );
+    }
+
+    const deletionRequestedAt = new Date();
+    const deletionScheduledFor = new Date(
+      deletionRequestedAt.getTime() +
+        this.ACCOUNT_DELETION_GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000,
+    );
+
+    try {
+      const updated = await this.prisma.$transaction(async (tx) => {
+        // Conditional update instead of check-then-write — makes the
+        // duplicate-request guard race-safe: if two requests land
+        // concurrently, only one can match and update a row.
+        const result = await tx.user.updateMany({
+          where: { id: userId, deletionRequestedAt: null },
+          data: { deletionRequestedAt, deletionScheduledFor },
+        });
+        if (result.count === 0) {
+          throw new BadRequestException(
+            this.translation.t('errors.user.deletion_already_requested'),
+          );
+        }
+        if (user.role === UserRole.LANDLORD) {
+          await this.propertyService.lockPropertiesByOwner(userId, tx);
+        }
+        return tx.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: USER_SELF_FIELDS,
+        });
+      });
+
+      if (user.role === UserRole.LANDLORD) {
+        await this.propertyService.clearCacheHomePage();
+      }
+
+      return {
+        ...updated,
+        message: this.translation.t('messages.user.deletion_requested'),
+      };
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  // [USER] Cancel a pending deletion request — only unlocks properties this
+  // request itself locked, never touches admin-locked ones.
+  async cancelAccountDeletion(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (!user.deletionRequestedAt) {
+      throw new BadRequestException(
+        this.translation.t('errors.user.no_deletion_pending'),
+      );
+    }
+
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: userId },
+          data: { deletionRequestedAt: null, deletionScheduledFor: null },
+        });
+        if (user.role === UserRole.LANDLORD) {
+          await this.propertyService.unlockPropertiesByOwner(userId, tx);
+        }
+      });
+
+      if (user.role === UserRole.LANDLORD) {
+        await this.propertyService.clearCacheHomePage();
+      }
+    } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  // [ADMIN] Approve a pending deletion request — permanently deletes the
+  // account and all owned data immediately, regardless of grace period.
+  async approveAccountDeletion(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(this.translation.t('errors.user.not_found'));
+    }
+    if (!user.deletionRequestedAt) {
+      throw new BadRequestException(
+        this.translation.t('errors.user.no_deletion_pending'),
+      );
+    }
+
+    // Collect every R2 key this user owns BEFORE anything is deleted, so
+    // cleanup can run only after the DB transaction has actually committed.
+    const [propertyImages, drafts] = await Promise.all([
+      this.prisma.propertyImage.findMany({
+        where: { property: { userId } },
+        select: { imageKey: true },
+      }),
+      this.prisma.propertyDraft.findMany({
+        where: { userId },
+        select: { images: true },
+      }),
+    ]);
+    const draftImageKeys = drafts
+      .flatMap((d) => getDraftImages(d))
+      .map((img) => img.key);
+    const imageKeysToDelete = [
+      ...propertyImages.map((img) => img.imageKey),
+      ...draftImageKeys,
+      ...(user.imgUrl ? [user.imgUrl] : []),
+    ];
+
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.property.deleteMany({ where: { userId } });
+        await tx.propertyDraft.deleteMany({ where: { userId } });
+
+        // Conditional final delete, guarding against a concurrent
+        // cancelAccountDeletion() winning the race. If it matches nothing,
+        // the throw rolls back the whole transaction, including the
+        // property/draft deletes just above.
+        const result = await tx.user.deleteMany({
+          where: { id: userId, deletionRequestedAt: { not: null } },
+        });
+        if (result.count === 0) {
+          throw new ConflictException(
+            this.translation.t('errors.user.no_deletion_pending'),
+          );
+        }
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+
+    if (user.role === UserRole.LANDLORD) {
+      await this.propertyService.clearCacheHomePage();
+    }
+
+    if (imageKeysToDelete.length) {
+      try {
+        await this.r2Service.deleteMultipleFiles(imageKeysToDelete);
+      } catch (error) {
+        // DB deletion already committed — a recoverable cleanup gap, not
+        // something to roll back or fail the request over.
+        this.logger.error(
+          `Failed to clean up R2 files for deleted user ${userId}`,
+          error instanceof Error ? error.stack : String(error),
+        );
+      }
+    }
+
+    return { message: this.translation.t('messages.admin.deletion_approved') };
   }
 }

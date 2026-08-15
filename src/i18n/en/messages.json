@@ -6,5 +6,11 @@
     "otp_sent": "If an account with that email exists, an OTP has been sent",
     "password_reset": "Password reset successfully. Please log in again.",
     "account_created": "Account created. Please check your email for the OTP to verify your account."
+  },
+  "user": {
+    "deletion_requested": "Account deletion requested. You can cancel this request at any time during the next 30 days. An admin may review and approve the request, which will immediately and permanently delete your account and data."
+  },
+  "admin": {
+    "deletion_approved": "Account and all associated data permanently deleted."
   }
 }

@@ -24,10 +24,12 @@ import { AddPhoneDto } from './dto/add-phone.dto';
 import { FindUsersDto } from './dto/find-users.dto';
 import { IsEmailExistDto } from './dto/is-email-exist.dto';
 import { IsPhoneExistDto } from './dto/is-phone-exist.dto';
+import { RequestAccountDeletionDto } from './dto/request-account-deletion.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerDiskOptions } from 'src/R2/multer-disk.config';
 import { Roles } from '../auth/roles.decorator';
 import { Public } from '../auth/public.decorator';
+import { Throttle } from '@nestjs/throttler';
 import { UserRole } from 'prisma/generated/enums';
 
 interface AuthenticatedRequest extends Request {
@@ -88,6 +90,26 @@ export class UserController {
     return this.userService.deleteProfileByUserId(req.user.id);
   }
 
+  // [USER] Request account deletion — requires current password, starts the grace period
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min, matches change-password
+  @Patch('/me/deletion-request')
+  requestAccountDeletion(
+    @Body() dto: RequestAccountDeletionDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.userService.requestAccountDeletion(
+      req.user.id,
+      dto.currentPassword,
+    );
+  }
+
+  // [USER] Cancel a pending deletion request
+  @Delete('/me/deletion-request')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  cancelAccountDeletion(@Req() req: AuthenticatedRequest) {
+    return this.userService.cancelAccountDeletion(req.user.id);
+  }
+
   @Public()
   @Get('/is-email-exist')
   isEmailExist(@Query() { email }: IsEmailExistDto) {
@@ -116,6 +138,14 @@ export class UserController {
   @Get()
   findAll(@Query() filter: FindUsersDto) {
     return this.userService.findAll(filter);
+  }
+
+  // [ADMIN] Review queue for approveAccountDeletion(:id) — must stay above
+  // ':id' below, or "deletion-requests" would be parsed as an id param.
+  @Roles(UserRole.ADMIN)
+  @Get('/deletion-requests')
+  findDeletionRequests(@Query() filter: FindUsersDto) {
+    return this.userService.findDeletionRequests(filter);
   }
 
   @Roles(UserRole.ADMIN)
@@ -152,6 +182,14 @@ export class UserController {
   @Patch('/revoke-badge/:id')
   revokeBadge(@Param('id') id: string) {
     return this.userService.revokeBadge(id);
+  }
+
+  // [ADMIN] Approve a pending deletion request — permanently deletes the
+  // account and all owned data immediately, regardless of grace period.
+  @Roles(UserRole.ADMIN)
+  @Patch('/approve-deletion/:id')
+  approveAccountDeletion(@Param('id') id: string) {
+    return this.userService.approveAccountDeletion(id);
   }
 
   @Roles(UserRole.ADMIN)

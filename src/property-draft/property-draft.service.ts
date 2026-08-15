@@ -17,6 +17,7 @@ import { CreatePropertyDto } from 'src/property/dto/create-property.dto';
 import { prismaError } from 'src/utils/prismaError';
 import { CreatePropertyDraftDto } from './dto/create-property-draft.dto';
 import { DraftImage } from './types/draft-image.type';
+import { getDraftImages } from './draft-image.util';
 
 @Injectable()
 export class PropertyDraftService {
@@ -43,10 +44,6 @@ export class PropertyDraftService {
       );
     }
     return draft;
-  }
-
-  private getImages(draft: { images: Prisma.JsonValue }): DraftImage[] {
-    return (draft.images as unknown as DraftImage[] | null) ?? [];
   }
 
   private getData(draft: { data: Prisma.JsonValue }): Record<string, unknown> {
@@ -126,7 +123,7 @@ export class PropertyDraftService {
     const draft = await this.assertOwner(id, requesterId, role);
     const { folderType, removeImageKeys, ...fields } = dto;
 
-    let images = this.getImages(draft);
+    let images = getDraftImages(draft);
     if (removeImageKeys?.length) {
       const toRemove = images.filter((img) =>
         removeImageKeys.includes(img.key),
@@ -186,7 +183,7 @@ export class PropertyDraftService {
   // [LANDLORD | ADMIN] Discard a draft — removes its R2 images too.
   async remove(id: string, requesterId: string, role: UserRole) {
     const draft = await this.assertOwner(id, requesterId, role);
-    const images = this.getImages(draft);
+    const images = getDraftImages(draft);
     try {
       await this.prisma.propertyDraft.delete({ where: { id } });
     } catch (error) {
@@ -203,7 +200,7 @@ export class PropertyDraftService {
   // CreatePropertyDto's own validation, or nothing is created.
   async publish(id: string, requesterId: string, role: UserRole) {
     const draft = await this.assertOwner(id, requesterId, role);
-    const images = this.getImages(draft);
+    const images = getDraftImages(draft);
 
     const candidate = plainToInstance(CreatePropertyDto, this.getData(draft));
     const validationErrors = await validate(candidate);

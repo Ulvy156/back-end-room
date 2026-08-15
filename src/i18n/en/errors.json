@@ -50,6 +50,10 @@
   },
   "user": {
     "phone_limit_exceeded": "Maximum {limit} phone numbers allowed",
-    "phone_already_used": "This phone number is already registered"
+    "phone_already_used": "This phone number is already registered",
+    "not_found": "User not found",
+    "deletion_already_requested": "Account deletion has already been requested",
+    "no_deletion_pending": "No pending deletion request",
+    "password_required_for_deletion": "This account has no password set. Password-based account deletion isn't available yet for Google/Telegram-only accounts — please contact support."
   }
 }

@@ -69,6 +69,14 @@ model User {
   // check clamps its lookback to this timestamp when it's more recent.
   postLimitResetAt DateTime? @map("post_limit_reset_at")
 
+  // Self-service deletion request state. deletionScheduledFor is persisted
+  // (not derived from deletionRequestedAt + a constant) so a future change
+  // to the grace-period length doesn't retroactively shift requests already
+  // in flight. It marks the end of the user's own cancellation window and
+  // does not gate admin approval — an admin can approve before it elapses.
+  deletionRequestedAt  DateTime? @map("deletion_requested_at")
+  deletionScheduledFor DateTime? @map("deletion_scheduled_for")
+
   properties         Property[]
   propertyDrafts     PropertyDraft[]
   favorites          Favorite[]
@@ -223,6 +231,10 @@ model Property {
   furnished         Boolean @default(true)
   isPublished       Boolean @default(true) @map("is_published")
   isLocked          Boolean @default(false) @map("is_locked")
+  // True only when isLocked was set by a pending account-deletion request
+  // (not an admin moderation lock) — lets cancelling the request unlock
+  // exactly the properties it locked, without touching admin-locked ones.
+  lockedByAccountDeletion Boolean @default(false) @map("locked_by_account_deletion")
   minimumStayLength Int     @default(1) @map("minimum_stay_length")
 
   openTime  String? @map("open_time")

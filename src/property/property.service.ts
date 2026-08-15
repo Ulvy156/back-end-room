@@ -461,7 +461,7 @@ export class PropertyService {
     return property;
   }
 
-  private async clearCacheHomePage() {
+  async clearCacheHomePage() {
     // remove home page cache
     await Promise.all([
       this.cache.del(CACHE_KEYS.FEATURED_LISTINGS),
@@ -647,6 +647,35 @@ export class PropertyService {
     } catch (error) {
       prismaError(error);
     }
+  }
+
+  // Only touches properties not already locked, so an admin-locked property
+  // is skipped and never gets lockedByAccountDeletion: true.
+  async lockPropertiesByOwner(
+    ownerId: string,
+    tx: Prisma.TransactionClient | PrismaService = this.prisma,
+  ) {
+    return tx.property.updateMany({
+      where: { userId: ownerId, isLocked: false },
+      data: {
+        isLocked: true,
+        isPublished: false,
+        lockedByAccountDeletion: true,
+      },
+    });
+  }
+
+  // Only touches properties flagged lockedByAccountDeletion: true, so an
+  // admin-locked property (never flagged) is left untouched. Never resets
+  // isPublished, matching unlockProperty() above — owner republishes manually.
+  async unlockPropertiesByOwner(
+    ownerId: string,
+    tx: Prisma.TransactionClient | PrismaService = this.prisma,
+  ) {
+    return tx.property.updateMany({
+      where: { userId: ownerId, lockedByAccountDeletion: true },
+      data: { isLocked: false, lockedByAccountDeletion: false },
+    });
   }
 
   async toggleAvailability(id: string, requesterId: string, role: UserRole) {
