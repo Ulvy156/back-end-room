@@ -27,9 +27,7 @@ export class PropertyAmenityService {
     const cacheData = await this.cache.get(CACHE_KEYS.AMENITIES);
     if (cacheData) return cacheData;
 
-    const amenities = await this.prisma.amenity.findMany({
-      take: 6,
-    });
+    const amenities = await this.prisma.amenity.findMany();
     await this.cache.set(CACHE_KEYS.AMENITIES, amenities);
     return amenities;
   }

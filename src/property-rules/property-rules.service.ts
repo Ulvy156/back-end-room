@@ -27,9 +27,7 @@ export class PropertyRulesService {
     const cacheData = await this.cache.get(CACHE_KEYS.PROPERTY_RULES);
     if (cacheData) return cacheData;
 
-    const propertyRules = await this.prisma.propertyRules.findMany({
-      take: 6,
-    });
+    const propertyRules = await this.prisma.propertyRules.findMany();
     await this.cache.set(CACHE_KEYS.PROPERTY_RULES, propertyRules);
     return propertyRules;
   }

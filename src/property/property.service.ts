@@ -296,6 +296,7 @@ export class PropertyService {
           images: {
             select: {
               imageKey: true,
+              isCover: true,
             },
           },
           propertyType: {
@@ -309,6 +310,7 @@ export class PropertyService {
             select: {
               amenity: {
                 select: {
+                  id: true,
                   nameEn: true,
                   nameKh: true,
                   icon: true,

@@ -123,7 +123,9 @@ export class LandlordPropertiesService {
         propertyType: { select: { nameEn: true, nameKh: true, icon: true } },
         propertyAmenities: {
           select: {
-            amenity: { select: { nameEn: true, nameKh: true, icon: true } },
+            amenity: {
+              select: { id: true, nameEn: true, nameKh: true, icon: true },
+            },
           },
         },
         district: {
