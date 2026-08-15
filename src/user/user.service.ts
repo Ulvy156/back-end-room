@@ -241,7 +241,9 @@ export class UserService {
   }
 
   async addPhone(userId: string, dto: AddPhoneDto) {
-    const { limitAddPhoneNumber } = await this.appSetting.getSettings();
+    const limitAddPhoneNumber =
+      (await this.appSetting.get<number>('auth', 'limitAddPhoneNumber')) ??
+      Infinity;
 
     const phoneCount = await this.prisma.phone.count({
       where: { userId, type: PhoneNumberType.PHONE },

@@ -53,7 +53,7 @@ export class LandlordPropertiesService {
       }),
     };
 
-    const [items, total] = await this.prisma.$transaction([
+    const [items, total] = await Promise.all([
       this.prisma.property.findMany({
         where,
         skip,

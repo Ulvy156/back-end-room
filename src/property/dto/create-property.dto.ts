@@ -81,6 +81,7 @@ export class CreatePropertyDto {
   isPublished: boolean;
 
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   availableFrom: Date;
 

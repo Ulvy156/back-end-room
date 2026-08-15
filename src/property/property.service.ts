@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
 import { CreatePropertyDto } from './dto/create-property.dto';
+import { CreateParkingDto } from './dto/create-parking.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { prismaError } from 'src/utils/prismaError';
@@ -53,9 +54,15 @@ export class PropertyService {
 
   private async assertPriceInRange(monthlyPrice: number | undefined) {
     if (monthlyPrice == null) return;
-    const settings = await this.settingsService.getSettings();
-    const min = settings.minPropertyPrice;
-    const max = settings.maxPropertyPrice;
+    // Fetched together (not two separate get() calls) so min/max come from
+    // one consistent snapshot — a concurrent admin write between two
+    // independent reads could otherwise compare against a stale value.
+    const propertySettings =
+      await this.settingsService.getByCategory('property');
+    const min = propertySettings.find((s) => s.key === 'minPropertyPrice')
+      ?.value as number | null | undefined;
+    const max = propertySettings.find((s) => s.key === 'maxPropertyPrice')
+      ?.value as number | null | undefined;
     if (
       (min != null && monthlyPrice < Number(min)) ||
       (max != null && monthlyPrice > Number(max))
@@ -102,52 +109,80 @@ export class PropertyService {
     requesterId: string,
     role: UserRole,
   ) {
-    let uploadedImgKeys: Array<{ key: string; url: string }> = [];
-    try {
-      if (!files.length) {
-        throw new BadRequestException(
-          this.translation.t('errors.property.image_required'),
-        );
-      }
-
-      // Client-supplied userId is only trusted from an ADMIN, to create a
-      // listing on a specific landlord's behalf — a LANDLORD can never set
-      // another user as the owner, only themselves.
-      const ownerId =
-        role === UserRole.ADMIN && createPropertyDto.userId
-          ? createPropertyDto.userId
-          : requesterId;
-
-      const settings = await this.settingsService.getSettings();
-      if (files.length > settings.maxImagesPerProperty) {
-        throw new BadRequestException(
-          this.translation.t('errors.property_image.image_limit'),
-        );
-      }
-
-      await this.assertUnderPostingLimit(
-        ownerId,
-        settings.maxPropertiesPerLandlord,
+    if (!files.length) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.image_required'),
       );
+    }
 
-      const {
-        amenityKeys,
-        ruleKeys,
-        parkings,
+    // Client-supplied userId is only trusted from an ADMIN, to create a
+    // listing on a specific landlord's behalf — a LANDLORD can never set
+    // another user as the owner, only themselves.
+    const ownerId =
+      role === UserRole.ADMIN && createPropertyDto.userId
+        ? createPropertyDto.userId
+        : requesterId;
+
+    const {
+      amenityKeys,
+      ruleKeys,
+      parkings,
+      folderType,
+      userId: _bodyUserId,
+      ...propertyData
+    } = createPropertyDto;
+
+    let uploadedImgKeys: Array<{ key: string; url: string }>;
+    try {
+      uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
+        files,
         folderType,
-        userId: _bodyUserId,
-        ...propertyData
-      } = createPropertyDto;
+      );
+    } catch (error) {
+      prismaError(error);
+      return;
+    }
+
+    return this.createFromUploadedData(
+      ownerId,
+      propertyData,
+      uploadedImgKeys,
+      amenityKeys,
+      ruleKeys,
+      parkings,
+      true,
+    );
+  }
+
+  // Shared by create() (fresh multipart upload) and PropertyDraftService's
+  // publish flow (images already uploaded, sitting on the draft). Runs the
+  // same business-rule validation and nested Property write either way.
+  async createFromUploadedData(
+    ownerId: string,
+    propertyData: Omit<
+      CreatePropertyDto,
+      'userId' | 'folderType' | 'amenityKeys' | 'ruleKeys' | 'parkings'
+    >,
+    uploadedImgKeys: Array<{ key: string; url: string }>,
+    amenityKeys: number[],
+    ruleKeys: number[] | undefined,
+    parkings: CreateParkingDto[] | undefined,
+    cleanupImagesOnFailure: boolean,
+  ) {
+    try {
+      const maxPropertiesPerLandlord =
+        (await this.settingsService.get<number>(
+          'property',
+          'maxPropertiesPerLandlord',
+        )) ?? Infinity;
+      await this.assertUnderPostingLimit(ownerId, maxPropertiesPerLandlord);
       await this.assertPriceInRange(propertyData.monthly_price);
       await this.assertLocationWithinDistrict(
         propertyData.districtId,
         propertyData.lat,
         propertyData.lng,
       );
-      uploadedImgKeys = await this.r2Service.uploadMultipleFiles(
-        files,
-        folderType,
-      );
+
       const property = await this.prisma.property.create({
         data: {
           ...propertyData,
@@ -192,8 +227,11 @@ export class PropertyService {
 
       return property;
     } catch (error) {
-      // Cleanup uploaded images if ANYTHING fails
-      if (uploadedImgKeys.length) {
+      // Cleanup uploaded images if ANYTHING fails — but only when this call
+      // owns them (a fresh create()). A publish-from-draft failure must NOT
+      // delete them: the draft's `images` column still references them, so
+      // deleting would corrupt the draft and block any retry.
+      if (cleanupImagesOnFailure && uploadedImgKeys.length) {
         await this.r2Service.deleteMultipleFiles(
           uploadedImgKeys.map((img) => img.key),
         );
@@ -640,11 +678,12 @@ export class PropertyService {
   async duplicate(id: string, requesterId: string, role: UserRole) {
     await this.assertOwner(id, requesterId, role);
 
-    const settings = await this.settingsService.getSettings();
-    await this.assertUnderPostingLimit(
-      requesterId,
-      settings.maxPropertiesPerLandlord,
-    );
+    const maxPropertiesPerLandlord =
+      (await this.settingsService.get<number>(
+        'property',
+        'maxPropertiesPerLandlord',
+      )) ?? Infinity;
+    await this.assertUnderPostingLimit(requesterId, maxPropertiesPerLandlord);
 
     const source = await this.prisma.property.findUniqueOrThrow({
       where: { id },

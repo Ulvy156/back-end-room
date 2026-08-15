@@ -104,8 +104,11 @@ export class AuthService {
   // ─── Register ───────────────────────────────────────────────────────────────
 
   async register(dto: RegisterDto) {
-    const settings = await this.settingsService.getSettings();
-    if (!settings.registrationEnabled) {
+    const registrationEnabled = await this.settingsService.get<boolean>(
+      'auth',
+      'registrationEnabled',
+    );
+    if (!registrationEnabled) {
       throw new ForbiddenException(
         this.translation.t('errors.auth.registration_disabled'),
       );
@@ -448,8 +451,11 @@ export class AuthService {
     if (phone) {
       user = phone.user;
     } else {
-      const settings = await this.settingsService.getSettings();
-      if (!settings.registrationEnabled) {
+      const registrationEnabled = await this.settingsService.get<boolean>(
+        'auth',
+        'registrationEnabled',
+      );
+      if (!registrationEnabled) {
         throw new ForbiddenException(
           this.translation.t('errors.auth.registration_disabled'),
         );
@@ -631,8 +637,11 @@ export class AuthService {
     });
 
     if (!user) {
-      const settings = await this.settingsService.getSettings();
-      if (!settings.registrationEnabled) {
+      const registrationEnabled = await this.settingsService.get<boolean>(
+        'auth',
+        'registrationEnabled',
+      );
+      if (!registrationEnabled) {
         throw new ForbiddenException(
           this.translation.t('errors.auth.registration_disabled'),
         );

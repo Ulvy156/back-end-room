@@ -8,6 +8,7 @@ Every feature has its own **Postman collection** file inside `API/`. One file pe
 |---|---|
 | Auth | `API/AUTH.json` |
 | Property + Property Images | `API/PROPERTY.json` |
+| Property Draft | `API/PROPERTY-DRAFT.json` |
 | User | `API/USER.json` |
 | Favourites | `API/FAVOURITE.json` |
 | Feedback | `API/FEEDBACK.json` |

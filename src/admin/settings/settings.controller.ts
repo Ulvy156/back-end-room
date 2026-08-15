@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'prisma/generated/enums';
 import { SettingsService } from 'src/settings/settings.service';
@@ -11,17 +20,43 @@ export class AdminSettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Get()
-  findOne() {
-    return this.settingsService.getSettings();
+  findAll() {
+    return this.settingsService.getAll();
+  }
+
+  @Get(':category')
+  findByCategory(@Param('category') category: string) {
+    return this.settingsService.getByCategory(category);
+  }
+
+  @Get(':category/:key')
+  async findOne(
+    @Param('category') category: string,
+    @Param('key') key: string,
+  ) {
+    const setting = await this.settingsService.getOne(category, key);
+    if (!setting) {
+      throw new NotFoundException(`Setting not found: ${category}.${key}`);
+    }
+    return setting;
   }
 
   @Post()
   create(@Body() dto: CreateSettingDto) {
-    return this.settingsService.createSetting(dto);
+    return this.settingsService.create(dto);
   }
 
-  @Patch(':key')
-  update(@Param('key') key: string, @Body() dto: UpdateSettingDto) {
-    return this.settingsService.updateSetting(key, dto);
+  @Patch(':category/:key')
+  update(
+    @Param('category') category: string,
+    @Param('key') key: string,
+    @Body() dto: UpdateSettingDto,
+  ) {
+    return this.settingsService.update(category, key, dto);
+  }
+
+  @Delete(':category/:key')
+  remove(@Param('category') category: string, @Param('key') key: string) {
+    return this.settingsService.delete(category, key);
   }
 }

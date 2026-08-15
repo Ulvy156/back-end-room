@@ -60,11 +60,15 @@ export class PropertyImageService {
         this.translation.t('errors.property_image.forbidden'),
       );
 
-    const settings = await this.settingsService.getSettings();
+    const maxImagesPerProperty =
+      (await this.settingsService.get<number>(
+        'property',
+        'maxImagesPerProperty',
+      )) ?? Infinity;
     const imageCount = await this.prisma.propertyImage.count({
       where: { propertyId },
     });
-    if (imageCount >= settings.maxImagesPerProperty) {
+    if (imageCount >= maxImagesPerProperty) {
       throw new BadRequestException(
         this.translation.t('errors.property_image.image_limit'),
       );

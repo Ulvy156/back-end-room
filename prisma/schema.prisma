@@ -70,6 +70,7 @@ model User {
   postLimitResetAt DateTime? @map("post_limit_reset_at")
 
   properties         Property[]
+  propertyDrafts     PropertyDraft[]
   favorites          Favorite[]
   phones             Phone[]
   propertyReport     PropertyReport[]
@@ -252,6 +253,27 @@ model Property {
   @@index([lng])
   @@index([lat, lng])
   @@map("properties")
+}
+
+// ==============================
+// PROPERTY DRAFT
+// ==============================
+// Business data is stored as loose Json rather than mirrored columns, since
+// it's throwaway scratch data until publish — see PropertyDraftService for
+// the shape stored in `data` (a partial CreatePropertyDto) and `images`.
+model PropertyDraft {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  data   Json?
+  images Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("property_drafts")
 }
 
 // ==============================
@@ -491,11 +513,17 @@ model AuditLog {
 // APP SETTINGS
 // ==============================
 model AppSetting {
-  key       String   @id
-  group     String
-  value     Json
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  category    String
+  key         String
+  value       Json
+  description String?
+  isPublic    Boolean  @default(false) @map("is_public")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
+  @@unique([category, key])
+  @@index([category])
   @@map("app_settings")
 }
 

@@ -45,7 +45,11 @@ export class AdminLandlordsService {
 
     if (!landlord) throw new NotFoundException('Landlord not found');
 
-    const settings = await this.settingsService.getSettings();
+    const maxPropertiesPerLandlord =
+      (await this.settingsService.get<number>(
+        'property',
+        'maxPropertiesPerLandlord',
+      )) ?? Infinity;
     const { postLimitResetAt, ...landlordProfile } = landlord;
 
     const properties = await this.prisma.property.findMany({
@@ -84,10 +88,10 @@ export class AdminLandlordsService {
     return {
       landlord: landlordProfile,
       postingLimit: {
-        monthlyLimit: settings.maxPropertiesPerLandlord,
+        monthlyLimit: maxPropertiesPerLandlord,
         propertiesThisMonth,
         propertiesRemaining: Math.max(
-          settings.maxPropertiesPerLandlord - propertiesThisMonth,
+          maxPropertiesPerLandlord - propertiesThisMonth,
           0,
         ),
         resetAt: postLimitResetAt,

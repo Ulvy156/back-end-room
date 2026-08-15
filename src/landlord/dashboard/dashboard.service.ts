@@ -11,13 +11,15 @@ export class LandlordDashboardService {
   ) {}
 
   async getDashboard(landlordId: string) {
-    const [settings, landlord] = await Promise.all([
-      this.settingsService.getSettings(),
+    const [maxPropertiesPerLandlordSetting, landlord] = await Promise.all([
+      this.settingsService.get<number>('property', 'maxPropertiesPerLandlord'),
       this.prisma.user.findUnique({
         where: { id: landlordId },
         select: { postLimitResetAt: true },
       }),
     ]);
+    const maxPropertiesPerLandlord =
+      maxPropertiesPerLandlordSetting ?? Infinity;
     const since = getPropertyLimitWindowStart(landlord?.postLimitResetAt);
 
     const [
@@ -108,9 +110,9 @@ export class LandlordDashboardService {
         totalViews: totalViewsAgg._sum.totalViews ?? 0,
         totalFavourites,
         propertiesThisMonth,
-        monthlyLimit: settings.maxPropertiesPerLandlord,
+        monthlyLimit: maxPropertiesPerLandlord,
         propertiesRemaining: Math.max(
-          settings.maxPropertiesPerLandlord - propertiesThisMonth,
+          maxPropertiesPerLandlord - propertiesThisMonth,
           0,
         ),
         resetAt: landlord?.postLimitResetAt ?? null,

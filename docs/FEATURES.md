@@ -11,6 +11,7 @@
 | Role-based access control (USER / LANDLORD / ADMIN) | `auth` | Done |
 | User profile management and avatar upload | `user` | Done |
 | Property listing CRUD with image upload and duplication | `property`, `property-image` | Done |
+| Save property as draft (partial data, publish when complete) | `property-draft` | Done |
 | Property amenities and house rules | `property-amenity`, `property-rules` | Done |
 | Browse and filter properties (price, location, type, bedroom, etc.) | `property` | Done |
 | Geo-based filtering and distance calculation (haversine) | `property` | Done |

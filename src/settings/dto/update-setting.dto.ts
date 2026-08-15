@@ -1,7 +1,16 @@
-// Not a class-validator class: `value` can be any JSON type, and the global
-// ValidationPipe's `whitelist: true` would strip an undecorated `value`
-// property entirely. As a type alias it reflects as `Object` at runtime, so
-// the pipe skips it instead — SettingsService.updateSetting() validates it.
-export type UpdateSettingDto = {
-  value: unknown;
-};
+import { Allow, IsBoolean, IsOptional, IsString } from 'class-validator';
+
+export class UpdateSettingDto {
+  // Any JSON type — see CreateSettingDto for why this is @Allow() instead of
+  // a type-checked decorator.
+  @Allow()
+  value?: unknown;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublic?: boolean;
+}

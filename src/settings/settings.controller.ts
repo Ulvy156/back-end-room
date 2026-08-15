@@ -11,8 +11,15 @@ import { SettingsService } from './settings.service';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
+  // Backward-compat shape for the frontend's appSettings store: a flat
+  // { [key]: value } object, not the category-grouped rows the admin API
+  // uses. Only isPublic settings are included.
   @Get()
-  findOne() {
-    return this.settingsService.getSettings();
+  async findOne() {
+    const rows = await this.settingsService.getAllPublic();
+    return rows.reduce<Record<string, unknown>>((acc, row) => {
+      acc[row.key] = row.value;
+      return acc;
+    }, {});
   }
 }

@@ -35,6 +35,11 @@
     "forbidden": "You do not have permission to manage this image",
     "image_limit": "Maximum number of images reached for this property"
   },
+  "property_draft": {
+    "not_found": "Draft not found",
+    "forbidden": "You do not have permission to manage this draft",
+    "draft_limit": "You have reached the maximum number of saved drafts"
+  },
   "file": {
     "required": "File is required",
     "invalid_type": "Invalid image type",

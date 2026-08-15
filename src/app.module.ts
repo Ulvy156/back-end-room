@@ -15,6 +15,7 @@ import { AmenityModule } from './amenity/amenity.module';
 import { PropertyTypeModule } from './property-type/property-type.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PropertyModule } from './property/property.module';
+import { PropertyDraftModule } from './property-draft/property-draft.module';
 import { AppCacheModule } from './cache/cache.module';
 import { LocationModule } from './location/location.module';
 import { PropertyAmenityModule } from './property-amenity/property-amenity.module';
@@ -97,6 +98,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     AmenityModule,
     PropertyTypeModule,
     PropertyModule,
+    PropertyDraftModule,
     LocationModule,
     PropertyAmenityModule,
     PropertyRulesModule,

@@ -29,8 +29,11 @@ export class MaintenanceGuard implements CanActivate {
     );
     if (bypass) return true;
 
-    const settings = await this.settingsService.getSettings();
-    if (!settings.maintenanceMode) return true;
+    const maintenanceMode = await this.settingsService.get<boolean>(
+      'system',
+      'maintenanceMode',
+    );
+    if (!maintenanceMode) return true;
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     if (request.user?.role === UserRole.ADMIN) return true;
