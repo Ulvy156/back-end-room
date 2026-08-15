@@ -1232,11 +1232,13 @@ export class PropertyService {
         SELECT p.id,
         (
           6371 * acos(
-            cos(radians(${property.lat})) *
-            cos(radians(p.lat)) *
-            cos(radians(p.lng) - radians(${property.lng})) +
-            sin(radians(${property.lat})) *
-            sin(radians(p.lat))
+            LEAST(1, GREATEST(-1,
+              cos(radians(${property.lat})) *
+              cos(radians(p.lat)) *
+              cos(radians(p.lng) - radians(${property.lng})) +
+              sin(radians(${property.lat})) *
+              sin(radians(p.lat))
+            ))
           )
         ) AS distance
         FROM properties p
