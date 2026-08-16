@@ -8,7 +8,6 @@
     "invalid_telegram": "ព័ត៌មានផ្ទៀងផ្ទាត់ Telegram មិនត្រឹមត្រូវ។",
     "telegram_expired": "ការផ្ទៀងផ្ទាត់ Telegram បានផុតកំណត់។",
     "no_telegram_linked": "មិនមានគណនីណាមួយដែលភ្ជាប់ជាមួយ Telegram នេះទេ។",
-    "no_telegram_on_user": "គណនីនេះមិនទាន់បានភ្ជាប់ជាមួយ Telegram ទេ។",
     "invalid_refresh_token": "Refresh Token មិនត្រឹមត្រូវ។",
     "missing_refresh_token": "រកមិនឃើញ Refresh Token។",
     "wrong_current_password": "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ។",

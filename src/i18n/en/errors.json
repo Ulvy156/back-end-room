@@ -8,7 +8,6 @@
     "invalid_telegram": "Invalid Telegram authentication data",
     "telegram_expired": "Telegram authentication has expired",
     "no_telegram_linked": "No account linked to this Telegram account",
-    "no_telegram_on_user": "No Telegram account linked to this user",
     "invalid_refresh_token": "Invalid refresh token",
     "missing_refresh_token": "Missing refresh token",
     "wrong_current_password": "Current password is incorrect",

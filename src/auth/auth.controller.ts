@@ -209,7 +209,7 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
-    await this.authService.forgotPassword(dto.email, dto.channel);
+    await this.authService.forgotPassword(dto);
     return {
       message: this.translation.t('messages.auth.otp_sent'),
     };
@@ -220,7 +220,11 @@ export class AuthController {
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
-    await this.authService.resetPassword(dto.email, dto.otp, dto.newPassword);
+    await this.authService.resetPassword(
+      { email: dto.email, telegramId: dto.telegramId },
+      dto.otp,
+      dto.newPassword,
+    );
     return { message: this.translation.t('messages.auth.password_reset') };
   }
 

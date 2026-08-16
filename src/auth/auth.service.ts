@@ -12,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { QueueService } from '../queue/queue.service';
 import {
   QUEUE_JOBS,
@@ -503,44 +504,77 @@ export class AuthService {
 
   // ─── Password reset ──────────────────────────────────────────────────────────
 
-  async forgotPassword(email: string, channel: 'telegram' | 'email') {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-      include: { phones: true },
-    });
-
-    // Silent return — do not reveal whether the email exists or is unverified
-    if (!user || user.isLocked || !user.isVerified) return;
-
+  async forgotPassword(dto: ForgotPasswordDto) {
     const otp = this.generateOtp();
 
-    if (channel === 'telegram') {
-      const telegramPhone = user.phones.find(
-        (p) => p.type === PhoneNumberType.TELEGRAM,
-      );
-      if (!telegramPhone) {
-        throw new BadRequestException(
-          this.translation.t('errors.auth.no_telegram_on_user'),
+    if (dto.channel === 'telegram') {
+      const telegram = dto.telegram!;
+      if (!this.verifyTelegramHash(telegram)) {
+        throw new UnauthorizedException(
+          this.translation.t('errors.auth.invalid_telegram'),
         );
       }
-      await this.storeOtp(user.id, otp, channel);
+      const authDate = new Date(telegram.auth_date * 1000);
+      if (authDate < new Date(Date.now() - 24 * 60 * 60 * 1000)) {
+        throw new UnauthorizedException(
+          this.translation.t('errors.auth.telegram_expired'),
+        );
+      }
+
+      // The Telegram widget hash already proves the requester controls this
+      // Telegram account, so a missing match is treated the same as a
+      // not-found/unverified/locked account below — silent, no enumeration.
+      const phone = await this.prisma.phone.findFirst({
+        where: {
+          phoneNumber: String(telegram.id),
+          type: PhoneNumberType.TELEGRAM,
+        },
+        include: { user: true },
+      });
+      const user = phone?.user;
+      if (!user || user.isLocked || !user.isVerified) return;
+
+      await this.storeOtp(user.id, otp, dto.channel);
       await this.queue.send<SendOtpTelegramJob>(
         QUEUE_JOBS.SEND_OTP_TELEGRAM,
-        { chatId: telegramPhone.phoneNumber, otp },
+        { chatId: phone.phoneNumber, otp },
         { retryLimit: 3, retryDelay: 30, retryBackoff: true },
       );
     } else {
-      await this.storeOtp(user.id, otp, channel);
+      const user = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+
+      // Silent return — do not reveal whether the email exists or is unverified
+      if (!user || user.isLocked || !user.isVerified) return;
+
+      await this.storeOtp(user.id, otp, dto.channel);
       await this.queue.send<SendOtpEmailJob>(
         QUEUE_JOBS.SEND_OTP_EMAIL,
-        { to: email, otp },
+        { to: dto.email!, otp },
         { retryLimit: 3, retryDelay: 30, retryBackoff: true },
       );
     }
   }
 
-  async resetPassword(email: string, otp: string, newPassword: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async resetPassword(
+    identifier: { email?: string; telegramId?: number },
+    otp: string,
+    newPassword: string,
+  ) {
+    const user = identifier.email
+      ? await this.prisma.user.findUnique({
+          where: { email: identifier.email },
+        })
+      : (
+          await this.prisma.phone.findFirst({
+            where: {
+              phoneNumber: String(identifier.telegramId),
+              type: PhoneNumberType.TELEGRAM,
+            },
+            include: { user: true },
+          })
+        )?.user;
 
     if (!user)
       throw new BadRequestException(
@@ -569,7 +603,7 @@ export class AuthService {
     await this.prisma.$transaction([
       this.prisma.user.update({
         where: { id: user.id },
-        data: { password: hashed },
+        data: { password: hashed, hasPassword: true },
       }),
       this.prisma.passwordResetToken.delete({ where: { userId: user.id } }),
       this.prisma.refreshToken.deleteMany({ where: { userId: user.id } }),
