@@ -224,7 +224,8 @@ model Property {
   isFeatured Boolean   @default(false) @map("is_featured")
   featuredAt DateTime? @map("featured_at")
 
-  totalViews Int @default(0) @map("total_views")
+  totalViews   Int @default(0) @map("total_views")
+  contactCount Int @default(0) @map("contact_count")
 
   propertyTypeId    Int     @map("property_type_id")
   sizeSqm           Int     @map("size_sqm")

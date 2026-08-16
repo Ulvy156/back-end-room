@@ -1,8 +1,11 @@
+import { PhoneNumberType } from 'prisma/generated/enums';
+
 export const QUEUE_JOBS = {
   SEND_VERIFICATION_OTP: 'send-verification-otp',
   SEND_OTP_EMAIL: 'send-otp-email',
   SEND_OTP_TELEGRAM: 'send-otp-telegram',
   INCREMENT_PROPERTY_VIEW: 'increment-property-view',
+  RECORD_PROPERTY_CONTACT_CLICK: 'record-property-contact-click',
   PURGE_EXPIRED_TOKENS: 'purge-expired-tokens',
   SEND_FEEDBACK_NOTIFICATION: 'send-feedback-notification',
   WRITE_AUDIT_LOG: 'write-audit-log',
@@ -30,6 +33,11 @@ export interface SendOtpTelegramJob {
 
 export interface IncrementPropertyViewJob {
   propertyId: string;
+}
+
+export interface RecordPropertyContactClickJob {
+  propertyId: string;
+  method: PhoneNumberType;
 }
 
 export interface SendFeedbackNotificationJob {

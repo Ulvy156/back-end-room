@@ -30,6 +30,7 @@ import { LandlordModule } from './landlord/landlord.module';
 import { AuditLogModule } from './audit-log/audit-log.module';
 import { AuditInterceptor } from './audit-log/audit.interceptor';
 import { PropertyReportModule } from './property-report/property-report.module';
+import { PropertyContactModule } from './property-contact/property-contact.module';
 import { ReportTypeModule } from './report-type/report-type.module';
 import { SettingsModule } from './settings/settings.module';
 import { MaintenanceGuard } from './settings/maintenance.guard';
@@ -108,6 +109,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     LandlordModule,
     AuditLogModule,
     PropertyReportModule,
+    PropertyContactModule,
     ReportTypeModule,
     LegalModule,
   ],

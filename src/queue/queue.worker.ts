@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   IncrementPropertyViewJob,
   QUEUE_JOBS,
+  RecordPropertyContactClickJob,
   SendErrorAlertJob,
   SendFeedbackNotificationJob,
   SendOtpEmailJob,
@@ -71,6 +72,17 @@ export class QueueWorker implements OnModuleInit {
         const job = jobs[0];
         await this.prisma.property.update({
           data: { totalViews: { increment: 1 } },
+          where: { id: job.data.propertyId },
+        });
+      },
+    );
+
+    await this.queue.work<RecordPropertyContactClickJob>(
+      QUEUE_JOBS.RECORD_PROPERTY_CONTACT_CLICK,
+      async (jobs) => {
+        const job = jobs[0];
+        await this.prisma.property.update({
+          data: { contactCount: { increment: 1 } },
           where: { id: job.data.propertyId },
         });
       },
