@@ -578,15 +578,7 @@ export class AuthService {
 
   // ─── Select role ─────────────────────────────────────────────────────────────
 
-  async selectRole(userId: string, role: UserRole, password?: string) {
-    if (!password) {
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: { role },
-      });
-      return;
-    }
-
+  async selectRole(userId: string, role: UserRole, password: string) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
