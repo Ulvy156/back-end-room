@@ -7,6 +7,7 @@ import { TranslationService } from '../i18n/translation.service';
 export interface GoogleUser {
   email: string;
   name: string;
+  photoUrl?: string;
 }
 
 @Injectable()
@@ -40,6 +41,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       );
     }
     const name = profile.displayName;
-    done(null, { email, name } satisfies GoogleUser);
+    const photoUrl = profile.photos?.[0]?.value;
+    done(null, { email, name, photoUrl } satisfies GoogleUser);
   }
 }

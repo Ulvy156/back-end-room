@@ -703,7 +703,11 @@ export class AuthService {
 
   // ─── Google OAuth ─────────────────────────────────────────────────────────────
 
-  async googleLogin(googleUser: { email: string; name: string }) {
+  async googleLogin(googleUser: {
+    email: string;
+    name: string;
+    photoUrl?: string;
+  }) {
     let isNewUser = false;
     let user = await this.prisma.user.findUnique({
       where: { email: googleUser.email },
@@ -721,10 +725,30 @@ export class AuthService {
       }
 
       isNewUser = true;
+
+      // Best-effort: pull their Google avatar into our own R2 bucket so
+      // imgUrl stays a same-shape R2 key. A fetch failure shouldn't block
+      // registration — they can always set a photo manually afterwards.
+      let imgUrl: string | undefined;
+      if (googleUser.photoUrl) {
+        try {
+          const uploaded = await this.r2Service.uploadFromUrl(
+            googleUser.photoUrl,
+            'profile',
+          );
+          imgUrl = uploaded.key;
+        } catch (error) {
+          this.logger.warn(
+            `Failed to import Google profile photo for ${googleUser.email}: ${error}`,
+          );
+        }
+      }
+
       user = await this.prisma.user.create({
         data: {
           email: googleUser.email,
           name: googleUser.name,
+          imgUrl,
           // Random hash — Google users have no usable password until they set one via select-role
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
