@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -28,6 +29,7 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { TranslationService } from '../i18n/translation.service';
 import { SettingsService } from '../settings/settings.service';
+import { R2Service } from 'src/R2/r2.service';
 
 interface JwtAccessPayload {
   sub: string;
@@ -45,6 +47,8 @@ interface LoginUser {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -52,6 +56,7 @@ export class AuthService {
     private readonly queue: QueueService,
     private readonly translation: TranslationService,
     private readonly settingsService: SettingsService,
+    private readonly r2Service: R2Service,
   ) {}
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -231,14 +236,20 @@ export class AuthService {
   // ─── Login ──────────────────────────────────────────────────────────────────
 
   async validateUser(identifier: string, password: string) {
-    const user = await (identifier.includes('@')
-      ? this.prisma.user.findUnique({ where: { email: identifier } })
-      : this.prisma.phone
-          .findFirst({
-            where: { phoneNumber: identifier, type: PhoneNumberType.PHONE },
-            include: { user: true },
-          })
-          .then((p) => p?.user ?? null));
+    // Leading '@' is the Telegram-handle convention — checked first so it
+    // doesn't fall into the plain email branch below.
+    const user = await (identifier.startsWith('@')
+      ? this.prisma.user.findUnique({
+          where: { telegramUsername: identifier.slice(1) },
+        })
+      : identifier.includes('@')
+        ? this.prisma.user.findUnique({ where: { email: identifier } })
+        : this.prisma.phone
+            .findFirst({
+              where: { phoneNumber: identifier, type: PhoneNumberType.PHONE },
+              include: { user: true },
+            })
+            .then((p) => p?.user ?? null));
 
     // same return path as wrong password — prevents enumeration
     if (!user) return null;
@@ -451,6 +462,21 @@ export class AuthService {
 
     if (phone) {
       user = phone.user;
+
+      // Keep the stored @handle in sync — Telegram usernames can change,
+      // and a stale one would silently break username-based login.
+      const latestUsername = data.username ?? null;
+      if (user.telegramUsername !== latestUsername) {
+        try {
+          user = await this.prisma.user.update({
+            where: { id: user.id },
+            data: { telegramUsername: latestUsername },
+          });
+        } catch {
+          // Another account already claimed this @handle (Telegram allows
+          // reassignment after release) — not worth failing login over.
+        }
+      }
     } else {
       const registrationEnabled = await this.settingsService.get<boolean>(
         'auth',
@@ -465,10 +491,31 @@ export class AuthService {
       // First time — auto-register, Telegram has already verified their identity
       isNewUser = true;
       const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+
+      // Best-effort: pull their Telegram avatar into our own R2 bucket so
+      // imgUrl stays a same-shape R2 key. A fetch failure shouldn't block
+      // registration — they can always set a photo manually afterwards.
+      let imgUrl: string | undefined;
+      if (data.photo_url) {
+        try {
+          const uploaded = await this.r2Service.uploadFromUrl(
+            data.photo_url,
+            'profile',
+          );
+          imgUrl = uploaded.key;
+        } catch (error) {
+          this.logger.warn(
+            `Failed to import Telegram profile photo for id=${data.id}: ${error}`,
+          );
+        }
+      }
+
       user = await this.prisma.user.create({
         data: {
           name,
           email: null,
+          telegramUsername: data.username ?? null,
+          imgUrl,
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
           role: UserRole.USER,

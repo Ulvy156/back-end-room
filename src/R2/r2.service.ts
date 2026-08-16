@@ -29,8 +29,8 @@ export class R2Service {
     this.publicUrl = config.get<string>('R2_PUB_URL')!;
   }
 
-  private async optimizeImage(filePath: string) {
-    return await sharp(filePath)
+  private async optimizeImage(source: string | Buffer) {
+    return await sharp(source)
       .resize(2400, 3200, {
         fit: 'inside',
         withoutEnlargement: true, // Small images are NOT upscaled
@@ -161,6 +161,32 @@ export class R2Service {
     } finally {
       await this.cleanupTempFile(file?.path);
     }
+  }
+
+  // Fetches an externally-hosted image (e.g. a Telegram/Google avatar URL)
+  // and re-uploads it into our own bucket, so imgUrl stays a same-shape R2
+  // key regardless of where the photo originated. Throws on any failure —
+  // callers on a best-effort path (like OAuth registration) should catch.
+  async uploadFromUrl(url: string, folder: string = 'profile') {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image (${response.status}): ${url}`);
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!ALLOWED_IMAGE_TYPES.includes(contentType as any)) {
+      throw new Error(`Unsupported image type: ${contentType}`);
+    }
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.length > MAX_IMAGE_SIZE) {
+      throw new Error(`Image too large: ${buffer.length} bytes`);
+    }
+
+    const key = this.generateFileName(folder);
+    const optimizedBuffer = await this.optimizeImage(buffer);
+
+    return await this.putObjectCommand(key, optimizedBuffer);
   }
 
   async copyMultipleFiles(keys: string[], folder: string = 'properties') {

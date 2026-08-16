@@ -52,6 +52,10 @@ model User {
   id         String   @id @default(uuid())
   name       String
   email      String?  @unique
+  // Telegram @handle, synced from the login widget payload on each
+  // telegram-login — lets Telegram-only accounts (no email/real phone) log
+  // in with a plain password using something they actually know.
+  telegramUsername String? @unique @map("telegram_username")
   password    String
   hasPassword Boolean @default(true) @map("has_password")
   imgUrl     String?  @map("img_url")
