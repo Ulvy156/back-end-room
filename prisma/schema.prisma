@@ -62,7 +62,7 @@ model User {
   isVerified       Boolean  @default(false) @map("is_verified")
   isLocked         Boolean  @default(false)
   hasVerifiedBadge Boolean  @default(false) @map("has_verified_badge")
-  role             UserRole @default(USER)
+  role             UserRole?
 
   showPhone    Boolean @default(true) @map("show_phone")
   showTelegram Boolean @default(true) @map("show_telegram")

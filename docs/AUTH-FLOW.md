@@ -19,9 +19,9 @@ Refresh tokens are stored in the `RefreshToken` table keyed by a UUID `jti`. Log
 
 **Login flows**
 
-- Email: `POST /auth/login` — validates credentials (email or phone number + password), checks `isVerified` and `isLocked`, issues both tokens.
-- Telegram: `POST /auth/telegram-login` — verifies the HMAC-SHA256 hash from the Telegram widget, rejects `auth_date` older than 24 hours, looks up the user via `Phone` table (`type = TELEGRAM`). If no match, auto-registers a new `USER`-role account with `email: null` (pre-verified). Issues both tokens; response includes `is_new_user`.
-- Google: `GET /auth/google` redirects to Google's consent screen; `GET /auth/google/callback` looks up the user by email, auto-registers a new `USER`-role account if none exists (or marks an existing unverified account as verified), issues both tokens, and redirects to `${FRONT_END_URL}/auth/callback?token=<accessToken>&is_new_user=<bool>` (refresh token set as cookie).
+- Email: `POST /auth/login` — validates credentials (email or phone number + password), checks `isVerified`, `isLocked`, `role !== null` (403 `role_not_selected`), and `hasPassword` (403 `password_not_set`), issues both tokens. Note: `POST /auth/verify-account` (right after registration) issues tokens directly and does **not** go through this gate, so a freshly-verified `role: null` user gets one token to reach `select-role` with — but if they don't use it and come back later, `POST /auth/login` will 403 them indefinitely (no other way for an email account to get a fresh token). This only matters if `RegisterDto.role` was omitted at registration.
+- Telegram: `POST /auth/telegram-login` — verifies the HMAC-SHA256 hash from the Telegram widget, rejects `auth_date` older than 24 hours, looks up the user via `Phone` table (`type = TELEGRAM`). If no match, auto-registers a new account with `role: null`, `email: null` (pre-verified). Issues both tokens; response includes `is_new_user`.
+- Google: `GET /auth/google` redirects to Google's consent screen; `GET /auth/google/callback` looks up the user by email, auto-registers a new account with `role: null` if none exists (or marks an existing unverified account as verified), issues both tokens, and redirects to `${FRONT_END_URL}/auth/callback?token=<accessToken>&is_new_user=<bool>` (refresh token set as cookie).
 
 **Nullable identity fields**
 
@@ -48,7 +48,7 @@ sequenceDiagram
     alt phone match found
         BE->>BE: Use linked user
     else no match
-        BE->>BE: Auto-register USER role, email=null, isVerified=true
+        BE->>BE: Auto-register role=null, email=null, isVerified=true
     end
     BE-->>FE: 200 { accessToken, user_id, is_new_user } + refresh_token cookie
     alt is_new_user
@@ -77,7 +77,7 @@ sequenceDiagram
     G->>BE: GET /auth/google/callback
     BE->>BE: Look up user by email
     alt no match
-        BE->>BE: Auto-register USER role
+        BE->>BE: Auto-register role=null
     else match, unverified
         BE->>BE: Mark existing account verified
     end
@@ -92,7 +92,13 @@ sequenceDiagram
 
 **Role selection**
 
-`PATCH /auth/select-role` — authenticated; lets a user (typically a new Telegram/Google sign-up, defaulted to `USER`) choose `USER` or `LANDLORD`. See `select-role.dto.ts`.
+`User.role` is nullable and has no default — a new account (email register with `role` omitted, or an auto-registered Telegram/Google sign-up) has `role: null` until explicitly set. `RolesGuard` treats `null` as matching no role. `POST /auth/login` (email/password) additionally rejects `role: null` outright with 403 (see above) — Telegram/Telegram-login and Google callback do not, since they're the bootstrap path for brand-new accounts.
+
+`PATCH /auth/select-role` — authenticated; `role` and `password` are both optional and validated independently:
+- `role` — only settable while `user.role` is still `null` (throws `role_already_set` otherwise). Must be `USER` or `LANDLORD`.
+- `password` — only settable while `user.hasPassword` is still `false` (throws `password_already_set` otherwise), i.e. for Telegram/Google accounts that never set a real password.
+
+At least one of the two must be provided. Email/password registrants (who already have a password) call this with `{ role }` only; Telegram/Google sign-ups typically call it with both in one request. See `select-role.dto.ts`.
 
 **Token refresh**
 

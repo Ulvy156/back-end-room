@@ -252,7 +252,7 @@ export class AuthController {
     @Body() dto: SelectRoleDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    await this.authService.selectRole(req.user!.id, dto.role, dto.password);
+    await this.authService.selectRole(req.user!.id, dto);
   }
 
   // ─── Google OAuth ─────────────────────────────────────────────────────────────

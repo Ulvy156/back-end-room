@@ -43,7 +43,7 @@ export async function seedProperties(prisma: PrismaClient) {
       ...base,
       title: 'Condo For Rent - Romdoul City Condo',
       description:
-        '𝐅𝐨𝐫 𝐑𝐞𝐧𝐭: 2BR Apartment – Close to Aeon 2, Sensok Area',
+      '𝐅𝐨𝐫 𝐑𝐞𝐧𝐭: 2BR Apartment – Close to Aeon 2, Sensok Area',
       address: 'Sk Tuek Thla, Sensok – Close to Royal Hospital',
       monthly_price: 1000,
       bedroom: 2,

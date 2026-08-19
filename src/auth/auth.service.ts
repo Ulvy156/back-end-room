@@ -33,7 +33,7 @@ import { R2Service } from 'src/R2/r2.service';
 
 interface JwtAccessPayload {
   sub: string;
-  role: UserRole;
+  role: UserRole | null;
 }
 
 interface JwtRefreshPayload extends JwtAccessPayload {
@@ -42,7 +42,7 @@ interface JwtRefreshPayload extends JwtAccessPayload {
 
 interface LoginUser {
   id: string;
-  role: UserRole;
+  role: UserRole | null;
 }
 
 @Injectable()
@@ -143,7 +143,7 @@ export class AuthService {
           name: dto.name,
           email: dto.email,
           password: await hashingPassword(dto.password),
-          role: dto.role ?? UserRole.USER,
+          role: dto.role ?? null,
           isVerified: false,
           ...(dto.phone
             ? {
@@ -264,6 +264,13 @@ export class AuthService {
     if (user.isLocked) {
       // 403 — identity is known but access is blocked
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+    }
+
+    if (user.role === null || !user.hasPassword) {
+      // 403 so the frontend can redirect to the role-selection step
+      throw new ForbiddenException(
+        this.translation.t('errors.auth.role_not_selected'),
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -518,7 +525,7 @@ export class AuthService {
           imgUrl,
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
-          role: UserRole.USER,
+          role: null,
           isVerified: true,
           phones: {
             create: {
@@ -659,24 +666,42 @@ export class AuthService {
 
   // ─── Select role ─────────────────────────────────────────────────────────────
 
-  async selectRole(userId: string, role: UserRole, password: string) {
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
-    if (user.hasPassword) {
+  async selectRole(
+    userId: string,
+    dto: { role?: UserRole; password?: string },
+  ) {
+    if (dto.role === undefined && dto.password === undefined) {
       throw new BadRequestException(
-        this.translation.t('errors.auth.password_already_set'),
+        this.translation.t('errors.auth.select_role_nothing_to_update'),
       );
     }
 
-    await this.prisma.user.update({
+    const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
-      data: {
-        role,
-        password: await hashingPassword(password),
-        hasPassword: true,
-      },
     });
+
+    const data: Prisma.UserUpdateInput = {};
+
+    if (dto.role !== undefined) {
+      if (user.role !== null) {
+        throw new BadRequestException(
+          this.translation.t('errors.auth.role_already_set'),
+        );
+      }
+      data.role = dto.role;
+    }
+
+    if (dto.password !== undefined) {
+      if (user.hasPassword) {
+        throw new BadRequestException(
+          this.translation.t('errors.auth.password_already_set'),
+        );
+      }
+      data.password = await hashingPassword(dto.password);
+      data.hasPassword = true;
+    }
+
+    await this.prisma.user.update({ where: { id: userId }, data });
   }
 
   // ─── Change password ─────────────────────────────────────────────────────────
@@ -752,7 +777,7 @@ export class AuthService {
           // Random hash — Google users have no usable password until they set one via select-role
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
-          role: UserRole.USER,
+          role: null,
           isVerified: true,
         },
       });
