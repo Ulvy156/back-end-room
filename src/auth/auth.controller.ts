@@ -41,11 +41,17 @@ interface GoogleAuthenticatedRequest extends Request {
   user: GoogleUser;
 }
 
+// Shared registrable domain (e.g. .rokpteah.com) so cookies set here
+// (api.rokpteah.com) are also sent on requests to the frontend's own domain
+// (rokpteah.com). Unset in local dev, where host-only cookies are fine.
+const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
+
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
   path: '/',
+  domain: cookieDomain,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -56,6 +62,7 @@ const accessCookieOptions = {
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
   path: '/',
+  domain: cookieDomain,
   maxAge: parseInt(process.env.JWT_EXPIRES_IN ?? '900', 10) * 1000,
 };
 
@@ -170,8 +177,8 @@ export class AuthController {
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = (req.cookies as Record<string, string>)?.refresh_token;
     await this.authService.logout(refreshToken);
-    res.clearCookie('refresh_token', { path: '/' });
-    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/', domain: cookieDomain });
+    res.clearCookie('access_token', { path: '/', domain: cookieDomain });
   }
 
   // ─── Profile ─────────────────────────────────────────────────────────────────
