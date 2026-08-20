@@ -541,6 +541,17 @@ export class AuthService {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
     }
 
+    // Returning user who never finished role selection last time — block here
+    // (same as email login) so the frontend knows to send them back to it.
+    // New sign-ups are exempt: role is always null right after auto-register,
+    // and they need the token issued below to reach the (authenticated)
+    // select-role endpoint in the first place.
+    if (!isNewUser && user.role === null) {
+      throw new ForbiddenException(
+        this.translation.t('errors.auth.role_not_selected'),
+      );
+    }
+
     if (isNewUser) {
       await this.queue.send<SendUserRegisteredAdminAlertJob>(
         QUEUE_JOBS.SEND_USER_REGISTERED_ADMIN_ALERT,
@@ -804,6 +815,17 @@ export class AuthService {
 
     if (user.isLocked) {
       throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+    }
+
+    // Returning user who never finished role selection last time — block here
+    // (same as email login) so the frontend knows to send them back to it.
+    // New sign-ups are exempt: role is always null right after auto-register,
+    // and they need the token issued below to reach the (authenticated)
+    // select-role endpoint in the first place.
+    if (!isNewUser && user.role === null) {
+      throw new ForbiddenException(
+        this.translation.t('errors.auth.role_not_selected'),
+      );
     }
 
     if (isNewUser) {
