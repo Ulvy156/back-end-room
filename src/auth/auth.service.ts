@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -94,6 +95,27 @@ export class AuthService {
       where: { userId },
       create: { userId, otp: this.hashOtp(otp), channel, expiresAt },
       update: { otp: this.hashOtp(otp), channel, expiresAt },
+    });
+  }
+
+  // Adds a stable `code` field alongside the translated `message` so the
+  // frontend can branch on a fixed value instead of the localized text
+  // (multiple auth error keys otherwise collapse to the same statusCode).
+  private forbiddenWithCode(key: string, code: string): never {
+    throw new ForbiddenException({
+      statusCode: HttpStatus.FORBIDDEN,
+      message: this.translation.t(`errors.auth.${key}`),
+      error: 'Forbidden',
+      code,
+    });
+  }
+
+  private badRequestWithCode(key: string, code: string): never {
+    throw new BadRequestException({
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: this.translation.t(`errors.auth.${key}`),
+      error: 'Bad Request',
+      code,
     });
   }
 
@@ -256,21 +278,17 @@ export class AuthService {
 
     if (!user.isVerified) {
       // 403 so the frontend can distinguish this from wrong credentials (401)
-      throw new ForbiddenException(
-        this.translation.t('errors.auth.not_verified'),
-      );
+      this.forbiddenWithCode('not_verified', 'not_verified');
     }
 
     if (user.isLocked) {
       // 403 — identity is known but access is blocked
-      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+      this.forbiddenWithCode('locked', 'locked');
     }
 
     if (user.role === null || !user.hasPassword) {
       // 403 so the frontend can redirect to the role-selection step
-      throw new ForbiddenException(
-        this.translation.t('errors.auth.role_not_selected'),
-      );
+      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -538,7 +556,7 @@ export class AuthService {
     }
 
     if (user.isLocked) {
-      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+      this.forbiddenWithCode('locked', 'locked');
     }
 
     // Returning user who never finished role selection last time — block here
@@ -547,9 +565,7 @@ export class AuthService {
     // and they need the token issued below to reach the (authenticated)
     // select-role endpoint in the first place.
     if (!isNewUser && user.role === null) {
-      throw new ForbiddenException(
-        this.translation.t('errors.auth.role_not_selected'),
-      );
+      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
     }
 
     if (isNewUser) {
@@ -682,8 +698,9 @@ export class AuthService {
     dto: { role?: UserRole; password?: string },
   ) {
     if (dto.role === undefined && dto.password === undefined) {
-      throw new BadRequestException(
-        this.translation.t('errors.auth.select_role_nothing_to_update'),
+      this.badRequestWithCode(
+        'select_role_nothing_to_update',
+        'select_role_nothing_to_update',
       );
     }
 
@@ -695,18 +712,14 @@ export class AuthService {
 
     if (dto.role !== undefined) {
       if (user.role !== null) {
-        throw new BadRequestException(
-          this.translation.t('errors.auth.role_already_set'),
-        );
+        this.badRequestWithCode('role_already_set', 'role_already_set');
       }
       data.role = dto.role;
     }
 
     if (dto.password !== undefined) {
       if (user.hasPassword) {
-        throw new BadRequestException(
-          this.translation.t('errors.auth.password_already_set'),
-        );
+        this.badRequestWithCode('password_already_set', 'password_already_set');
       }
       data.password = await hashingPassword(dto.password);
       data.hasPassword = true;
@@ -814,7 +827,7 @@ export class AuthService {
     }
 
     if (user.isLocked) {
-      throw new ForbiddenException(this.translation.t('errors.auth.locked'));
+      this.forbiddenWithCode('locked', 'locked');
     }
 
     // Returning user who never finished role selection last time — block here
@@ -823,9 +836,7 @@ export class AuthService {
     // and they need the token issued below to reach the (authenticated)
     // select-role endpoint in the first place.
     if (!isNewUser && user.role === null) {
-      throw new ForbiddenException(
-        this.translation.t('errors.auth.role_not_selected'),
-      );
+      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
     }
 
     if (isNewUser) {
