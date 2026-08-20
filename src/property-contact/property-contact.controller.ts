@@ -20,7 +20,7 @@ export class PropertyContactController {
 
   @SkipAudit()
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents count manipulation
+  @Throttle({ default: { limit: 40, ttl: 60000 } }) // 40 per min — prevents count manipulation
   @Post(':propertyId/contact')
   @HttpCode(HttpStatus.ACCEPTED)
   async recordContactClick(

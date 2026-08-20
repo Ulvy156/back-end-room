@@ -36,7 +36,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 4, ttl: 60000 } }) // 4 per min
+  @Throttle({ default: { limit: 16, ttl: 60000 } }) // 16 per min
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(
@@ -90,7 +90,7 @@ export class PropertyController {
   }
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 2, ttl: 600000 } })
+  @Throttle({ default: { limit: 8, ttl: 600000 } })
   @Post(':id/duplicate')
   duplicate(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.duplicate(id, req.user.id, req.user.role);
@@ -132,7 +132,7 @@ export class PropertyController {
 
   @SkipAudit()
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents view count manipulation
+  @Throttle({ default: { limit: 40, ttl: 60000 } }) // 40 per min — prevents view count manipulation
   @Patch('/increment-view/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async incrementView(@Param('id') id: string) {
@@ -158,7 +158,7 @@ export class PropertyController {
   }
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents spam delete attempts
+  @Throttle({ default: { limit: 40, ttl: 60000 } }) // 40 per min — prevents spam delete attempts
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.remove(id, req.user.id, req.user.role);

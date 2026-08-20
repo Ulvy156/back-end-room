@@ -29,7 +29,7 @@ interface AuthenticatedRequest extends Request {
 export class PropertyDraftController {
   constructor(private readonly propertyDraftService: PropertyDraftService) {}
 
-  @Throttle({ default: { limit: 4, ttl: 60000 } }) // 4 per min — same R2 cost profile as POST /property
+  @Throttle({ default: { limit: 16, ttl: 60000 } }) // 16 per min — same R2 cost profile as POST /property
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(
@@ -50,7 +50,7 @@ export class PropertyDraftController {
     return this.propertyDraftService.findOne(id, req.user.id, req.user.role);
   }
 
-  @Throttle({ default: { limit: 4, ttl: 60000 } })
+  @Throttle({ default: { limit: 16, ttl: 60000 } })
   @Patch(':id')
   @UseInterceptors(DynamicImagesInterceptor)
   update(
@@ -68,14 +68,14 @@ export class PropertyDraftController {
     );
   }
 
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — prevents spam delete attempts
+  @Throttle({ default: { limit: 40, ttl: 60000 } }) // 40 per min — prevents spam delete attempts
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     await this.propertyDraftService.remove(id, req.user.id, req.user.role);
   }
 
-  @Throttle({ default: { limit: 4, ttl: 60000 } })
+  @Throttle({ default: { limit: 16, ttl: 60000 } })
   @Post(':id/publish')
   publish(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyDraftService.publish(id, req.user.id, req.user.role);

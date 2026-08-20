@@ -73,7 +73,7 @@ export class AuthController {
 
   @Public()
   @BypassMaintenance()
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min — brute force protection
+  @Throttle({ default: { limit: 20, ttl: 900000 } }) // 20 attempts per 15 min — brute force protection
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -102,7 +102,7 @@ export class AuthController {
   // ─── Register ────────────────────────────────────────────────────────────────
 
   @Public()
-  @Throttle({ default: { limit: 3, ttl: 900000 } }) // 3 per 15 min — prevents OTP email spam
+  @Throttle({ default: { limit: 12, ttl: 900000 } }) // 12 per 15 min — prevents OTP email spam
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
@@ -114,7 +114,7 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 900000 } })
+  @Throttle({ default: { limit: 20, ttl: 900000 } })
   @Post('verify-account')
   @HttpCode(HttpStatus.OK)
   async verifyAccount(
@@ -130,7 +130,7 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 3, ttl: 900000 } }) // 3 per 15 min — prevents OTP email spam
+  @Throttle({ default: { limit: 12, ttl: 900000 } }) // 12 per 15 min — prevents OTP email spam
   @Post('resend-otp')
   @HttpCode(HttpStatus.OK)
   async resendOtp(@Body() dto: ResendOtpDto) {
@@ -184,7 +184,7 @@ export class AuthController {
   // ─── Telegram login ──────────────────────────────────────────────────────────
 
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 20, ttl: 900000 } }) // 20 attempts per 15 min
   @Post('telegram-login')
   @HttpCode(HttpStatus.OK)
   async telegramLogin(
@@ -206,7 +206,7 @@ export class AuthController {
   // ─── Password reset ───────────────────────────────────────────────────────────
 
   @Public()
-  @Throttle({ default: { limit: 3, ttl: 900000 } }) // 3 requests per 15 min
+  @Throttle({ default: { limit: 12, ttl: 900000 } }) // 12 requests per 15 min
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -217,7 +217,7 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 20, ttl: 900000 } }) // 20 attempts per 15 min
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
@@ -230,7 +230,7 @@ export class AuthController {
   }
 
   // [USER] Change own password — requires current password to be correct
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 20, ttl: 900000 } }) // 20 attempts per 15 min
   @Patch('change-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async changePassword(
@@ -246,7 +246,7 @@ export class AuthController {
 
   // ─── Select role ─────────────────────────────────────────────────────────────
 
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min
+  @Throttle({ default: { limit: 20, ttl: 900000 } }) // 20 attempts per 15 min
   @Patch('select-role')
   @HttpCode(HttpStatus.NO_CONTENT)
   async selectRole(

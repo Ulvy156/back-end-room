@@ -57,3 +57,4 @@ Not auto-loaded — read the relevant file when a task touches that area.
 | [docs/AUTH-FLOW.md](docs/AUTH-FLOW.md) | login, registration, tokens, OTP, password reset |
 | [docs/API-CONVENTION.md](docs/API-CONVENTION.md) | adding/updating a Postman collection in `API/` |
 | [docs/AI-PIPELINE.md](docs/AI-PIPELINE.md) | the (not-yet-built) AI pipeline feature |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | VPS deploy, docker-compose, redeploying, DB access, deploy-related bugs already fixed |
