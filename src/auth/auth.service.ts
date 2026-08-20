@@ -498,17 +498,13 @@ export class AuthService {
     }
 
     // 3. Look up or auto-create user via Telegram ID
-    const phone = await this.prisma.phone.findFirst({
-      where: { phoneNumber: String(data.id), type: PhoneNumberType.TELEGRAM },
-      include: { user: true },
+    let user = await this.prisma.user.findUnique({
+      where: { telegramId: String(data.id) },
     });
 
     let isNewUser = false;
-    let user: Awaited<ReturnType<typeof this.prisma.user.create>>;
 
-    if (phone) {
-      user = phone.user;
-
+    if (user) {
       // Keep the stored @handle in sync — Telegram usernames can change,
       // and a stale one would silently break username-based login.
       const latestUsername = data.username ?? null;
@@ -561,17 +557,12 @@ export class AuthService {
           name,
           email: null,
           telegramUsername: data.username ?? null,
+          telegramId: String(data.id),
           imgUrl,
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
           role: null,
           isVerified: true,
-          phones: {
-            create: {
-              phoneNumber: String(data.id),
-              type: PhoneNumberType.TELEGRAM,
-            },
-          },
         },
       });
     }
@@ -624,20 +615,15 @@ export class AuthService {
       // The Telegram widget hash already proves the requester controls this
       // Telegram account, so a missing match is treated the same as a
       // not-found/unverified/locked account below — silent, no enumeration.
-      const phone = await this.prisma.phone.findFirst({
-        where: {
-          phoneNumber: String(telegram.id),
-          type: PhoneNumberType.TELEGRAM,
-        },
-        include: { user: true },
+      const user = await this.prisma.user.findUnique({
+        where: { telegramId: String(telegram.id) },
       });
-      const user = phone?.user;
       if (!user || user.isLocked || !user.isVerified) return;
 
       await this.storeOtp(user.id, otp, dto.channel);
       await this.queue.send<SendOtpTelegramJob>(
         QUEUE_JOBS.SEND_OTP_TELEGRAM,
-        { chatId: phone.phoneNumber, otp },
+        { chatId: user.telegramId!, otp },
         { retryLimit: 3, retryDelay: 30, retryBackoff: true },
       );
     } else {
@@ -666,15 +652,9 @@ export class AuthService {
       ? await this.prisma.user.findUnique({
           where: { email: identifier.email },
         })
-      : (
-          await this.prisma.phone.findFirst({
-            where: {
-              phoneNumber: String(identifier.telegramId),
-              type: PhoneNumberType.TELEGRAM,
-            },
-            include: { user: true },
-          })
-        )?.user;
+      : await this.prisma.user.findUnique({
+          where: { telegramId: String(identifier.telegramId) },
+        });
 
     if (!user)
       throw new BadRequestException(

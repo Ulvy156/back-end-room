@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PhoneNumberType, UserRole } from 'prisma/generated/enums';
+import { UserRole } from 'prisma/generated/enums';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { QueueService } from 'src/queue/queue.service';
 import {
@@ -37,10 +37,7 @@ export class PropertyReportService {
             id: true,
             name: true,
             email: true,
-            phones: {
-              where: { type: PhoneNumberType.TELEGRAM },
-              select: { phoneNumber: true },
-            },
+            telegramId: true,
           },
         },
       },
@@ -87,12 +84,11 @@ export class PropertyReportService {
         },
       );
 
-      const telegramPhone = property.user.phones[0];
-      if (telegramPhone) {
+      if (property.user.telegramId) {
         await this.queue.send<SendPropertyReportedTelegramJob>(
           QUEUE_JOBS.SEND_PROPERTY_REPORTED_TELEGRAM,
           {
-            chatId: telegramPhone.phoneNumber,
+            chatId: property.user.telegramId,
             ownerName: property.user.name,
             propertyId,
             propertyTitle: property.title,

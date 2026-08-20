@@ -56,6 +56,11 @@ model User {
   // telegram-login — lets Telegram-only accounts (no email/real phone) log
   // in with a plain password using something they actually know.
   telegramUsername String? @unique @map("telegram_username")
+  // Telegram's permanent numeric user id — used only internally as the
+  // Telegram Bot API chatId (login lookup + OTP delivery). Not a phone
+  // number and never shown to other users; the Phone table holds only
+  // real, user-entered phone numbers.
+  telegramId String? @unique @map("telegram_id")
   password    String
   hasPassword Boolean @default(true) @map("has_password")
   imgUrl     String?  @map("img_url")

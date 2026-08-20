@@ -321,7 +321,9 @@ export class PropertyService {
               showTelegram: true,
               showEmail: true,
               hasVerifiedBadge: true,
+              telegramUsername: true,
               phones: {
+                where: { type: PhoneNumberType.PHONE },
                 select: {
                   phoneNumber: true,
                   type: true,
@@ -425,17 +427,34 @@ export class PropertyService {
 
       const { propertyAmenities, ...rest } = property;
 
-      const { showPhone, showTelegram, showEmail, phones, email, ...userRest } =
-        rest.user;
+      const {
+        showPhone,
+        showTelegram,
+        showEmail,
+        phones,
+        email,
+        telegramUsername,
+        ...userRest
+      } = rest.user;
+      const visiblePhones = showPhone ? phones : [];
       rest.user = {
         ...userRest,
         email: showEmail ? email : null,
-        phones: phones.filter(
-          (p) =>
-            (p.type === PhoneNumberType.PHONE && showPhone) ||
-            (p.type === PhoneNumberType.TELEGRAM && showTelegram),
-        ),
-      } as typeof rest.user;
+        phones: visiblePhones,
+        // Telegram never exposes a real phone number, so the "contact"
+        // action uses the landlord's @handle instead — clicking it opens
+        // https://t.me/<value>. Falls back to a real, manually-entered
+        // phone number when they have no Telegram handle set.
+        contact:
+          showTelegram && telegramUsername
+            ? { method: PhoneNumberType.TELEGRAM, value: telegramUsername }
+            : visiblePhones[0]
+              ? {
+                  method: PhoneNumberType.PHONE,
+                  value: visiblePhones[0].phoneNumber,
+                }
+              : null,
+      } as unknown as typeof rest.user;
 
       return {
         ...rest,

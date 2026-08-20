@@ -22,7 +22,11 @@ export class LandlordProfileService {
         showPhone: true,
         showTelegram: true,
         showEmail: true,
-        phones: { select: { phoneNumber: true, type: true } },
+        telegramUsername: true,
+        phones: {
+          where: { type: PhoneNumberType.PHONE },
+          select: { phoneNumber: true, type: true },
+        },
       },
     });
 
@@ -65,18 +69,31 @@ export class LandlordProfileService {
       this.prisma.property.count({ where }),
     ]);
 
-    const { showPhone, showTelegram, showEmail, phones, email, ...rest } =
-      landlord;
+    const {
+      showPhone,
+      showTelegram,
+      showEmail,
+      phones,
+      email,
+      telegramUsername,
+      ...rest
+    } = landlord;
+    const visiblePhones = showPhone ? phones : [];
 
     return {
       landlord: {
         ...rest,
         email: showEmail ? email : null,
-        phones: phones.filter(
-          (p) =>
-            (p.type === PhoneNumberType.PHONE && showPhone) ||
-            (p.type === PhoneNumberType.TELEGRAM && showTelegram),
-        ),
+        phones: visiblePhones,
+        contact:
+          showTelegram && telegramUsername
+            ? { method: PhoneNumberType.TELEGRAM, value: telegramUsername }
+            : visiblePhones[0]
+              ? {
+                  method: PhoneNumberType.PHONE,
+                  value: visiblePhones[0].phoneNumber,
+                }
+              : null,
         totalPublishedProperties: total,
       },
       properties: {
