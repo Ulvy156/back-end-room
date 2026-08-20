@@ -6,6 +6,7 @@ logs
 .env
 .env.*
 *.md
+!prisma/seed/legal/*.md
 prisma/generated
 .vscode
 .idea

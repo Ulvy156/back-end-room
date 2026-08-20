@@ -19,8 +19,8 @@ export async function seedLegalDocuments(prisma: PrismaClient) {
     LegalDocumentSlug,
     { en: string; kh: string },
   ][]) {
-    const contentEn = readFileSync(join(process.cwd(), 'API', en), 'utf-8');
-    const khPath = join(process.cwd(), 'API', kh);
+    const contentEn = readFileSync(join(__dirname, 'legal', en), 'utf-8');
+    const khPath = join(__dirname, 'legal', kh);
     const contentKh = existsSync(khPath)
       ? readFileSync(khPath, 'utf-8')
       : contentEn;

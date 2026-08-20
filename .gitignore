@@ -42,6 +42,9 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
+# Local-only credential notes
+vps-db-credentials.txt
+
 # temp directory
 .temp
 .tmp
