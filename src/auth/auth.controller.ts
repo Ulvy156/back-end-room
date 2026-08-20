@@ -4,6 +4,7 @@ import {
   Patch,
   Body,
   UnauthorizedException,
+  HttpException,
   Res,
   Req,
   Get,
@@ -271,14 +272,29 @@ export class AuthController {
     @Req() req: GoogleAuthenticatedRequest,
     @Res() res: Response,
   ) {
-    const { accessToken, refreshToken, isNewUser } =
-      await this.authService.googleLogin(req.user);
-    res.cookie('refresh_token', refreshToken, cookieOptions);
-    res.cookie('access_token', accessToken, accessCookieOptions);
     const frontendUrl = this.config.getOrThrow<string>('FRONT_END_URL');
-    // No token in the URL — it would sit in browser history and any
-    // server/CDN access logs along the redirect chain. The cookies set
-    // above are enough for the frontend to pick up the session.
-    res.redirect(`${frontendUrl}/auth/callback?is_new_user=${isNewUser}`);
+    try {
+      const { accessToken, refreshToken, isNewUser } =
+        await this.authService.googleLogin(req.user);
+      res.cookie('refresh_token', refreshToken, cookieOptions);
+      res.cookie('access_token', accessToken, accessCookieOptions);
+      // No token in the URL — it would sit in browser history and any
+      // server/CDN access logs along the redirect chain. The cookies set
+      // above are enough for the frontend to pick up the session.
+      res.redirect(`${frontendUrl}/auth/callback?is_new_user=${isNewUser}`);
+    } catch (error) {
+      // This is a full-page redirect from Google, not a fetch/XHR — if we
+      // let the exception filter write its usual JSON body here, the
+      // browser would strand mid-navigation on an unreadable error page
+      // instead of landing back in the app. Surface the failure as a query
+      // param on the same frontend callback route instead.
+      if (!(error instanceof HttpException)) throw error;
+      const body = error.getResponse();
+      const code =
+        typeof body === 'object' && body !== null && 'code' in body
+          ? String(body.code)
+          : 'login_failed';
+      res.redirect(`${frontendUrl}/auth/callback?error=${code}`);
+    }
   }
 }

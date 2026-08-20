@@ -25,7 +25,7 @@ import {
 } from '../queue/queue.jobs';
 import { hashingPassword } from '../utils/hashingPassword';
 import { prismaError } from '../utils/prismaError';
-import { Prisma } from 'prisma/generated/client';
+import { Prisma, User } from 'prisma/generated/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { TranslationService } from '../i18n/translation.service';
@@ -117,6 +117,36 @@ export class AuthService {
       error: 'Bad Request',
       code,
     });
+  }
+
+  // Shared login-eligibility gate — email/Telegram/Google login all need
+  // some subset of the same isLocked/role/hasPassword checks; this replaces
+  // three near-identical copies of that logic that used to drift independently.
+  private assertLoginEligible(
+    user: Pick<User, 'isLocked' | 'isVerified' | 'role' | 'hasPassword'>,
+    options: {
+      checkVerified: boolean; // email login only — Telegram/Google accounts are pre-verified
+      checkRole: boolean; // false for a brand-new Telegram/Google sign-up, which needs a token to reach select-role in the first place
+      checkPassword: boolean; // email login only — Telegram/Google users can stay password-less indefinitely
+    },
+  ) {
+    if (options.checkVerified && !user.isVerified) {
+      // 403 so the frontend can distinguish this from wrong credentials (401)
+      this.forbiddenWithCode('not_verified', 'not_verified');
+    }
+
+    if (user.isLocked) {
+      // 403 — identity is known but access is blocked
+      this.forbiddenWithCode('locked', 'locked');
+    }
+
+    if (
+      options.checkRole &&
+      (user.role === null || (options.checkPassword && !user.hasPassword))
+    ) {
+      // 403 so the frontend can redirect to the role-selection step
+      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
+    }
   }
 
   private async sendVerificationOtp(userId: string, email: string) {
@@ -276,20 +306,11 @@ export class AuthService {
     // same return path as wrong password — prevents enumeration
     if (!user) return null;
 
-    if (!user.isVerified) {
-      // 403 so the frontend can distinguish this from wrong credentials (401)
-      this.forbiddenWithCode('not_verified', 'not_verified');
-    }
-
-    if (user.isLocked) {
-      // 403 — identity is known but access is blocked
-      this.forbiddenWithCode('locked', 'locked');
-    }
-
-    if (user.role === null || !user.hasPassword) {
-      // 403 so the frontend can redirect to the role-selection step
-      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
-    }
+    this.assertLoginEligible(user, {
+      checkVerified: true,
+      checkRole: true,
+      checkPassword: true,
+    });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return null;
@@ -555,18 +576,16 @@ export class AuthService {
       });
     }
 
-    if (user.isLocked) {
-      this.forbiddenWithCode('locked', 'locked');
-    }
-
     // Returning user who never finished role selection last time — block here
     // (same as email login) so the frontend knows to send them back to it.
     // New sign-ups are exempt: role is always null right after auto-register,
     // and they need the token issued below to reach the (authenticated)
     // select-role endpoint in the first place.
-    if (!isNewUser && user.role === null) {
-      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
-    }
+    this.assertLoginEligible(user, {
+      checkVerified: false,
+      checkRole: !isNewUser,
+      checkPassword: false,
+    });
 
     if (isNewUser) {
       await this.queue.send<SendUserRegisteredAdminAlertJob>(
@@ -826,18 +845,16 @@ export class AuthService {
       });
     }
 
-    if (user.isLocked) {
-      this.forbiddenWithCode('locked', 'locked');
-    }
-
     // Returning user who never finished role selection last time — block here
     // (same as email login) so the frontend knows to send them back to it.
     // New sign-ups are exempt: role is always null right after auto-register,
     // and they need the token issued below to reach the (authenticated)
     // select-role endpoint in the first place.
-    if (!isNewUser && user.role === null) {
-      this.forbiddenWithCode('role_not_selected', 'role_not_selected');
-    }
+    this.assertLoginEligible(user, {
+      checkVerified: false,
+      checkRole: !isNewUser,
+      checkPassword: false,
+    });
 
     if (isNewUser) {
       await this.queue.send<SendUserRegisteredAdminAlertJob>(
