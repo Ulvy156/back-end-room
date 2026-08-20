@@ -12,10 +12,9 @@
     "missing_refresh_token": "Missing refresh token",
     "wrong_current_password": "Current password is incorrect",
     "registration_disabled": "New registrations are currently disabled",
-    "password_already_set": "A password is already set for this account",
     "google_email_not_verified": "Your Google email is not verified. Please verify it with Google before signing in.",
     "role_already_set": "A role is already set for this account",
-    "select_role_nothing_to_update": "Provide a role, a password, or both",
+    "select_role_already_completed": "This account already has a role and password set. Use change-password to update your password.",
     "role_not_selected": "Please select a role before logging in",
     "password_not_set": "This account has no password set. Please sign in with Telegram or Google, or complete your account setup"
   },

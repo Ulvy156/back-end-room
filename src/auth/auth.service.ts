@@ -712,36 +712,34 @@ export class AuthService {
 
   // ─── Select role ─────────────────────────────────────────────────────────────
 
-  async selectRole(
-    userId: string,
-    dto: { role?: UserRole; password?: string },
-  ) {
-    if (dto.role === undefined && dto.password === undefined) {
-      this.badRequestWithCode(
-        'select_role_nothing_to_update',
-        'select_role_nothing_to_update',
-      );
-    }
-
+  async selectRole(userId: string, dto: { role?: UserRole; password: string }) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
 
-    const data: Prisma.UserUpdateInput = {};
+    // This endpoint only exists to finish onboarding a user missing role
+    // and/or password (Telegram/Google sign-ups, email registrants who
+    // omitted role). A fully set-up account must use change-password instead.
+    if (user.role !== null && user.hasPassword) {
+      this.badRequestWithCode(
+        'select_role_already_completed',
+        'select_role_already_completed',
+      );
+    }
+
+    // Password is always required here and always overwrites — this is the
+    // one place a user without a password (Telegram/Google sign-up) sets one,
+    // and it doubles as a reset for a user who has a password but no role yet.
+    const data: Prisma.UserUpdateInput = {
+      password: await hashingPassword(dto.password),
+      hasPassword: true,
+    };
 
     if (dto.role !== undefined) {
       if (user.role !== null) {
         this.badRequestWithCode('role_already_set', 'role_already_set');
       }
       data.role = dto.role;
-    }
-
-    if (dto.password !== undefined) {
-      if (user.hasPassword) {
-        this.badRequestWithCode('password_already_set', 'password_already_set');
-      }
-      data.password = await hashingPassword(dto.password);
-      data.hasPassword = true;
     }
 
     await this.prisma.user.update({ where: { id: userId }, data });

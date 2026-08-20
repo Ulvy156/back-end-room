@@ -94,11 +94,13 @@ sequenceDiagram
 
 `User.role` is nullable and has no default — a new account (email register with `role` omitted, or an auto-registered Telegram/Google sign-up) has `role: null` until explicitly set. `RolesGuard` treats `null` as matching no role. `POST /auth/login` (email/password) additionally rejects `role: null` outright with 403 (see above) — Telegram/Telegram-login and Google callback do not, since they're the bootstrap path for brand-new accounts.
 
-`PATCH /auth/select-role` — authenticated; `role` and `password` are both optional and validated independently:
+`PATCH /auth/select-role` — authenticated; onboarding-only, for accounts still missing `role` and/or a password. Rejects with `select_role_already_completed` if the account already has both (use `POST /auth/change-password` for those). `password` is always required in the body, `role` is optional:
+- `password` — always overwrites `user.password` and sets `hasPassword: true`, regardless of its previous value. This is the one endpoint that lets a passwordless Telegram/Google account set a real password; for an email registrant who already has one (but is still missing `role`) it re-hashes the same/new password without a current-password check.
 - `role` — only settable while `user.role` is still `null` (throws `role_already_set` otherwise). Must be `USER` or `LANDLORD`.
-- `password` — only settable while `user.hasPassword` is still `false` (throws `password_already_set` otherwise), i.e. for Telegram/Google accounts that never set a real password.
 
-At least one of the two must be provided. Email/password registrants (who already have a password) call this with `{ role }` only; Telegram/Google sign-ups typically call it with both in one request. See `select-role.dto.ts`.
+Every caller must send a password on this call, including email/password registrants who already have one but are only setting `role`. See `select-role.dto.ts`.
+
+> **Frontend**: the request body contract changed — `password` is no longer optional. Any screen that calls `PATCH /auth/select-role` must always collect and send a password, even when only updating `role`.
 
 **Token refresh**
 

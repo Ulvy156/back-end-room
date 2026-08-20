@@ -6,7 +6,6 @@ export class SelectRoleDto {
   @IsIn([UserRole.USER, UserRole.LANDLORD])
   role?: UserRole;
 
-  @IsOptional()
   @IsStrongPassword()
-  password?: string;
+  password: string;
 }
