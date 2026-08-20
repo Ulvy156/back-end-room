@@ -27,7 +27,7 @@ interface AuthenticatedRequest extends Request {
 export class PropertyReportController {
   constructor(private readonly reportService: PropertyReportService) {}
 
-  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post(':propertyId')
   create(
     @Param('propertyId') propertyId: string,

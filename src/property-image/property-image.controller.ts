@@ -28,7 +28,7 @@ export class PropertyImageController {
   constructor(private readonly propertyImageService: PropertyImageService) {}
 
   // [LANDLORD | ADMIN] Upload a new image to an existing property
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 per min — image uploads are fast but still rate-limited
+  @Throttle({ default: { limit: 40, ttl: 60000 } }) // 40 per min — image uploads are fast but still rate-limited
   @Post(':propertyId')
   @UseInterceptors(FileInterceptor('file', multerDiskOptions()))
   upload(

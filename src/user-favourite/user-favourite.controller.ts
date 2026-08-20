@@ -23,7 +23,7 @@ interface AuthenticatedRequest extends Request {
 export class UserFavouriteController {
   constructor(private readonly userFavouriteService: UserFavouriteService) {}
 
-  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 per min — prevents favourite spam
+  @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 per min — prevents favourite spam
   @Post()
   create(
     @Body() createUserFavouriteDto: CreateUserFavouriteDto,

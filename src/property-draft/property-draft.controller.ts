@@ -29,7 +29,7 @@ interface AuthenticatedRequest extends Request {
 export class PropertyDraftController {
   constructor(private readonly propertyDraftService: PropertyDraftService) {}
 
-  @Throttle({ default: { limit: 16, ttl: 60000 } }) // 16 per min — same R2 cost profile as POST /property
+  @Throttle({ default: { limit: 1, ttl: 60000 } }) // 1 per min — same R2 cost profile as POST /property
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(

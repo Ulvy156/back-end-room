@@ -36,7 +36,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 16, ttl: 60000 } }) // 16 per min
+  @Throttle({ default: { limit: 1, ttl: 60000 } }) // 1 per min
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(
@@ -90,7 +90,7 @@ export class PropertyController {
   }
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 8, ttl: 600000 } })
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
   @Post(':id/duplicate')
   duplicate(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.propertyService.duplicate(id, req.user.id, req.user.role);

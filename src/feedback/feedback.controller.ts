@@ -13,7 +13,7 @@ interface AuthenticatedRequest extends Request {
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
-  @Throttle({ default: { limit: 3, ttl: 3600000 } })
+  @Throttle({ default: { limit: 12, ttl: 60000 } })
   @Post()
   create(@Body() dto: CreateFeedbackDto, @Req() req: AuthenticatedRequest) {
     return this.feedbackService.create(req.user.id, dto);

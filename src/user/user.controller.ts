@@ -91,7 +91,7 @@ export class UserController {
   }
 
   // [USER] Request account deletion — requires current password, starts the grace period
-  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 min, matches change-password
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 attempts per min, matches change-password
   @Patch('/me/deletion-request')
   requestAccountDeletion(
     @Body() dto: RequestAccountDeletionDto,
