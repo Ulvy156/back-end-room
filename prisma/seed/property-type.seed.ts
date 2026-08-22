@@ -14,7 +14,7 @@ export async function seedPropertyTypes(prisma: PrismaClient) {
       nameEn: 'Studio',
       nameKh: 'បន្ទប់ស្ទូឌីយោ',
       slug: 'studio',
-      icon: 'layout',
+      icon: 'panels-top-left',
     },
     {
       code: 'apartment',
@@ -28,7 +28,7 @@ export async function seedPropertyTypes(prisma: PrismaClient) {
       nameEn: 'House',
       nameKh: 'ផ្ទះល្វែង/ផ្ទះជួល',
       slug: 'house',
-      icon: 'home',
+      icon: 'house',
     },
     {
       code: 'villa',

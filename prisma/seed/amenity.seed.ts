@@ -56,13 +56,13 @@ export async function seedAmenities(prisma: PrismaClient) {
       code: 'wardrobe',
       nameEn: 'Wardrobe',
       nameKh: 'ទូខោអាវ',
-      icon: 'cabinet',
+      icon: 'shirt',
     },
     {
       code: 'desk',
       nameEn: 'Desk',
       nameKh: 'តុធ្វើការ',
-      icon: 'desk',
+      icon: 'table-2',
     },
     {
       code: 'tv',
@@ -80,7 +80,7 @@ export async function seedAmenities(prisma: PrismaClient) {
       code: 'washing_machine',
       nameEn: 'Washing Machine',
       nameKh: 'ម៉ាស៊ីនបោកខោអាវ',
-      icon: 'washer',
+      icon: 'washing-machine',
     },
 
     // 🚿 Bathroom
