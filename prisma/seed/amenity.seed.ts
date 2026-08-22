@@ -143,7 +143,7 @@ export async function seedAmenities(prisma: PrismaClient) {
   for (const amenity of amenities) {
     await prisma.amenity.upsert({
       where: { code: amenity.code },
-      update: {},
+      update: amenity,
       create: amenity,
     });
   }

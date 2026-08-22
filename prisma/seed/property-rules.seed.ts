@@ -43,7 +43,7 @@ export async function seedPropetyRules(prisma: PrismaClient) {
   for (const rule of rules) {
     await prisma.propertyRules.upsert({
       where: { key: rule.key },
-      update: {},
+      update: rule,
       create: rule,
     });
   }
