@@ -36,6 +36,7 @@ export class PropertyTypeService {
         id: true,
         nameEn: true,
         nameKh: true,
+        icon: true,
       },
     });
     await this.cache.set(CACHE_KEYS.PROPERTY_TYPE, property);
