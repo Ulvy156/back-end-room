@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**SabayRent** is a Cambodian property rental platform. It is a NestJS REST API that allows landlords to list properties and tenants to search, filter, and favourite them. The platform supports email and Telegram for OTP delivery, Cloudflare R2 for image storage, and a PostgreSQL-backed background job queue for async tasks.
+**RokPteah** is a Cambodian property rental platform. It is a NestJS REST API that allows landlords to list properties and tenants to search, filter, and favourite them. The platform supports email and Telegram for OTP delivery, Cloudflare R2 for image storage, and a PostgreSQL-backed background job queue for async tasks.
 
 **This is an MVP.** Build only what is needed for the current feature. Do not add abstractions, patterns, or infrastructure for scale that does not exist yet. Prefer simple and direct over flexible and extensible.
 

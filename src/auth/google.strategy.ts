@@ -32,7 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ) {
     const { value: email, verified } = profile.emails![0];
     // Google itself hasn't confirmed this email — don't trust it to link or
-    // auto-verify a SabayRent account.
+    // auto-verify a RokPteah account.
     if (!verified) {
       return done(
         new UnauthorizedException(

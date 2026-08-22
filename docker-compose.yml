@@ -32,7 +32,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     # Bound to the VPS's own loopback only — reach it from your machine via
-    # an SSH tunnel (ssh -L 5432:localhost:5432 sabayrent-vps), never expose
+    # an SSH tunnel (ssh -L 5432:localhost:5432 rokpteah-vps), never expose
     # this publicly.
     ports:
       - '127.0.0.1:5432:5432'

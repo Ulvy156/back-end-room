@@ -61,7 +61,7 @@ export class QueueWorker implements OnModuleInit {
         const job = jobs[0];
         await this.telegram.sendMessage(
           job.data.chatId,
-          `🔐 *SabayRent — Password Reset*\n\nYour OTP is: *${job.data.otp}*\n\nExpires in 10 minutes. Do not share this with anyone.`,
+          `🔐 *RokPteah — Password Reset*\n\nYour OTP is: *${job.data.otp}*\n\nExpires in 10 minutes. Do not share this with anyone.`,
         );
       },
     );

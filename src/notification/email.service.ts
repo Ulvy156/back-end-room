@@ -23,12 +23,12 @@ export class EmailService {
   async sendVerificationOtp(to: string, otp: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: `"SabayRent" <${this.senderAddress}>`,
+        from: `"RokPteah" <${this.senderAddress}>`,
         to,
-        subject: 'Verify your SabayRent account',
+        subject: 'Verify your RokPteah account',
         html: `
           <div style="font-family:sans-serif;max-width:480px;margin:auto">
-            <h2>Welcome to SabayRent! 👋</h2>
+            <h2>Welcome to RokPteah! 👋</h2>
             <p>Thanks for signing up. Use the OTP below to verify your account. It expires in <strong>10 minutes</strong>.</p>
             <div style="font-size:36px;font-weight:bold;letter-spacing:8px;text-align:center;
                         padding:16px;background:#f4f4f4;border-radius:8px;margin:24px 0">
@@ -50,7 +50,7 @@ export class EmailService {
   async sendOtp(to: string, otp: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: `"SabayRent" <${this.senderAddress}>`,
+        from: `"RokPteah" <${this.senderAddress}>`,
         to,
         subject: 'Your Password Reset OTP',
         html: `
@@ -83,7 +83,7 @@ export class EmailService {
   ): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: `"SabayRent" <${this.senderAddress}>`,
+        from: `"RokPteah" <${this.senderAddress}>`,
         to,
         subject: 'Your listing was reported',
         html: `

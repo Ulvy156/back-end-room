@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: sabayrent-api
+    name: rokpteah-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: starter
