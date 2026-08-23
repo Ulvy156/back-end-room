@@ -17,6 +17,7 @@ import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { QueueService } from '../queue/queue.service';
 import {
+  ImportTelegramAvatarJob,
   QUEUE_JOBS,
   SendOtpEmailJob,
   SendOtpTelegramJob,
@@ -534,37 +535,30 @@ export class AuthService {
       isNewUser = true;
       const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
 
-      // Best-effort: pull their Telegram avatar into our own R2 bucket so
-      // imgUrl stays a same-shape R2 key. A fetch failure shouldn't block
-      // registration — they can always set a photo manually afterwards.
-      let imgUrl: string | undefined;
-      if (data.photo_url) {
-        try {
-          const uploaded = await this.r2Service.uploadFromUrl(
-            data.photo_url,
-            'profile',
-          );
-          imgUrl = uploaded.key;
-        } catch (error) {
-          this.logger.warn(
-            `Failed to import Telegram profile photo for id=${data.id}: ${error}`,
-          );
-        }
-      }
-
       user = await this.prisma.user.create({
         data: {
           name,
           email: null,
           telegramUsername: data.username ?? null,
           telegramId: String(data.id),
-          imgUrl,
           password: await hashingPassword(randomUUID()),
           hasPassword: false,
           role: null,
           isVerified: true,
         },
       });
+
+      // Best-effort: pull their Telegram avatar into our own R2 bucket so
+      // imgUrl stays a same-shape R2 key. Queued rather than awaited so a
+      // slow/failing fetch to Telegram's CDN doesn't block the login
+      // response — they can always set a photo manually afterwards.
+      if (data.photo_url) {
+        await this.queue.send<ImportTelegramAvatarJob>(
+          QUEUE_JOBS.IMPORT_TELEGRAM_AVATAR,
+          { userId: user.id, photoUrl: data.photo_url },
+          { retryLimit: 3, retryDelay: 30, retryBackoff: true },
+        );
+      }
     }
 
     // Returning user who never finished role selection last time — block here

@@ -10,6 +10,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **This is an MVP.** Build only what is needed for the current feature. Do not add abstractions, patterns, or infrastructure for scale that does not exist yet. Prefer simple and direct over flexible and extensible.
 
+**This project is already live in production**, serving real users and data. Treat schema/migration changes, breaking API changes, data deletions, and deploy actions with real-world caution — prefer additive Prisma migrations over destructive ones, avoid `prisma migrate reset` or force-pushes against prod, and flag when a change could affect live data or existing clients. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for deploy details.
+
+**Work on the `development` branch, not `main`/`master` directly.** `main` tracks what's deployed to production. Make commits, branch off, and open PRs against `development`; do not commit directly to `main`.
+
 ---
 
 ## Commands
