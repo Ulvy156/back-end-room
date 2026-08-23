@@ -192,6 +192,8 @@ export class UserController {
     return this.userService.approveAccountDeletion(id);
   }
 
+  // [ADMIN] Force-delete a user immediately — cascades to owned properties,
+  // drafts, and R2 images, without requiring a pending deletion request.
   @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -263,9 +263,75 @@ export class UserService {
     }
   }
 
+  // [ADMIN] Force-delete a user immediately, cascading to owned properties,
+  // drafts, and R2 images — same cleanup as approveAccountDeletion, but
+  // without requiring a pending deletion request first.
   async remove(id: string) {
-    await this.findOne(id);
-    return await this.prisma.user.delete({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(this.translation.t('errors.user.not_found'));
+    }
+
+    const imageKeysToDelete = await this.collectOwnedImageKeys(id, user.imgUrl);
+
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await Promise.all([
+          tx.property.deleteMany({ where: { userId: id } }),
+          tx.propertyDraft.deleteMany({ where: { userId: id } }),
+        ]);
+        await tx.user.delete({ where: { id } });
+      });
+    } catch (error) {
+      prismaError(error);
+    }
+
+    if (user.role === UserRole.LANDLORD) {
+      await this.propertyService.clearCacheHomePage();
+    }
+
+    await this.cleanupImages(id, imageKeysToDelete);
+
+    return { message: this.translation.t('messages.admin.user_deleted') };
+  }
+
+  // Collects every R2 key a user owns (property images, draft images,
+  // profile image) BEFORE deletion, so cleanup can run only after the DB
+  // transaction has actually committed.
+  private async collectOwnedImageKeys(userId: string, imgUrl: string | null) {
+    const [propertyImages, drafts] = await Promise.all([
+      this.prisma.propertyImage.findMany({
+        where: { property: { userId } },
+        select: { imageKey: true },
+      }),
+      this.prisma.propertyDraft.findMany({
+        where: { userId },
+        select: { images: true },
+      }),
+    ]);
+    const draftImageKeys = drafts
+      .flatMap((d) => getDraftImages(d))
+      .map((img) => img.key);
+
+    return [
+      ...propertyImages.map((img) => img.imageKey),
+      ...draftImageKeys,
+      ...(imgUrl ? [imgUrl] : []),
+    ];
+  }
+
+  private async cleanupImages(userId: string, imageKeys: string[]) {
+    if (!imageKeys.length) return;
+    try {
+      await this.r2Service.deleteMultipleFiles(imageKeys);
+    } catch (error) {
+      // DB deletion already committed — a recoverable cleanup gap, not
+      // something to roll back or fail the request over.
+      this.logger.error(
+        `Failed to clean up R2 files for deleted user ${userId}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
   }
 
   // ─── Self-service ─────────────────────────────────────────────────────────────
@@ -514,31 +580,17 @@ export class UserService {
       );
     }
 
-    // Collect every R2 key this user owns BEFORE anything is deleted, so
-    // cleanup can run only after the DB transaction has actually committed.
-    const [propertyImages, drafts] = await Promise.all([
-      this.prisma.propertyImage.findMany({
-        where: { property: { userId } },
-        select: { imageKey: true },
-      }),
-      this.prisma.propertyDraft.findMany({
-        where: { userId },
-        select: { images: true },
-      }),
-    ]);
-    const draftImageKeys = drafts
-      .flatMap((d) => getDraftImages(d))
-      .map((img) => img.key);
-    const imageKeysToDelete = [
-      ...propertyImages.map((img) => img.imageKey),
-      ...draftImageKeys,
-      ...(user.imgUrl ? [user.imgUrl] : []),
-    ];
+    const imageKeysToDelete = await this.collectOwnedImageKeys(
+      userId,
+      user.imgUrl,
+    );
 
     try {
       await this.prisma.$transaction(async (tx) => {
-        await tx.property.deleteMany({ where: { userId } });
-        await tx.propertyDraft.deleteMany({ where: { userId } });
+        await Promise.all([
+          tx.property.deleteMany({ where: { userId } }),
+          tx.propertyDraft.deleteMany({ where: { userId } }),
+        ]);
 
         // Conditional final delete, guarding against a concurrent
         // cancelAccountDeletion() winning the race. If it matches nothing,
@@ -561,18 +613,7 @@ export class UserService {
       await this.propertyService.clearCacheHomePage();
     }
 
-    if (imageKeysToDelete.length) {
-      try {
-        await this.r2Service.deleteMultipleFiles(imageKeysToDelete);
-      } catch (error) {
-        // DB deletion already committed — a recoverable cleanup gap, not
-        // something to roll back or fail the request over.
-        this.logger.error(
-          `Failed to clean up R2 files for deleted user ${userId}`,
-          error instanceof Error ? error.stack : String(error),
-        );
-      }
-    }
+    await this.cleanupImages(userId, imageKeysToDelete);
 
     return { message: this.translation.t('messages.admin.deletion_approved') };
   }
