@@ -4,6 +4,7 @@ import { PhoneNumberType } from 'prisma/generated/enums';
 import { EmailService } from '../notification/email.service';
 import { TelegramService } from '../notification/telegram.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { R2Service } from '../R2/r2.service';
 import { QUEUE_JOBS } from './queue.jobs';
 import { QueueService } from './queue.service';
 import { QueueWorker } from './queue.worker';
@@ -41,6 +42,7 @@ describe('QueueWorker', () => {
         { provide: TelegramService, useValue: {} },
         { provide: PrismaService, useValue: prisma },
         { provide: ConfigService, useValue: { getOrThrow: jest.fn() } },
+        { provide: R2Service, useValue: { uploadFromUrl: jest.fn() } },
       ],
     }).compile();
 

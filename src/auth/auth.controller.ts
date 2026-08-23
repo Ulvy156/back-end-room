@@ -207,7 +207,15 @@ export class AuthController {
 
     res.cookie('refresh_token', refreshToken, cookieOptions);
     res.cookie('access_token', accessToken, accessCookieOptions);
-    return { accessToken, user_id: user.id, is_new_user: isNewUser };
+    // Same shape as GET /auth/profile (Prisma User minus password) — lets
+    // callers skip the follow-up profile fetch after this login.
+    const { password, ...safeUser } = user;
+    return {
+      accessToken,
+      user_id: user.id,
+      is_new_user: isNewUser,
+      user: safeUser,
+    };
   }
 
   // ─── Password reset ───────────────────────────────────────────────────────────

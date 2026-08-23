@@ -14,6 +14,7 @@ export const QUEUE_JOBS = {
   SEND_PROPERTY_REPORT_ADMIN_ALERT: 'send-property-report-admin-alert',
   SEND_USER_REGISTERED_ADMIN_ALERT: 'send-user-registered-admin-alert',
   SEND_ERROR_ALERT: 'send-error-alert',
+  IMPORT_TELEGRAM_AVATAR: 'import-telegram-avatar',
 } as const;
 
 export interface SendVerificationOtpJob {
@@ -93,4 +94,9 @@ export interface SendErrorAlertJob {
   method: string;
   route: string;
   timestamp: string;
+}
+
+export interface ImportTelegramAvatarJob {
+  userId: string;
+  photoUrl: string;
 }

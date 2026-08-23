@@ -3,7 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../notification/email.service';
 import { TelegramService } from '../notification/telegram.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { R2Service } from '../R2/r2.service';
 import {
+  ImportTelegramAvatarJob,
   IncrementPropertyViewJob,
   QUEUE_JOBS,
   RecordPropertyContactClickJob,
@@ -30,6 +32,7 @@ export class QueueWorker implements OnModuleInit {
     private readonly telegram: TelegramService,
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
+    private readonly r2: R2Service,
   ) {}
 
   async onModuleInit() {
@@ -189,6 +192,27 @@ export class QueueWorker implements OnModuleInit {
           `🔥 Server Error\n\n${method} ${route}\n${message}\n\n${timestamp}`,
           { parseMode: false },
         );
+      },
+    );
+
+    await this.queue.work<ImportTelegramAvatarJob>(
+      QUEUE_JOBS.IMPORT_TELEGRAM_AVATAR,
+      async (jobs) => {
+        const job = jobs[0];
+        try {
+          const uploaded = await this.r2.uploadFromUrl(
+            job.data.photoUrl,
+            'profile',
+          );
+          await this.prisma.user.update({
+            where: { id: job.data.userId },
+            data: { imgUrl: uploaded.key },
+          });
+        } catch (error) {
+          this.logger.warn(
+            `Failed to import Telegram avatar for user=${job.data.userId}: ${error}`,
+          );
+        }
       },
     );
 
