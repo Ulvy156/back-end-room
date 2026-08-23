@@ -18,6 +18,9 @@ export async function createApp() {
   const logger = app.get(Logger);
   app.useLogger(logger);
   registerProcessCrashHandlers(logger, app.get(QueueService));
+  // Trust Caddy (1 hop) so req.ip reflects the real client IP from X-Forwarded-For
+  // instead of Caddy's own address — required for per-IP rate limiting to work.
+  app.set('trust proxy', 1);
   app.use(helmet());
   // parse cookies
   app.use(cookieParser());
