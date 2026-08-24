@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   Matches,
   ValidateNested,
@@ -60,9 +61,25 @@ export class CreatePropertyDto {
   @IsInt()
   propertyTypeId: number;
 
+  // Total area as reported by the owner. Independent of sizeWidthM/sizeLengthM
+  // below — never derived from them, since a property can have space not
+  // captured by a simple width x length rectangle.
   @Type(() => Number)
   @IsNumber()
+  @IsPositive()
   sizeSqm: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  sizeWidthM?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  sizeLengthM?: number;
 
   @Type(() => Number)
   @IsNumber()

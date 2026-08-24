@@ -237,7 +237,12 @@ model Property {
   contactCount Int @default(0) @map("contact_count")
 
   propertyTypeId    Int     @map("property_type_id")
-  sizeSqm           Int     @map("size_sqm")
+  // Total area in sqm as reported by the owner — independent of width/length
+  // below, since a property can have space not captured by a simple
+  // rectangle (e.g. width 10m x length 10m but 150 sqm total).
+  sizeSqm           Float   @map("size_sqm")
+  sizeWidthM        Float?  @map("size_width_m")
+  sizeLengthM       Float?  @map("size_length_m")
   furnished         Boolean @default(true)
   isPublished       Boolean @default(true) @map("is_published")
   isLocked          Boolean @default(false) @map("is_locked")

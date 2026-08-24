@@ -45,6 +45,8 @@ export class LandlordProfileService {
           title: true,
           monthly_price: true,
           sizeSqm: true,
+          sizeWidthM: true,
+          sizeLengthM: true,
           totalViews: true,
           bathroom: true,
           bedroom: true,

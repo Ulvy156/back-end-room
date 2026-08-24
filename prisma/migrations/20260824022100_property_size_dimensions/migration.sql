@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "properties" ADD COLUMN     "size_length_m" DOUBLE PRECISION,
+ADD COLUMN     "size_width_m" DOUBLE PRECISION,
+ALTER COLUMN "size_sqm" SET DATA TYPE DOUBLE PRECISION;
