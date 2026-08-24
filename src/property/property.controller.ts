@@ -36,7 +36,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 1, ttl: 60000 } }) // 1 per min
+  @Throttle({ default: { limit: 2, ttl: 60000 } }) // 1 per min
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(
