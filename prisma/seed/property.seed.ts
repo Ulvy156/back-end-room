@@ -49,6 +49,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bedroom: 2,
       bathroom: 1,
       sizeSqm: 70,
+      sizeWidthM: 7,
+      sizeLengthM: 10,
     },
     {
       id: 'a1b2c3d4-1111-4000-8000-000000000002',
@@ -60,7 +62,12 @@ export async function seedProperties(prisma: PrismaClient) {
       deposit: 500,
       bedroom: 1,
       bathroom: 1,
+      // No width/length on file for this one — total area only, to exercise
+      // the "dimensions unknown" display case. Explicit nulls so re-seeding
+      // clears any previously-set dimensions (upsert only touches given keys).
       sizeSqm: 40,
+      sizeWidthM: null,
+      sizeLengthM: null,
     },
     {
       id: 'a1b2c3d4-2222-4000-8000-000000000003',
@@ -75,6 +82,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 1,
       floor: 3,
       sizeSqm: 55,
+      sizeWidthM: 5,
+      sizeLengthM: 11,
     },
     {
       id: 'a1b2c3d4-3333-4000-8000-000000000004',
@@ -88,6 +97,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 2,
       floor: 7,
       sizeSqm: 75,
+      sizeWidthM: 5,
+      sizeLengthM: 15,
     },
     {
       id: 'a1b2c3d4-4444-4000-8000-000000000005',
@@ -101,6 +112,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 2,
       floor: 2,
       sizeSqm: 90,
+      sizeWidthM: 6,
+      sizeLengthM: 15,
     },
     {
       id: 'a1b2c3d4-5555-4000-8000-000000000006',
@@ -115,7 +128,11 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 3,
       floor: 12,
       totalFloors: 12,
+      // Total area exceeds width x length — extra balcony/terrace space not
+      // captured by the simple rectangle, demonstrating sizeSqm's independence.
       sizeSqm: 150,
+      sizeWidthM: 10,
+      sizeLengthM: 10,
       minimumStayLength: 6,
     },
     {
@@ -130,6 +147,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 1,
       floor: 1,
       sizeSqm: 30,
+      sizeWidthM: 5,
+      sizeLengthM: 6,
       minimumStayLength: 1,
     },
     {
@@ -144,6 +163,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 1,
       floor: 5,
       sizeSqm: 68,
+      sizeWidthM: 4,
+      sizeLengthM: 17,
     },
     {
       id: 'a1b2c3d4-8888-4000-8000-000000000009',
@@ -158,6 +179,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 2,
       floor: 4,
       sizeSqm: 100,
+      sizeWidthM: 10,
+      sizeLengthM: 10,
     },
     {
       id: 'a1b2c3d4-9999-4000-8000-000000000010',
@@ -172,6 +195,8 @@ export async function seedProperties(prisma: PrismaClient) {
       bathroom: 2,
       floor: 10,
       sizeSqm: 85,
+      sizeWidthM: 5,
+      sizeLengthM: 17,
       minimumStayLength: 6,
     },
   ];

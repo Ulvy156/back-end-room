@@ -109,10 +109,25 @@ def rand_price(beds: int) -> int:
     return round(random.randint(lo, hi) / 50) * 50
 
 
-def rand_sqm(beds: int) -> int:
+def rand_size(beds: int) -> tuple:
+    """Random (sqm, width_m, length_m). sizeSqm is the independent total area
+    reported by the owner — width/length are optional supplementary
+    dimensions and their product does not always equal sqm (extra space not
+    captured by a simple rectangle, e.g. balcony/terrace)."""
     ranges = {1: (25, 55), 2: (50, 90), 3: (80, 130), 4: (120, 200), 5: (180, 350)}
     lo, hi = ranges.get(beds, (30, 80))
-    return random.randint(lo, hi)
+    sqm = random.randint(lo, hi)
+
+    # ~20% of listings have no recorded width/length at all.
+    if random.random() < 0.2:
+        return sqm, None, None
+
+    width = round(random.uniform(3.5, 8.0), 1)
+    length = round(sqm / width, 1)
+    # ~30% of the remainder have extra space beyond width x length.
+    if random.random() < 0.3:
+        sqm = round(sqm + random.randint(5, 25))
+    return sqm, width, length
 
 
 def make_property(user_id: str, district_ids: list) -> dict:
@@ -122,7 +137,7 @@ def make_property(user_id: str, district_ids: list) -> dict:
     baths        = max(1, beds - random.randint(0, 1))
     floor        = random.randint(1, 12)
     total_floors = max(floor, floor + random.randint(0, 8))
-    sqm          = rand_sqm(beds)
+    sqm, width_m, length_m = rand_size(beds)
     price        = rand_price(beds)
     area         = random.choice(AREAS)
     landmark     = random.choice(LANDMARKS)
@@ -164,6 +179,8 @@ def make_property(user_id: str, district_ids: list) -> dict:
         "total_views":         random.randint(0, 500),
         "property_type_id":    prop_type_id,
         "size_sqm":            sqm,
+        "size_width_m":        width_m,
+        "size_length_m":       length_m,
         "furnished":           random.random() > 0.2,
         "is_published":        True,
         "minimum_stay_length": random.choice([1, 3, 6, 12]),
@@ -251,6 +268,8 @@ COLUMN_MAP = [
     ("total_views",          "total_views"),
     ("property_type_id",     "property_type_id"),
     ("size_sqm",             "size_sqm"),
+    ("size_width_m",         "size_width_m"),
+    ("size_length_m",        "size_length_m"),
     ("furnished",            "furnished"),
     ("is_published",         "is_published"),
     ("minimum_stay_length",  "minimum_stay_length"),
@@ -348,7 +367,9 @@ _CAMEL = {
     "monthly_price": "monthly_price", "is_available": "isAvailable",
     "available_from": "availableFrom", "is_featured": "isFeatured",
     "featured_at": "featuredAt", "total_views": "totalViews",
-    "property_type_id": "propertyTypeId", "size_sqm": "sizeSqm",
+    "property_type_id": "propertyTypeId",
+    "size_sqm": "sizeSqm",
+    "size_width_m": "sizeWidthM", "size_length_m": "sizeLengthM",
     "is_published": "isPublished", "minimum_stay_length": "minimumStayLength",
     "open_time": "openTime", "close_time": "closeTime",
     "totalFloors": "totalFloors", "created_at": "createdAt", "updated_at": "updatedAt",
