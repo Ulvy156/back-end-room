@@ -8,6 +8,7 @@ import { UserRole, PhoneNumberType } from 'prisma/generated/enums';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { CreateParkingDto } from './dto/create-parking.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { UpdatePropertyImagesDto } from './dto/update-property-images.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { prismaError } from 'src/utils/prismaError';
 import { R2Service } from 'src/R2/r2.service';
@@ -587,6 +588,162 @@ export class PropertyService {
 
       return property;
     } catch (error) {
+      prismaError(error);
+    }
+  }
+
+  // [LANDLORD | ADMIN] Bundles add/remove/set-cover into one atomic call —
+  // replaces the old per-item POST/DELETE/set-cover trio for the edit flow.
+  async updateImages(
+    id: string,
+    dto: UpdatePropertyImagesDto,
+    files: Express.Multer.File[],
+    requesterId: string,
+    role: UserRole,
+  ) {
+    const property = await this.assertOwner(id, requesterId, role);
+    if (property.isLocked && role !== UserRole.ADMIN) {
+      throw new ForbiddenException(
+        this.translation.t('errors.property.locked'),
+      );
+    }
+
+    const { removeImageIds = [], coverImageId, coverNewFileIndex } = dto;
+
+    if (coverImageId && coverNewFileIndex !== undefined) {
+      throw new BadRequestException(
+        this.translation.t('errors.property_image.cover_conflict'),
+      );
+    }
+    if (
+      coverNewFileIndex !== undefined &&
+      (coverNewFileIndex < 0 || coverNewFileIndex >= files.length)
+    ) {
+      throw new NotFoundException(
+        this.translation.t('errors.property_image.not_found'),
+      );
+    }
+
+    const existingImages = await this.prisma.propertyImage.findMany({
+      where: { propertyId: id },
+    });
+
+    const toDelete = existingImages.filter((img) =>
+      removeImageIds.includes(img.id),
+    );
+    if (toDelete.length !== removeImageIds.length) {
+      throw new NotFoundException(
+        this.translation.t('errors.property_image.not_found'),
+      );
+    }
+    if (
+      coverImageId &&
+      (!existingImages.some((img) => img.id === coverImageId) ||
+        removeImageIds.includes(coverImageId))
+    ) {
+      throw new NotFoundException(
+        this.translation.t('errors.property_image.not_found'),
+      );
+    }
+
+    const remainingCount =
+      existingImages.length - toDelete.length + files.length;
+    if (remainingCount === 0) {
+      throw new BadRequestException(
+        this.translation.t('errors.property.image_required'),
+      );
+    }
+
+    const maxImagesPerProperty =
+      (await this.settingsService.get<number>(
+        'property',
+        'maxImagesPerProperty',
+      )) ?? Infinity;
+    if (remainingCount > maxImagesPerProperty) {
+      throw new BadRequestException(
+        this.translation.t('errors.property_image.image_limit'),
+      );
+    }
+
+    let uploaded: Array<{ key: string; url: string }> = [];
+    if (files.length) {
+      uploaded = await this.r2Service.uploadMultipleFiles(files, 'properties');
+    }
+
+    try {
+      const images = await this.prisma.$transaction(async (tx) => {
+        if (toDelete.length) {
+          await tx.propertyImage.deleteMany({
+            where: { id: { in: toDelete.map((img) => img.id) } },
+          });
+        }
+
+        const created = uploaded.length
+          ? await Promise.all(
+              uploaded.map((img) =>
+                tx.propertyImage.create({
+                  data: { propertyId: id, imageKey: img.key, isCover: false },
+                }),
+              ),
+            )
+          : [];
+
+        // Resolve which image (if any) should end up as the cover.
+        let coverTargetId =
+          coverImageId ??
+          (coverNewFileIndex !== undefined
+            ? created[coverNewFileIndex]?.id
+            : undefined);
+
+        // Nobody picked a cover, but the old cover just got deleted — fall
+        // back to another remaining image so the property never ends up
+        // without one.
+        const coverWasRemoved = existingImages.some(
+          (img) => img.isCover && removeImageIds.includes(img.id),
+        );
+        if (!coverTargetId && coverWasRemoved) {
+          const fallback = existingImages.find(
+            (img) => !img.isCover && !removeImageIds.includes(img.id),
+          );
+          coverTargetId = fallback?.id ?? created[0]?.id;
+        }
+
+        if (coverTargetId) {
+          await tx.propertyImage.updateMany({
+            where: { propertyId: id },
+            data: { isCover: false },
+          });
+          await tx.propertyImage.update({
+            where: { id: coverTargetId },
+            data: { isCover: true },
+          });
+        }
+
+        return tx.propertyImage.findMany({
+          where: { propertyId: id },
+          orderBy: { createdAt: 'asc' },
+        });
+      });
+
+      // Only remove the old R2 objects once the DB change has committed —
+      // otherwise a mid-transaction failure would leave rows pointing at
+      // already-deleted storage.
+      if (toDelete.length) {
+        await this.r2Service.deleteMultipleFiles(
+          toDelete.map((img) => img.imageKey),
+        );
+      }
+      await this.clearCacheHomePage();
+
+      return images;
+    } catch (error) {
+      // The transaction never committed — roll back the freshly uploaded
+      // files so they don't sit orphaned in R2.
+      if (uploaded.length) {
+        await this.r2Service.deleteMultipleFiles(
+          uploaded.map((img) => img.key),
+        );
+      }
       prismaError(error);
     }
   }

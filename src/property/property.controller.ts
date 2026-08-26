@@ -17,6 +17,7 @@ import { Request } from 'express';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { UpdatePropertyImagesDto } from './dto/update-property-images.dto';
 import { DynamicImagesInterceptor } from 'src/R2/dynamic-images.interceptor';
 import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
@@ -36,7 +37,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Roles(UserRole.LANDLORD, UserRole.ADMIN)
-  @Throttle({ default: { limit: 2, ttl: 60000 } }) // 1 per min
+  @Throttle({ default: { limit: 2, ttl: 60000 } }) // 2 per min
   @Post()
   @UseInterceptors(DynamicImagesInterceptor)
   create(
@@ -125,6 +126,27 @@ export class PropertyController {
     return this.propertyService.update(
       id,
       updatePropertyDto,
+      req.user.id,
+      req.user.role,
+    );
+  }
+
+  // [LANDLORD | ADMIN] Bundles add/remove/set-cover into one call — fired
+  // once on Save rather than per-click.
+  @Roles(UserRole.LANDLORD, UserRole.ADMIN)
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 per min
+  @Patch(':id/images')
+  @UseInterceptors(DynamicImagesInterceptor)
+  updateImages(
+    @Param('id') id: string,
+    @Body() updatePropertyImagesDto: UpdatePropertyImagesDto,
+    @UploadedFiles() files: Express.Multer.File[] = [],
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.propertyService.updateImages(
+      id,
+      updatePropertyImagesDto,
+      files,
       req.user.id,
       req.user.role,
     );

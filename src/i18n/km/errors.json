@@ -35,7 +35,8 @@
   "property_image": {
     "not_found": "រកមិនឃើញរូបថត។",
     "forbidden": "អ្នកមិនមានសិទ្ធិគ្រប់គ្រងរូបថតនេះទេ។",
-    "image_limit": "អ្នកបានឈានដល់ចំនួនរូបថតអតិបរមាសម្រាប់អចលនទ្រព្យនេះហើយ។"
+    "image_limit": "អ្នកបានឈានដល់ចំនួនរូបថតអតិបរមាសម្រាប់អចលនទ្រព្យនេះហើយ។",
+    "cover_conflict": "សូមផ្តល់ coverImageId ឬ coverNewFileIndex មួយប៉ុណ្ណោះ។"
   },
   "property_draft": {
     "not_found": "រកមិនឃើញព្រាង។",

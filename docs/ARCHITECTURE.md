@@ -14,9 +14,9 @@
 |---|---|
 | `auth` | Login (email/phone, Telegram, Google), register, OTP verify, refresh, logout, forgot/reset password, role selection |
 | `user` | User CRUD, profile image upload via R2 |
-| `property` | Property CRUD, browse/filter with pagination, homepage data, related properties, view tracking |
+| `property` | Property CRUD, browse/filter with pagination, homepage data, related properties, view tracking. Also exposes `PATCH /property/:id/images` — a bundled, transactional add/remove/set-cover call meant to replace per-item image calls on Save (see `property-image` below, still active). No custom ordering (no `order` column) — `isCover` is the only ordering concept, a single flag per property, auto-reassigned to another remaining image if the current cover is deleted without a replacement being specified. |
 | `property-draft` | Save-as-draft for property creation (`POST/GET/PATCH/DELETE /property-draft`, `POST /property-draft/:id/publish`). A `PropertyDraft` row stores partial listing data as loose `Json` (no required fields, not even an image) plus already-uploaded R2 image refs — landlords can save and keep editing incomplete listings. Drafts are not counted toward `maxPropertiesPerLandlord`; only `publish` creates a real `Property` (running the same validation `POST /property` does) and consumes a slot. Capped at `maxDraftsPerLandlord` open drafts per landlord. |
-| `property-image` | Add/remove/reorder images per property |
+| `property-image` | Add/remove/set-cover a single image per property, one call per action (`POST /property-image/:propertyId`, `DELETE /property-image/:imageId`, `PATCH /property-image/:imageId/set-cover`). No reorder endpoint. |
 | `property-amenity` | Link amenities to a property |
 | `property-rules` | House rules (pets, smoking, etc.) linked to a property |
 | `property-type` | Reference data — room type definitions |

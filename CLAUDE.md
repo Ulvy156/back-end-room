@@ -14,6 +14,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Work on the `development` branch, not `main`/`master` directly.** `main` tracks what's deployed to production. Make commits, branch off, and open PRs against `development`; do not commit directly to `main`.
 
+**Production database access is read-only by default.** Querying/inspecting the production DB (directly or via SSH tunnel per [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)) is fine without asking. Any write — running a migration, `UPDATE`/`DELETE`/`INSERT`, seeding, or anything else that changes prod data or schema — requires explicit user permission first, every time.
+
 ---
 
 ## Commands

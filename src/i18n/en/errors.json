@@ -35,7 +35,8 @@
   "property_image": {
     "not_found": "Image not found",
     "forbidden": "You do not have permission to manage this image",
-    "image_limit": "Maximum number of images reached for this property"
+    "image_limit": "Maximum number of images reached for this property",
+    "cover_conflict": "Only one of coverImageId or coverNewFileIndex may be provided"
   },
   "property_draft": {
     "not_found": "Draft not found",
